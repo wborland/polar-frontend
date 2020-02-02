@@ -1,3 +1,8 @@
+# Polar Frontend
+
+[![buddy pipeline](https://app.buddy.works/wborland/polar-frontend/pipelines/pipeline/236986/badge.svg?token=7632f25ea202f4a9e6ddfa71befcf41959fb93041a3c033e86ff25ea93c63e26 "buddy pipeline")](https://app.buddy.works/wborland/polar-frontend/pipelines/pipeline/236986)
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
