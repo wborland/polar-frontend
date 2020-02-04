@@ -36,8 +36,13 @@ class NavigationArea extends Component {
   }
 }
 
+// const mapStateToProps = state => ({
+//   user: state.user
+// })
+
 const mapDispatchToProps = {
   _push: push
 };
 
 export default connect(null, mapDispatchToProps)(withRouter(NavigationArea));
+//replace null with mapStateToProps to connect to the state variables
