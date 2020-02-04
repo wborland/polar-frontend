@@ -14,6 +14,9 @@ const LeftBarDiv = styled.div`
 
 class NavigationArea extends Component {
   handleClick = e => {
+    if (e.key === " ") {
+      e.key = "";
+    }
     this.props._push(`/${e.key}`);
   };
 

@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import { Row, Col, Container } from "reactstrap";
 import styled from "styled-components";
-import { Switch, Route } from "react-router";
 import Polar from "./polar.png";
 import NavigationArea from "./NavigationArea";
-import "antd/dist/antd.css";
+import Routing from "./Routing";
 
 const TopBarDiv = styled.div`
   background-color: #608bf6;
@@ -51,17 +50,7 @@ class BackgroundPage extends Component {
             <NavigationArea />
           </Col>
           <Col xs={12} sm={8} xl={9} xxl={10}>
-            <Switch>
-              <Route path="/files" />
-              <Route path="/communication" />
-              <Route path="/usermanagement" />
-              <Route path="/inventory" />
-              <Route
-                path="/"
-                render={() => <div style={{ height: "calc(100vh - 60px)" }} />}
-              />{" "}
-              {/* calendar */}
-            </Switch>
+            <Routing />
           </Col>
         </Row>
       </FullArea>
