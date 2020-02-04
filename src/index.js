@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { ConnectedRouter } from "connected-react-router";
 import { Provider } from "react-redux";
 import "./index.css";
-import App from "./App";
+import BackgroundPage from "./Pages/backgroundPage";
 import * as serviceWorker from "./serviceWorker";
 import configureStore, { history } from "./Redux/store";
 
@@ -12,7 +12,7 @@ const store = configureStore({});
 ReactDOM.render(
   <Provider store={store}>
     <ConnectedRouter history={history}>
-      <App />
+      <BackgroundPage />
     </ConnectedRouter>
   </Provider>,
   document.getElementById("root")
