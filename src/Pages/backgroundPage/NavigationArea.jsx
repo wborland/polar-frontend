@@ -8,7 +8,7 @@ import "antd/dist/antd.css";
 
 const LeftBarDiv = styled.div`
   height: calc(100vh - 60px);
-  background-color: #608bf6;
+  background-color: #4680c3;
   padding-top: 15px;
 `;
 
