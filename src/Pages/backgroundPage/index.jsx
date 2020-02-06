@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Row, Col, Container } from "reactstrap";
 import styled from "styled-components";
-import Polar from "./polar.png";
+import Polar from "../../Assets/polar.png";
 import NavigationArea from "./NavigationArea";
 import Routing from "./Routing";
 
