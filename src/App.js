@@ -1,16 +1,38 @@
 import React from "react";
 import { Switch, Route } from "react-router";
+import { connect } from "react-redux";
+import "antd/dist/antd.css";
 import "./App.css";
 import BackgroundPage from "./Pages/backgroundPage";
+import { Modal } from "antd";
+import { updateDialog } from "./Redux/dialog";
 
-function App() {
+const App = props => {
   return (
-    <Switch>
-      <Route path="/login" />
-      <Route path="/password" />
-      <Route path="/" render={() => <BackgroundPage />} />
-    </Switch>
+    <div>
+      <Switch>
+        <Route path="/login" />
+        <Route path="/password" />
+        <Route path="/" render={() => <BackgroundPage />} />
+      </Switch>
+      <Modal
+        title={props.dialog.object.title}
+        visible={props.dialog.open}
+        onCancel={() => props._updateDialog(false, null)}
+        footer={null}
+      >
+        {props.dialog.object.content}
+      </Modal>
+    </div>
   );
-}
+};
 
-export default App;
+const mapStateToProps = state => ({
+  dialog: state.dialog
+});
+
+const mapDispatchToProps = {
+  _updateDialog: updateDialog
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
