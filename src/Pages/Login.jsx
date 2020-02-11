@@ -35,8 +35,8 @@ class Login extends Component {
                 </Header>
                 <Content>
                     <div style={{ backgroundColor: "", overflow: "hidden", paddingTop: "10vh" }}>
-                        <Row type="flex" justify="center" gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]} style={{ minHeight: "83vh" }}>
-                            <Col span={12}>
+                        <Row type="flex" justify="center" style={{ minHeight: "83vh" }}>
+                            <Col md={24} lg={12}>
                                 <Row type="flex" justify="center" alight="middle" style={{ textAlign: "center" }}>
                                     <Col span={12}>
                                         <Title>Organization Name</Title>
@@ -63,7 +63,7 @@ class Login extends Component {
 
                                 </Row>
                             </Col>
-                            <Col span={10} offset={2}>
+                            <Col md={24} lg={{span:10, offset:2}} >
                                 <Row type="flex" justify="center" align="middle">
                                     <LoginForm />
                                 </Row>
