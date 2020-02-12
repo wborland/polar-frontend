@@ -2,43 +2,22 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import styled from "styled-components";
 import { Layout, Menu, Icon } from 'antd';
 import "antd/dist/antd.css";
-import Polar from "../../Assets/polar.png";
 import Routing from "./Routing";
+import TopBar from "./Topbar";
 
 const { Header, Content, Footer, Sider } = Layout;
 
-const LogoImage = styled.img`
-  height: 60px;
-  padding: 5px;
-  padding-right: 15px;
-`;
-
 class BackgroundPage extends Component {
-
-  handleClick = e => {
-    if (e.key === " ") {
-      e.key = "";
-    }
-    this.props._push(`/${e.key}`);
-  };
-
+  
   render() {
     const { location } = this.props;
 
     return (
       <Layout>
         <Header>
-          <Menu
-            theme="dark"
-            mode="horizontal"
-            onClick={this.handleClick}
-            defaultSelectedKeys={`['${location.pathname}']`}
-          >
-            <LogoImage src={Polar} alt="Polar Logo" />
-          </Menu>
+          <TopBar />
         </Header>
         <Layout style={{ minHeight: "88vh" }}>
           <Sider breakpoint="lg" collapsedWidth="0">
@@ -63,7 +42,6 @@ class BackgroundPage extends Component {
                 <Icon type="team" />
                 User Management
               </Menu.Item>
-
               <Menu.Item key="account">
                 <Icon type="user" />
                 Account
