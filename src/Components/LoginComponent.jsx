@@ -1,6 +1,9 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { push } from "connected-react-router";
 import { Form, Icon, Input, Button, Checkbox, Divider } from 'antd';
 import ForgotPassword from "./ForgotPassword";
+import {userLogin} from "../Redux/user";
 
 class LoginComponent extends Component {
     constructor(props) {
@@ -14,8 +17,8 @@ class LoginComponent extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Form Data: ', values);
                 // Send API request
+                this.props._userLogin("values");
             }
         });
     };
@@ -82,4 +85,10 @@ class LoginComponent extends Component {
 const LoginForm = Form.create({ name: 'login' })(LoginComponent);
 
 
-export default LoginForm;
+const mapDispatchToProps = {
+    _userLogin: userLogin
+  };
+  
+  export default connect(null, mapDispatchToProps)(LoginForm);
+  //replace null with mapStateToProps to connect to the state variables
+  
