@@ -14,7 +14,7 @@ class BackgroundPage extends Component {
         <Route
           exact
           path="/"
-          render={() => <div style={{ height: "calc(100vh - 60px)" }} />}
+          render={() => <div style={{ height: "calc(100vh - 64px)" }} />}
         />
         {/* calendar */}
         <Route render={() => this.props._push("/login")} />

@@ -2,18 +2,36 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import { Layout, Menu, Icon } from 'antd';
+import { Layout, Menu, Icon } from "antd";
 import "antd/dist/antd.css";
 import Routing from "./Routing";
 import TopBar from "./Topbar";
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Sider } = Layout;
 
 class BackgroundPage extends Component {
-  
-  render() {
-    const { location } = this.props;
+  handleClick = e => {
+    if (e.key === "calendar") {
+      e.key = "";
+    }
+    this.props._push(`/${e.key}`);
+  };
 
+  getCurrentPage = () => {
+    if (window.location.pathname.indexOf("/inventory") === 0) {
+      return ["inventory"];
+    } else if (window.location.pathname.indexOf("/files") === 0) {
+      return ["files"];
+    } else if (window.location.pathname.indexOf("/communication") === 0) {
+      return ["communication"];
+    } else if (window.location.pathname.indexOf("/usermanagement") === 0) {
+      return ["usermanagement"];
+    } else {
+      return ["calendar"];
+    }
+  };
+
+  render() {
     return (
       <Layout>
         <Header>
@@ -21,7 +39,12 @@ class BackgroundPage extends Component {
         </Header>
         <Layout style={{ minHeight: "88vh" }}>
           <Sider breakpoint="lg" collapsedWidth="0">
-            <Menu theme="dark" mode="inline" defaultSelectedKeys={['calendar']}>
+            <Menu
+              theme="dark"
+              mode="inline"
+              selectedKeys={this.getCurrentPage()}
+              onClick={this.handleClick}
+            >
               <Menu.Item key="calendar">
                 <Icon type="calendar" />
                 Calendar
@@ -38,7 +61,7 @@ class BackgroundPage extends Component {
                 <Icon type="message" />
                 Mass Communication
               </Menu.Item>
-              <Menu.Item key="usermanagement" >
+              <Menu.Item key="usermanagement">
                 <Icon type="team" />
                 User Management
               </Menu.Item>
@@ -48,14 +71,8 @@ class BackgroundPage extends Component {
             <Content>
               <Routing />
             </Content>
-            <Footer style={{ textAlign: 'center' }}>
-              Created by Polar ©2020
-        </Footer>
           </Layout>
-
         </Layout>
-
-
       </Layout>
     );
   }

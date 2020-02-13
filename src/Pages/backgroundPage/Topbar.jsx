@@ -6,13 +6,10 @@ import Polar from "../../Assets/polar.png";
 import { Button, Dropdown, Menu } from "antd";
 import { userLogout } from "../../Redux/user";
 
-const LogoImage = styled.img`height: 60px;`;
-
-const NewRow = styled(Row)`
-  margin:0;
-  background-color: #4680C3;
-  width: 100vw;
+const LogoImage = styled.img`
   height: 60px;
+  margin-top: -2px;
+  padding-left: 0px;
 `;
 
 const AccountButton = styled(Button)`
@@ -34,13 +31,8 @@ class TopBar extends Component {
 
   render() {
     return (
-      <NewRow>
-        <Col
-          className="d-none d-md-block d-sm-block d-lg-block"
-          sm={7}
-          md={7}
-          lg={7}
-        >
+      <Row>
+        <Col className="d-none d-md-block d-sm-block d-lg-block" sm={7}>
           <LogoImage src={Polar} alt="Polar Logo" />
         </Col>
         <Col>
@@ -53,7 +45,7 @@ class TopBar extends Component {
             />
           </Dropdown>
         </Col>
-      </NewRow>
+      </Row>
     );
   }
 }
