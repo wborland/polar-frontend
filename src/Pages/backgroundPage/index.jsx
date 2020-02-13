@@ -42,10 +42,6 @@ class BackgroundPage extends Component {
                 <Icon type="team" />
                 User Management
               </Menu.Item>
-              <Menu.Item key="account">
-                <Icon type="user" />
-                Account
-              </Menu.Item>
             </Menu>
           </Sider>
           <Layout>

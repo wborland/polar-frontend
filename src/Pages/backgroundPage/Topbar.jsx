@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Row, Col } from "reactstrap";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import Polar from "./polar.png";
+import Polar from "../../Assets/polar.png";
 import { Button, Dropdown, Menu } from "antd";
 import { userLogout } from "../../Redux/user";
 
