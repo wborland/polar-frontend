@@ -70,6 +70,11 @@ export const userCheckToken = () => dispatch => {
   }
 };
 
+export const deleteUser = () => dispatch => {
+  //TODO: api call
+  dispatch(logoutUser());
+};
+
 // Initial user state
 const initialState = {
   id: null,

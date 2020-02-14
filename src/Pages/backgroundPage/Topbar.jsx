@@ -5,6 +5,8 @@ import styled from "styled-components";
 import Polar from "../../Assets/polar.png";
 import { Button, Dropdown, Menu } from "antd";
 import { userLogout } from "../../Redux/user";
+import { updateDialog } from "../../Redux/dialog";
+import profile from "../../Components/profile";
 
 const LogoImage = styled.img`
   height: 60px;
@@ -21,7 +23,15 @@ class TopBar extends Component {
   menu = (
     <Menu>
       <Menu.Item>
-        <div>Edit Profile</div>
+        <div
+          onClick={() =>
+            this.props._updateDialog(true, {
+              title: "Edit Profile",
+              content: profile
+            })}
+        >
+          Edit Profile
+        </div>
       </Menu.Item>
       <Menu.Item>
         <div onClick={this.props._userLogout}>Logout</div>
@@ -51,7 +61,8 @@ class TopBar extends Component {
 }
 
 const mapDispatchToProps = {
-  _userLogout: userLogout
+  _userLogout: userLogout,
+  _updateDialog: updateDialog
 };
 
 export default connect(null, mapDispatchToProps)(TopBar);
