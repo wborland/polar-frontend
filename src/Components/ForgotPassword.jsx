@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Icon, Input, Button, Divider, Modal, Typography } from 'antd';
+import { Icon, Input, Button, Divider, Modal, Typography, message } from 'antd';
 
 const { Title, Paragraph } = Typography;
 
@@ -26,6 +26,8 @@ class ForgotPassword extends Component {
         // Send password to email service
         if(this.validateEmail(this.state.email)) {
             // TODO: SEND API REQUEST
+            message.success("Please check your email to recover your password");
+            message.error("User not found");
         }
         // Hide Modal
         this.props.forgotPass(e);

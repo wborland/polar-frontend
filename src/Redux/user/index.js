@@ -1,5 +1,7 @@
 import axios from 'axios';
+import {message} from 'antd';
 import { LOGIN_USER, LOGOUT_USER, REGISTER_USER } from "../action_types";
+import {push} from 'connected-react-router';
 
 // Action creators
 const loginUser = user => ({
