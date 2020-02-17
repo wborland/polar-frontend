@@ -1,4 +1,5 @@
-import { LOGIN_USER, LOGOUT_USER } from "../action_types";
+import axios from 'axios';
+import { LOGIN_USER, LOGOUT_USER, REGISTER_USER } from "../action_types";
 
 // Action creators
 const loginUser = user => ({
@@ -7,6 +8,10 @@ const loginUser = user => ({
 });
 const logoutUser = () => ({
   type: LOGOUT_USER
+});
+const registerUser = user => ({
+  type: REGISTER_USER,
+  user
 });
 
 // Action helpers
@@ -70,12 +75,29 @@ export const userCheckToken = () => dispatch => {
   }
 };
 
+export const userRegister = user => dispatch => {
+  return axios.post('/user/register', user)
+    .then(response => {
+      console.log("Registration Successful");
+      // Set auth token
+      localStorage.setItem("user", response.data.auth);
+      // Set isSignedIn
+      response.data.isSignedIn = true;
+      dispatch(registerUser(response.data));
+      dispatch(push('/'));
+    })
+    .catch(err => {
+      message.error("Registration Failed");
+    });
+}
+
 // Initial user state
 const initialState = {
-  id: null,
-  email: "",
+  auth: localStorage.token || "",
+  firstName: "",
+  lastName: "",
+  permissions: "",
   isSignedIn: false,
-  token: localStorage.token || ""
 };
 
 const userReducer = (state = initialState, action) => {
@@ -84,6 +106,8 @@ const userReducer = (state = initialState, action) => {
       return { ...action.user };
     case LOGOUT_USER:
       return { ...initialState };
+    case REGISTER_USER:
+      return {...action.user};
     default:
       return state;
   }

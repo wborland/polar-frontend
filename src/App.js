@@ -7,6 +7,7 @@ import BackgroundPage from "./Pages/backgroundPage";
 import Login from "./Pages/Login";
 import { Modal } from "antd";
 import { updateDialog } from "./Redux/dialog";
+import Register from "./Pages/Register";
 
 const App = props => {
   return (
@@ -14,6 +15,8 @@ const App = props => {
       <Switch>
         <Route path="/login" render={() => <Login />}/>
         <Route path="/password" />
+        <Route path="/register" component={Register} />
+
         <Route path="/" render={() => <BackgroundPage />} />
       </Switch>
       <Modal

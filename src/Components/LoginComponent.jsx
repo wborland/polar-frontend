@@ -91,4 +91,3 @@ const mapDispatchToProps = {
   
   export default connect(null, mapDispatchToProps)(LoginForm);
   //replace null with mapStateToProps to connect to the state variables
-  
