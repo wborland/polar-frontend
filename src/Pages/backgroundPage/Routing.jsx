@@ -4,6 +4,13 @@ import { push } from "connected-react-router";
 import { connect } from "react-redux";
 
 class BackgroundPage extends Component {
+  constructor(props) {
+    super(props);
+    if(!props.user.auth) {
+      props._push('/login');
+    }
+  }
+
   render() {
     return (
       <Switch>
@@ -23,8 +30,11 @@ class BackgroundPage extends Component {
   }
 }
 
+const mapStoreToProps = state => {
+  return {user: state.user};
+};
 const mapDispatchToProps = {
   _push: push
 };
 
-export default connect(null, mapDispatchToProps)(BackgroundPage);
+export default connect(mapStoreToProps, mapDispatchToProps)(BackgroundPage);
