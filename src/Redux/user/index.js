@@ -1,4 +1,14 @@
-import { LOGIN_USER, LOGOUT_USER } from "../action_types";
+import {
+  LOGIN_USER,
+  LOGOUT_USER,
+  GET_USER,
+  UPDATE_DIALOG
+} from "../action_types";
+import React from "react";
+import { Button } from "antd";
+
+import axios from "axios";
+import { updateDialog } from "../dialog";
 
 // Action creators
 const loginUser = user => ({
@@ -7,6 +17,11 @@ const loginUser = user => ({
 });
 const logoutUser = () => ({
   type: LOGOUT_USER
+});
+
+const getUser = user => ({
+  type: GET_USER,
+  user
 });
 
 // Action helpers
@@ -70,9 +85,88 @@ export const userCheckToken = () => dispatch => {
   }
 };
 
-export const deleteUser = () => dispatch => {
-  //TODO: api call
+export const deleteUser = auth => dispatch => {
+  axios
+    .post("http://localhost:5000/user/delete", { auth: auth })
+    .then(response => {
+      if (response.status !== 200) {
+        dispatch({
+          type: UPDATE_DIALOG,
+          dialog: {
+            open: true,
+            object: {
+              title: "Delete Account",
+              content: (
+                <div>
+                  <p>Unable to delete account, please try again</p>
+                  <Button onClick={() => closeModal(dispatch)}>Ok</Button>
+                </div>
+              )
+            }
+          }
+        });
+      } else {
+        closeModal(dispatch);
+      }
+    });
   dispatch(logoutUser());
+};
+
+export const getUserInfo = auth => dispatch => {
+  axios
+    .post("http://localhost:5000/user/getInfo", { auth: auth })
+    .then(response => {
+      if (response.status !== 200) {
+        dispatch({
+          type: UPDATE_DIALOG,
+          dialog: {
+            open: true,
+            object: {
+              title: "Change Account Information",
+              content: (
+                <div>
+                  <p>Unable to get user information</p>
+                  <Button onClick={() => closeModal(dispatch)}>Ok</Button>
+                </div>
+              )
+            }
+          }
+        });
+      } else {
+        dispatch(getUser(response.data));
+      }
+    });
+};
+
+const closeModal = dispatch => {
+  dispatch({
+    type: UPDATE_DIALOG,
+    dialog: { open: false, object: { title: "", content: null } }
+  });
+};
+
+export const setUserInfo = info => dispatch => {
+  axios.post("http://localhost:5000/user/setInfo", info).then(response => {
+    if (response.status !== 200) {
+      dispatch({
+        type: UPDATE_DIALOG,
+        dialog: {
+          open: true,
+          object: {
+            title: "Change Account Information",
+            content: (
+              <div>
+                <p>Unable to set user information, please try again</p>
+                <Button onClick={() => closeModal(dispatch)}>Ok</Button>
+              </div>
+            )
+          }
+        }
+      });
+    } else {
+      closeModal(dispatch);
+    }
+  });
 };
 
 // Initial user state
@@ -89,6 +183,8 @@ const userReducer = (state = initialState, action) => {
       return { ...action.user };
     case LOGOUT_USER:
       return { ...initialState };
+    case GET_USER:
+      return Object.assign({}, state, { ...action.user });
     default:
       return state;
   }
