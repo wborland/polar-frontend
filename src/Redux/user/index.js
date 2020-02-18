@@ -98,7 +98,9 @@ export const getUserInfo = auth => dispatch => {
   axios
     .post("http://localhost:5000/user/getInfo", { auth: auth })
     .then(response => {
-      if (response.status !== 200) {
+      if(response.status == 401) {
+        dispatch(push('/login'));
+      } else if (response.status !== 200) {
         message.error("Unable to get user information, please try again", 10);
       } else {
         dispatch(getUser(response.data));
