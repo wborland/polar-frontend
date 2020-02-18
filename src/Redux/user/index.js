@@ -48,6 +48,7 @@ export const userLogin = user => dispatch => {
 };
 
 export const userLogout = () => dispatch => {
+  console.log("Logout pressed")
   localStorage.removeItem("token");
   dispatch(logoutUser());
   dispatch(push("/login"));

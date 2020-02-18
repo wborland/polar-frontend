@@ -67,7 +67,7 @@ class ForgotPassword extends Component {
                     placeholder="Enter your email"
                     prefix={<Icon type="mail"/>}
                     type="email"
-                    allowClear="true"
+                    allowClear={true}
                     value={this.state.email || ''}
                     onChange={this.onChange}
                     onPressEnter={this.handleSubmit}

@@ -11,10 +11,7 @@ import {organizationName} from "../Assets/Constants";
 const { Title, Paragraph, Text } = Typography;
 const { Header, Content, Footer } = Layout;
 
-const MainImage = styled.img`
-  max-height: 15vh;
-  margin: 15px;
-`;
+
 const LogoImage = styled.img`
   height: 60px;
   padding: 5px;
@@ -30,8 +27,9 @@ class Login extends Component {
                     <Menu
                         theme="dark"
                         mode="horizontal"
+                        selectable={false}
                     >
-                        <LogoImage src={Polar} alt="Polar Logo" />
+                        <Menu.Item><LogoImage src={Polar} alt="Polar Logo" /></Menu.Item>
                     </Menu>
                 </Header>
                 <Content>
