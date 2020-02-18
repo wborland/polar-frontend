@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import { Switch, Route } from "react-router";
 import { push } from "connected-react-router";
 import { connect } from "react-redux";
+import UserManagement from "../userManagement";
 
 class BackgroundPage extends Component {
   constructor(props) {
     super(props);
-    if(!props.user.auth) {
-      props._push('/login');
+    if (!props.user.auth) {
+      props._push("/login");
     }
   }
 
@@ -16,7 +17,7 @@ class BackgroundPage extends Component {
       <Switch>
         <Route path="/files" />
         <Route path="/communication" />
-        <Route path="/usermanagement" />
+        <Route path="/usermanagement" render={() => <UserManagement />} />
         <Route path="/inventory" />
         <Route
           exact
@@ -31,7 +32,7 @@ class BackgroundPage extends Component {
 }
 
 const mapStoreToProps = state => {
-  return {user: state.user};
+  return { user: state.user };
 };
 const mapDispatchToProps = {
   _push: push
