@@ -10,6 +10,13 @@ import TopBar from "./Topbar";
 const { Header, Content, Sider } = Layout;
 
 class BackgroundPage extends Component {
+  constructor(props) {
+    super(props); 
+    if(!props.user.auth){
+        props._push('/login');
+    }
+  }
+
   handleClick = e => {
     if (e.key === "calendar") {
       e.key = "";
@@ -78,13 +85,13 @@ class BackgroundPage extends Component {
   }
 }
 
-// const mapStateToProps = state => ({
-//   user: state.user
-// })
+const mapStateToProps = state => ({
+  user: state.user
+})
 
 const mapDispatchToProps = {
   _push: push
 };
 
-export default connect(null, mapDispatchToProps)(withRouter(BackgroundPage));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(BackgroundPage));
 //replace null with mapStateToProps to connect to the state variables

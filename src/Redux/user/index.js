@@ -1,4 +1,3 @@
-
 import {
   LOGIN_USER,
   LOGOUT_USER,
@@ -37,7 +36,7 @@ export const userLogin = user => dispatch => {
     .then(response => {
       console.log("Login Successful");
       // Set auth token
-      localStorage.setItem("user", response.data.auth);
+      localStorage.setItem("token", response.data.auth);
       // Set isSignedIn
       response.data.isSignedIn = true;
       dispatch(loginUser(response.data));
@@ -129,7 +128,7 @@ export const userRegister = user => dispatch => {
     .then(response => {
       console.log("Registration Successful");
       // Set auth token
-      localStorage.setItem("user", response.data.auth);
+      localStorage.setItem("token", response.data.auth);
       // Set isSignedIn
       response.data.isSignedIn = true;
       dispatch(registerUser(response.data));
