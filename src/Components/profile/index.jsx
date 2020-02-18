@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Input, Button, Modal } from "antd";
+import { Input, Button, Modal, message } from "antd";
 import { deleteUser, getUserInfo, setUserInfo } from "../../Redux/user";
 
 class Profile extends Component {
@@ -28,15 +28,9 @@ class Profile extends Component {
       this.state.firstName === "" ||
       this.state.lastName === ""
     ) {
-      let tempModal = this.createModal(
-        "Please fill out first and last name and try again"
-      );
-      this.setState({ modal: tempModal });
+      message.error("Please fill out first and last name and try again", 10);
     } else if (this.state.phone.length > 15) {
-      let tempModal = this.createModal(
-        "Please enter a valid phone number and try again"
-      );
-      this.setState({ modal: tempModal });
+      message.error("Please enter a valid phone number and try again", 10);
     } else {
       this.props._setUserInfo({
         email: this.state.email,
@@ -46,30 +40,6 @@ class Profile extends Component {
         auth: this.props.user.auth
       });
     }
-  };
-
-  createModal = message => {
-    return {
-      open: true,
-      title: "Save Account Changes",
-      content: (
-        <div>
-          <p>
-            {message}
-          </p>
-        </div>
-      ),
-      footer: (
-        <div>
-          <Button
-            type="primary"
-            onClick={() => this.setState({ modal: { open: false } })}
-          >
-            Okay
-          </Button>
-        </div>
-      )
-    };
   };
 
   componentDidUpdate = props => {

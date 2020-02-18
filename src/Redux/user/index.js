@@ -7,7 +7,7 @@ import {
 import React from "react";
 import { Button } from "antd";
 import axios from "axios";
-import {message} from 'antd';
+import { message } from "antd";
 import { push } from "connected-react-router";
 
 // Action creators
@@ -25,8 +25,9 @@ const getUser = user => ({
 });
 
 // Action helpers
-export const userLogin = (user) => dispatch => {
-  return axios.post('/user/login', user)
+export const userLogin = user => dispatch => {
+  return axios
+    .post("/user/login", user)
     .then(response => {
       console.log("Login Successful");
       // Set auth token
@@ -34,18 +35,17 @@ export const userLogin = (user) => dispatch => {
       // Set isSignedIn
       response.data.isSignedIn = true;
       dispatch(loginUser(response.data));
-      dispatch(push('/'));
+      dispatch(push("/"));
     })
     .catch(err => {
       message.error("Invalid Login");
     });
-  
 };
 
 export const userLogout = () => dispatch => {
   localStorage.removeItem("token");
   dispatch(logoutUser());
-  dispatch(push('/login'))
+  dispatch(push("/login"));
 };
 
 /* export const userCheckToken = () => dispatch => {
@@ -81,21 +81,7 @@ export const deleteUser = auth => dispatch => {
     .post("http://localhost:5000/user/delete", { auth: auth })
     .then(response => {
       if (response.status !== 200) {
-        dispatch({
-          type: UPDATE_DIALOG,
-          dialog: {
-            open: true,
-            object: {
-              title: "Delete Account",
-              content: (
-                <div>
-                  <p>Unable to delete account, please try again</p>
-                  <Button onClick={() => closeModal(dispatch)}>Ok</Button>
-                </div>
-              )
-            }
-          }
-        });
+        message.error("Unable to delete account, please try again", 10);
       } else {
         closeModal(dispatch);
       }
@@ -108,21 +94,7 @@ export const getUserInfo = auth => dispatch => {
     .post("http://localhost:5000/user/getInfo", { auth: auth })
     .then(response => {
       if (response.status !== 200) {
-        dispatch({
-          type: UPDATE_DIALOG,
-          dialog: {
-            open: true,
-            object: {
-              title: "Change Account Information",
-              content: (
-                <div>
-                  <p>Unable to get user information</p>
-                  <Button onClick={() => closeModal(dispatch)}>Ok</Button>
-                </div>
-              )
-            }
-          }
-        });
+        message.error("Unable to get user information, please try again", 10);
       } else {
         dispatch(getUser(response.data));
       }
@@ -139,21 +111,7 @@ const closeModal = dispatch => {
 export const setUserInfo = info => dispatch => {
   axios.post("http://localhost:5000/user/setInfo", info).then(response => {
     if (response.status !== 200) {
-      dispatch({
-        type: UPDATE_DIALOG,
-        dialog: {
-          open: true,
-          object: {
-            title: "Change Account Information",
-            content: (
-              <div>
-                <p>Unable to set user information, please try again</p>
-                <Button onClick={() => closeModal(dispatch)}>Ok</Button>
-              </div>
-            )
-          }
-        }
-      });
+      message.error("Unable to set user information, please try again", 10);
     } else {
       closeModal(dispatch);
     }
@@ -166,7 +124,7 @@ const initialState = {
   firstName: "",
   lastName: "",
   permissions: "",
-  isSignedIn: false,
+  isSignedIn: false
 };
 
 const userReducer = (state = initialState, action) => {
