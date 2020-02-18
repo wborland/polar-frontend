@@ -3,8 +3,7 @@ import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import { Form, Icon, Input, Button, Checkbox, Divider } from 'antd';
 import ForgotPassword from "./ForgotPassword";
-import userReducer, {userLogin} from "../Redux/user";
-import StoreTable from "antd/lib/table/Table";
+import {userLogin} from "../Redux/user";
 
 class LoginComponent extends Component {
     constructor(props) {

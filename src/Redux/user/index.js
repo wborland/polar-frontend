@@ -48,7 +48,6 @@ export const userLogin = user => dispatch => {
 };
 
 export const userLogout = () => dispatch => {
-  console.log("Logout pressed")
   localStorage.removeItem("token");
   dispatch(logoutUser());
   dispatch(push("/login"));
@@ -149,12 +148,21 @@ const initialState = {
   isSignedIn: false,
 };
 
+// Blank user state
+const blankState = {
+  auth: "",
+  firstName: "",
+  lastName: "",
+  permissions: "",
+  isSignedIn: false,
+};
+
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN_USER:
       return { ...action.user };
     case LOGOUT_USER:
-      return { ...initialState };
+      return { ...blankState };
     case REGISTER_USER:
       return {...action.user};
     case GET_USER:

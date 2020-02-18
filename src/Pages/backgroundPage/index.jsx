@@ -6,6 +6,7 @@ import { Layout, Menu, Icon } from "antd";
 import "antd/dist/antd.css";
 import Routing from "./Routing";
 import TopBar from "./Topbar";
+import { getUserInfo } from "../../Redux/user";
 
 const { Header, Content, Sider } = Layout;
 
@@ -15,6 +16,18 @@ class BackgroundPage extends Component {
     if(!props.user.auth){
         props._push('/login');
     }
+  }
+
+  componentDidMount = () => {
+    if(!this.props.user.auth) {
+      this.props._push('/login');
+    } else {
+      this.props._getUser(this.props.user.auth);
+    }
+  }
+
+  componentDidUpdate = (prevProps) => {
+    console.log(this.props);
   }
 
   handleClick = e => {
@@ -90,7 +103,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = {
-  _push: push
+  _push: push,
+  _getUser: getUserInfo
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(BackgroundPage));
