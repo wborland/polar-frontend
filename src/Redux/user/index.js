@@ -6,8 +6,9 @@ import {
 } from "../action_types";
 import React from "react";
 import { Button } from "antd";
-
 import axios from "axios";
+import {message} from 'antd';
+import { push } from "connected-react-router";
 
 // Action creators
 const loginUser = user => ({
@@ -24,39 +25,30 @@ const getUser = user => ({
 });
 
 // Action helpers
-export const userLogin = user => dispatch => {
-  return fetch(`localhost:5000/users/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    },
-    body: JSON.stringify({
-      user: {
-        ...user
-      }
+export const userLogin = (user) => dispatch => {
+  return axios.post('/user/login', user)
+    .then(response => {
+      console.log("Login Successful");
+      // Set auth token
+      localStorage.setItem("user", response.data.auth);
+      // Set isSignedIn
+      response.data.isSignedIn = true;
+      dispatch(loginUser(response.data));
+      dispatch(push('/'));
     })
-  })
-    .then(resp => resp.json())
-    .then(data => {
-      console.log(data);
-
-      if (data.errors) {
-        // TODO: Actually show a dialog here for the errors
-        alert(JSON.stringify(data.errors));
-      } else {
-        localStorage.setItem("token", data.user.token);
-        dispatch(loginUser(data.user));
-      }
+    .catch(err => {
+      message.error("Invalid Login");
     });
+  
 };
 
 export const userLogout = () => dispatch => {
   localStorage.removeItem("token");
   dispatch(logoutUser());
+  dispatch(push('/login'))
 };
 
-export const userCheckToken = () => dispatch => {
+/* export const userCheckToken = () => dispatch => {
   const token = localStorage.token;
   if (token) {
     return fetch(`${URL}/users/profile`, {
@@ -82,7 +74,7 @@ export const userCheckToken = () => dispatch => {
         }
       });
   }
-};
+}; */
 
 export const deleteUser = auth => dispatch => {
   axios
@@ -170,10 +162,11 @@ export const setUserInfo = info => dispatch => {
 
 // Initial user state
 const initialState = {
-  id: null,
-  email: "",
+  auth: localStorage.token || "",
+  firstName: "",
+  lastName: "",
+  permissions: "",
   isSignedIn: false,
-  token: localStorage.token || ""
 };
 
 const userReducer = (state = initialState, action) => {
@@ -188,4 +181,5 @@ const userReducer = (state = initialState, action) => {
       return state;
   }
 };
+
 export default userReducer;
