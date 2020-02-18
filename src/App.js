@@ -10,6 +10,14 @@ import { updateDialog } from "./Redux/dialog";
 import { push } from "connected-react-router";
 
 
+const renderContent = props => {
+  if (props.dialog.object.content == null) {
+    return null;
+  }
+  const Content = props.dialog.object.content;
+  return <Content />;
+};
+
 const App = props => {
 
   return (
@@ -20,12 +28,12 @@ const App = props => {
         <Route path="/" render={() => <BackgroundPage />} />
       </Switch>
       <Modal
-        title={props.dialog.object.title}
+        title={props.dialog.object.title || ""}
         visible={props.dialog.open}
         onCancel={() => props._updateDialog(false, null)}
         footer={null}
       >
-        {props.dialog.object.content}
+        {renderContent(props)}
       </Modal>
     </div>
   );
