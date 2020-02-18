@@ -1,7 +1,9 @@
+
 import {
   LOGIN_USER,
   LOGOUT_USER,
   GET_USER,
+  REGISTER_USER,
   UPDATE_DIALOG
 } from "../action_types";
 import React from "react";
@@ -17,6 +19,10 @@ const loginUser = user => ({
 });
 const logoutUser = () => ({
   type: LOGOUT_USER
+});
+const registerUser = user => ({
+  type: REGISTER_USER,
+  user
 });
 
 const getUser = user => ({
@@ -118,13 +124,29 @@ export const setUserInfo = info => dispatch => {
   });
 };
 
+export const userRegister = user => dispatch => {
+  return axios.post('/user/register', user)
+    .then(response => {
+      console.log("Registration Successful");
+      // Set auth token
+      localStorage.setItem("user", response.data.auth);
+      // Set isSignedIn
+      response.data.isSignedIn = true;
+      dispatch(registerUser(response.data));
+      dispatch(push('/'));
+    })
+    .catch(err => {
+      message.error("Registration Failed");
+    });
+}
+
 // Initial user state
 const initialState = {
   auth: localStorage.token || "",
   firstName: "",
   lastName: "",
   permissions: "",
-  isSignedIn: false
+  isSignedIn: false,
 };
 
 const userReducer = (state = initialState, action) => {
@@ -133,6 +155,8 @@ const userReducer = (state = initialState, action) => {
       return { ...action.user };
     case LOGOUT_USER:
       return { ...initialState };
+    case REGISTER_USER:
+      return {...action.user};
     case GET_USER:
       return Object.assign({}, state, { ...action.user });
     default:

@@ -6,6 +6,7 @@ import { Row, Col, Typography, Layout, Menu, Divider } from 'antd';
 import Polar from "../Assets/polar.png";
 import styled from "styled-components";
 import LoginForm from "../Components/LoginComponent";
+import {organizationName} from "../Assets/Constants";
 
 const { Title, Paragraph, Text } = Typography;
 const { Header, Content, Footer } = Layout;
@@ -39,14 +40,14 @@ class Login extends Component {
                             <Col md={24} lg={12}>
                                 <Row type="flex" justify="center" alight="middle" style={{ textAlign: "center" }}>
                                     <Col span={12}>
-                                        <Title>Organization Name</Title>
+                                        <Title>{organizationName}</Title>
                                         <Divider />
                                     </Col>
                                 </Row>
 
                                 <Row type="flex" justify="center" alight="middle" style={{ margin: "5vh" }}>
                                     <Col span={18}>
-                                        <h3 style={{ textAlign: "center"}}>Welcome to Polar for {"Organization Name"}!</h3>
+                                        <h3 style={{ textAlign: "center"}}>Welcome to Polar for {organizationName}!</h3>
                                         <Paragraph style={{ textAlign: "left"}}>
                                             Polar provides an all in one organizational management services for any organization. All the services you need in one easy to access online portal.
                                             <br />
