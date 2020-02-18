@@ -23,7 +23,9 @@ class RegisterComponent extends Component {
             if (!err) {
                 // Send API request
                 this.props._userRegister(values).then(() => {
-                    this.setState({validateStatus: "error"})
+                    if(this.props.location.pathname === "/register") {
+                        this.setState({validateStatus: "error"});
+                    }
                 });
             }
         });
@@ -139,7 +141,10 @@ class RegisterComponent extends Component {
 const RegisterForm = Form.create({ name: 'register' })(RegisterComponent);
 
 const mapStoreToProps = state => {
-    return {user: state.user};
+    return {
+        user: state.user,
+        location: state.router.location
+    };
 };
 
 const mapDispatchToProps = {

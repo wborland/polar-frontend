@@ -135,7 +135,7 @@ export const userRegister = user => dispatch => {
       dispatch(push('/'));
     })
     .catch(err => {
-      message.error("Registration Failed");
+      message.error("Registration Failed: " + err.response.data.message);
     });
 }
 
