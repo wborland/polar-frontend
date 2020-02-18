@@ -1,7 +1,16 @@
-import axios from 'axios';
-import {message} from 'antd';
-import { LOGIN_USER, LOGOUT_USER, REGISTER_USER } from "../action_types";
-import {push} from 'connected-react-router';
+
+import {
+  LOGIN_USER,
+  LOGOUT_USER,
+  GET_USER,
+  REGISTER_USER,
+  UPDATE_DIALOG
+} from "../action_types";
+import React from "react";
+import { Button } from "antd";
+import axios from "axios";
+import { message } from "antd";
+import { push } from "connected-react-router";
 
 // Action creators
 const loginUser = user => ({
@@ -16,40 +25,36 @@ const registerUser = user => ({
   user
 });
 
+const getUser = user => ({
+  type: GET_USER,
+  user
+});
+
 // Action helpers
 export const userLogin = user => dispatch => {
-  return fetch(`localhost:5000/users/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    },
-    body: JSON.stringify({
-      user: {
-        ...user
-      }
+  return axios
+    .post("/user/login", user)
+    .then(response => {
+      console.log("Login Successful");
+      // Set auth token
+      localStorage.setItem("user", response.data.auth);
+      // Set isSignedIn
+      response.data.isSignedIn = true;
+      dispatch(loginUser(response.data));
+      dispatch(push("/"));
     })
-  })
-    .then(resp => resp.json())
-    .then(data => {
-      console.log(data);
-
-      if (data.errors) {
-        // TODO: Actually show a dialog here for the errors
-        alert(JSON.stringify(data.errors));
-      } else {
-        localStorage.setItem("token", data.user.token);
-        dispatch(loginUser(data.user));
-      }
+    .catch(err => {
+      message.error("Invalid Login");
     });
 };
 
 export const userLogout = () => dispatch => {
   localStorage.removeItem("token");
   dispatch(logoutUser());
+  dispatch(push("/login"));
 };
 
-export const userCheckToken = () => dispatch => {
+/* export const userCheckToken = () => dispatch => {
   const token = localStorage.token;
   if (token) {
     return fetch(`${URL}/users/profile`, {
@@ -75,6 +80,48 @@ export const userCheckToken = () => dispatch => {
         }
       });
   }
+}; */
+
+export const deleteUser = auth => dispatch => {
+  axios
+    .post("http://localhost:5000/user/delete", { auth: auth })
+    .then(response => {
+      if (response.status !== 200) {
+        message.error("Unable to delete account, please try again", 10);
+      } else {
+        closeModal(dispatch);
+      }
+    });
+  dispatch(logoutUser());
+};
+
+export const getUserInfo = auth => dispatch => {
+  axios
+    .post("http://localhost:5000/user/getInfo", { auth: auth })
+    .then(response => {
+      if (response.status !== 200) {
+        message.error("Unable to get user information, please try again", 10);
+      } else {
+        dispatch(getUser(response.data));
+      }
+    });
+};
+
+const closeModal = dispatch => {
+  dispatch({
+    type: UPDATE_DIALOG,
+    dialog: { open: false, object: { title: "", content: null } }
+  });
+};
+
+export const setUserInfo = info => dispatch => {
+  axios.post("http://localhost:5000/user/setInfo", info).then(response => {
+    if (response.status !== 200) {
+      message.error("Unable to set user information, please try again", 10);
+    } else {
+      closeModal(dispatch);
+    }
+  });
 };
 
 export const userRegister = user => dispatch => {
@@ -110,8 +157,11 @@ const userReducer = (state = initialState, action) => {
       return { ...initialState };
     case REGISTER_USER:
       return {...action.user};
+    case GET_USER:
+      return Object.assign({}, state, { ...action.user });
     default:
       return state;
   }
 };
+
 export default userReducer;

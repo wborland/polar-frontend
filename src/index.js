@@ -9,6 +9,7 @@ import configureStore, { history } from "./Redux/store";
 import axios from 'axios';
 
 axios.defaults.baseURL = "http://localhost:5000";
+
 const store = configureStore({});
 
 ReactDOM.render(
