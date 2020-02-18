@@ -8,7 +8,6 @@ import React from "react";
 import { Button } from "antd";
 
 import axios from "axios";
-import { updateDialog } from "../dialog";
 
 // Action creators
 const loginUser = user => ({

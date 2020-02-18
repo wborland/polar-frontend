@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { push } from "connected-react-router";
 import { connect } from "react-redux";
 import { Input, Button, Modal } from "antd";
 import { deleteUser, getUserInfo, setUserInfo } from "../../Redux/user";
@@ -19,9 +18,7 @@ class Profile extends Component {
   }
 
   componentDidMount = () => {
-    this.props._getUserInfo(
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsImlhdCI6MTU4MTk4NDE5MCwiZXhwIjoxNTgxOTkxMzkwfQ.prBM_2cI9LCzCFLkAhnyWGopLosN8psFKBVoICGQzuo"
-    ); //this.props.user.auth);
+    this.props._getUserInfo(this.props.user.auth);
     this.setState({ ...this.props.user });
   };
 
@@ -46,8 +43,7 @@ class Profile extends Component {
         firstName: this.state.firstName,
         lastName: this.state.lastName,
         phone: this.state.phone,
-        auth:
-          "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsImlhdCI6MTU4MTk4NDE5MCwiZXhwIjoxNTgxOTkxMzkwfQ.prBM_2cI9LCzCFLkAhnyWGopLosN8psFKBVoICGQzuo"
+        auth: this.props.user.auth
       });
     }
   };
@@ -169,7 +165,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  _push: push,
   _deleteUser: deleteUser,
   _getUserInfo: getUserInfo,
   _setUserInfo: setUserInfo
