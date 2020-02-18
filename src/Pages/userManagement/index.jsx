@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { push } from "connected-react-router";
-import { Layout, Menu, Icon, Collapse } from "antd";
+import { Collapse } from "antd";
 import "antd/dist/antd.css";
+import RoleList from "./RoleList";
+import UserList from "./UserList";
 
 const { Panel } = Collapse;
 
@@ -12,21 +11,17 @@ class UserManagement extends Component {
     return (
       <div style={{ height: "calc(100vh - 64px)" }}>
         <Collapse>
-          <Panel header="Roles">ldkjfalsd</Panel>
-          <Panel header="Users">daslkfjl</Panel>
+          <Panel header="Roles">
+            <RoleList />
+          </Panel>
+          <Panel header="Users">
+            <UserList />
+          </Panel>
         </Collapse>
       </div>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  user: state.user
-});
-
-const mapDispatchToProps = {
-  _push: push
-};
-
-export default connect(null, mapDispatchToProps)(withRouter(UserManagement));
+export default UserManagement;
 //replace null with mapStateToProps to connect to the state variables
