@@ -19,12 +19,14 @@ class LoginComponent extends Component {
     }
 
 
-    handleSubmit = async (e) => {
+    handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 this.props._userLogin(values).then(() => {
-                    this.setState({validateStatus: "error"});
+                    if(this.props.location.pathname === "/login") {
+                        this.setState({validateStatus: "error"});
+                    }
                 });     
 
             }
@@ -85,7 +87,10 @@ class LoginComponent extends Component {
 const LoginForm = Form.create({ name: 'login' })(LoginComponent);
 
 const mapStoreToProps = state => {
-    return {user: state.user};
+    return {
+        user: state.user,
+        location: state.router.location
+    };
 };
 
 const mapDispatchToProps = {
