@@ -128,7 +128,7 @@ class RegisterComponent extends Component {
                         })(<Input />)}
                     </Form.Item>
                     <Form.Item style={{ textAlign: "right" }}>
-                        <Button type="primary" htmlType="submit" className="login-form-button">Login</Button>
+                        <Button type="primary" htmlType="submit" className="login-form-button">Register</Button>
                     </Form.Item>
                 </Form>
             </div>

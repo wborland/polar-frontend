@@ -73,7 +73,7 @@ class LoginComponent extends Component {
                     <Form.Item>
                         <a className="login-form-forgot" href="" onClick={this.forgotPass}>Forgot password</a>
                         <Divider type="vertical" />
-                        <a href="">Register now</a>
+                        <a href="/register">Register now</a>
                     </Form.Item>
                 </Form>
                 <ForgotPassword visible={this.state.showForgotPasswordModal} forgotPass={this.forgotPass}/>
