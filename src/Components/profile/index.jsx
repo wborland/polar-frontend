@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Input, Button, Modal, message } from "antd";
+import { Input, Button, Modal, message, Skeleton } from "antd";
 import { deleteUser, getUserInfo, setUserInfo } from "../../Redux/user";
 
 class Profile extends Component {
@@ -84,6 +84,9 @@ class Profile extends Component {
   };
 
   render() {
+    if (this.props.user.email == null) {
+      return <Skeleton active />;
+    }
     return (
       <div>
         <Input
