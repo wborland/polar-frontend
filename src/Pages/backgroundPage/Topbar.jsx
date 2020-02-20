@@ -6,7 +6,7 @@ import Polar from "../../Assets/polar.png";
 import { Button, Dropdown, Menu } from "antd";
 import { userLogout } from "../../Redux/user";
 import { updateDialog } from "../../Redux/dialog";
-import profile from "../../Components/profile";
+import Profile from "../../Components/profile";
 
 const LogoImage = styled.img`
   height: 60px;
@@ -27,7 +27,7 @@ class TopBar extends Component {
           onClick={() =>
             this.props._updateDialog(true, {
               title: "Edit Profile",
-              content: profile
+              content: <Profile />
             })}
         >
           Edit Profile
