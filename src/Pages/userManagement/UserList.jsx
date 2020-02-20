@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import { Table, Button } from "antd";
+import { Table, Button, Skeleton } from "antd";
 import "antd/dist/antd.css";
-import { updateFilterList } from "../../Redux/roles";
+import { getUserList } from "../../Redux/listUsers";
 
 class UserList extends Component {
   columns = [
@@ -34,23 +34,18 @@ class UserList extends Component {
     }
   ];
 
-  rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
-      this.props._updateFilterList(selectedRows);
-    }
+  componentDidMount = () => {
+    this.props._getUserList(this.props.user.auth);
   };
 
   render() {
+    if (this.props.userList.listUsers.length === 0) {
+      return <Skeleton active />;
+    }
     return (
       <div>
         <Table
-          rowSelection={this.rowSelection}
-          dataSource={this.props.roles.listRoles}
+          dataSource={this.props.userList.showUsers}
           columns={this.columns}
         />
       </div>
@@ -59,12 +54,13 @@ class UserList extends Component {
 }
 
 const mapStateToProps = state => ({
-  userList: state.userList
+  userList: state.userList,
+  user: state.user
 });
 
 const mapDispatchToProps = {
   _push: push,
-  _updateFilterList: updateFilterList
+  _getUserList: getUserList
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

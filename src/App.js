@@ -9,21 +9,29 @@ import { Modal } from "antd";
 import { updateDialog } from "./Redux/dialog";
 import { push } from "connected-react-router";
 
-
 const renderContent = props => {
   if (props.dialog.object.content == null) {
     return null;
+  }
+  if (!isClassComponent(props.dialog.object.content)) {
+    return props.dialog.object.content;
   }
   const Content = props.dialog.object.content;
   return <Content />;
 };
 
-const App = props => {
+const isClassComponent = component => {
+  return typeof component === "function" &&
+  !!component.prototype.isReactComponent
+    ? true
+    : false;
+};
 
+const App = props => {
   return (
     <div>
       <Switch>
-        <Route path="/login" component={Login}/>
+        <Route path="/login" component={Login} />
         <Route path="/password" />
         <Route path="/" render={() => <BackgroundPage />} />
       </Switch>

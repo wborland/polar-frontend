@@ -2,15 +2,16 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import { Table, Button } from "antd";
+import { Table, Button, Skeleton } from "antd";
 import "antd/dist/antd.css";
-import { updateFilterList } from "../../Redux/roles";
+import { updateFilterList, deleteRole } from "../../Redux/roles";
+import { updateDialog } from "../../Redux/dialog";
 
 class RoleList extends Component {
   columns = [
     {
       title: "Role name",
-      dataIndex: "rolename"
+      dataIndex: "roleName"
     },
     {
       title: "Permissions",
@@ -20,22 +21,45 @@ class RoleList extends Component {
       title: "Operations",
       dataIndex: "operations",
       render: (text, record) =>
-        <Button onClick={() => console.log(record)}>Delete</Button>
+        <Button
+          onClick={() =>
+            this.props._updateDialog(true, {
+              title: "Delete Role",
+              content: this.dialogContent(record)
+            })}
+        >
+          Delete
+        </Button>
     }
   ];
 
+  dialogContent = role => {
+    return (
+      <div>
+        <p>
+          Are you sure you want to delete {role.roleName}?
+        </p>
+        <Button
+          style={{ marginRight: "15px" }}
+          onClick={() => this.props._updateDialog(false, null)}
+        >
+          No
+        </Button>
+        <Button onClick={() => this.props._deleteRole(role.key)}>Yes</Button>
+      </div>
+    );
+  };
+
   rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
       this.props._updateFilterList(selectedRows);
     }
   };
 
   render() {
+    if (this.props.roles.listRoles.length === 0) {
+      return <Skeleton active />;
+    }
     return (
       <div>
         <Table
@@ -54,7 +78,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   _push: push,
-  _updateFilterList: updateFilterList
+  _updateFilterList: updateFilterList,
+  _updateDialog: updateDialog,
+  _deleteRole: deleteRole
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
