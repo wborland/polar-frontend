@@ -5,3 +5,4 @@ export const GET_USER = "[User] - get user info";
 export const GET_ROLES = "[User Management] - get role info";
 export const GET_LIST_USERS = "[User Management] - get user list";
 export const UPDATE_FILTER_LIST = "[User Management] - update role filter";
+export const SET_OTHER_USER = "[User Management] - get other user information";

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import { Table, Button, Skeleton } from "antd";
 import "antd/dist/antd.css";
-import { getUserList } from "../../Redux/listUsers";
+import { getUserList, getSpecificUser } from "../../Redux/listUsers";
 
 class UserList extends Component {
   columns = [
@@ -29,7 +29,9 @@ class UserList extends Component {
       dataIndex: "operation",
       render: (text, record) =>
         <div>
-          <Button onClick={() => console.log(record.email)}>View User</Button>
+          <Button onClick={() => this.props._getSpecificUser(record.key)}>
+            View User
+          </Button>
         </div>
     }
   ];
@@ -60,7 +62,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   _push: push,
-  _getUserList: getUserList
+  _getUserList: getUserList,
+  _getSpecificUser: getSpecificUser
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

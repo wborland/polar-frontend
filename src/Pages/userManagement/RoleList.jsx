@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import { Table, Button, Skeleton } from "antd";
 import "antd/dist/antd.css";
-import { updateFilterList, deleteRole } from "../../Redux/roles";
+import { updateFilterList, deleteRole, getRoleList } from "../../Redux/roles";
 import { updateDialog } from "../../Redux/dialog";
 
 class RoleList extends Component {
@@ -32,6 +32,10 @@ class RoleList extends Component {
         </Button>
     }
   ];
+
+  componentDidMount = () => {
+    this.props._getRoleList();
+  };
 
   dialogContent = role => {
     return (
@@ -80,7 +84,8 @@ const mapDispatchToProps = {
   _push: push,
   _updateFilterList: updateFilterList,
   _updateDialog: updateDialog,
-  _deleteRole: deleteRole
+  _deleteRole: deleteRole,
+  _getRoleList: getRoleList
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
