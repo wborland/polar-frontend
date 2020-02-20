@@ -61,9 +61,12 @@ export const getUserList = () => dispatch => {
 export const getSpecificUser = userId => dispatch => {
   dispatch(
     setOtherUser({
+      key: "654654654654765",
       firstName: "Jim",
       lastName: "Bean",
-      permissions: [1, 8, 5, 7]
+      permissions: [1, 8, 5, 7],
+      phone: null,
+      email: "sbeve@polarapp.xyz"
     })
   );
   dispatch({
@@ -87,6 +90,17 @@ export const getSpecificUser = userId => dispatch => {
   //     });
   //   }
   // });
+};
+
+export const setUserRoles = (userId, roles) => dispatch => {
+  Axios.post("localhost:5000/iam/setUserRoles", {
+    id: userId,
+    roles: roles
+  }).then(response => {
+    if (response.status !== 200) {
+      message.error("Unable to make role changes", 10);
+    }
+  });
 };
 
 const filterUsers = (state, action) => {
