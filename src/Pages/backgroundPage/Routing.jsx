@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Switch, Route } from "react-router";
 import { push } from "connected-react-router";
 import { connect } from "react-redux";
+import getPermissions from "../../Redux/permissions/index.js";
 
 class BackgroundPage extends Component {
   constructor(props) {
@@ -9,6 +10,10 @@ class BackgroundPage extends Component {
     if(!props.user.auth) {
       props._push('/login');
     }
+  }
+
+  componentDidMount = () => {
+    this.props._getPermissions();
   }
 
   render() {
@@ -31,10 +36,11 @@ class BackgroundPage extends Component {
 }
 
 const mapStoreToProps = state => {
-  return {user: state.user};
+  return {user: state.user, permissions: state.permissions};
 };
 const mapDispatchToProps = {
-  _push: push
+  _push: push,
+  _getPermissions: getPermissions
 };
 
 export default connect(mapStoreToProps, mapDispatchToProps)(BackgroundPage);

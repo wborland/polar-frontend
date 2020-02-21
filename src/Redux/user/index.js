@@ -23,7 +23,6 @@ const registerUser = user => ({
   type: REGISTER_USER,
   user
 });
-
 const getUser = user => ({
   type: GET_USER,
   user
@@ -34,7 +33,7 @@ export const userLogin = user => dispatch => {
   return axios
     .post("/user/login", user)
     .then(response => {
-      console.log("Login Successful");
+      console.log("Login Successful", response);
       // Set auth token
       localStorage.setItem("token", response.data.auth);
       // Set isSignedIn
