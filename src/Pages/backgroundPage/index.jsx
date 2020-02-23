@@ -26,13 +26,14 @@ class BackgroundPage extends Component {
     } else {
       //TODO: UNCOMMENT
       //this.props._getUser(this.props.user.auth);
-      
-      this.props._getPermissions();
 
+      // Request All Permissions
+      if(Object.entries(this.props.permissions).length === 0) {
+        this.props._getPermissions();
+      }
+
+      // Show nav options based on user permissions
       let userPerms = this.props.user.permissions;
-      console.log("userPerms", userPerms);
-
-      // Show nav options based on permissions
       let menuItems = this.state.menuItems;
       if (userPerms.includes(8)) {
         menuItems.push(
@@ -128,7 +129,8 @@ class BackgroundPage extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.user
+  user: state.user,
+  permissions: state.permissions
 })
 
 const mapDispatchToProps = {
