@@ -5,8 +5,6 @@ import {
   REGISTER_USER,
   UPDATE_DIALOG
 } from "../action_types";
-import React from "react";
-import { Button } from "antd";
 import axios from "axios";
 import { message } from "antd";
 import { push } from "connected-react-router";
@@ -96,15 +94,13 @@ export const getUserInfo = auth => dispatch => {
   axios
     .post("http://localhost:5000/user/getInfo", { auth: auth })
     .then(response => {
-      if(response.status == 401) {
-        dispatch(push('/login'));
-      } else if (response.status !== 200) {
+      if (response.status !== 200) {
         message.error("Unable to get user information, please try again", 10);
       } else {
         dispatch(getUser(response.data));
       }
     }).catch((err) => {
-      
+      dispatch(push('/login'))
     });
 };
 

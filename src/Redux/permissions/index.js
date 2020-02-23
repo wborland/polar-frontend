@@ -19,7 +19,6 @@ export const getPermissions = () => dispatch => {
   return axios
     .post("/iam/permissions")
     .then(response => {
-      console.log("Permissions", response);
       dispatch(getAllPerms(response.data));
     })
     .catch(err => {

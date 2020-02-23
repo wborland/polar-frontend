@@ -12,22 +12,61 @@ const { Header, Content, Sider } = Layout;
 
 class BackgroundPage extends Component {
   constructor(props) {
-    super(props); 
-    if(!props.user.auth){
-        props._push('/login');
+    super(props);
+    if (!props.user.auth) {
+      props._push('/login');
     }
+    this.state = { menuItems: [] }
   }
 
   componentDidMount = () => {
-    if(!this.props.user.auth) {
+    if (!this.props.user.auth) {
       this.props._push('/login');
     } else {
-      this.props._getUser(this.props.user.auth);
-    }
-  }
+      //TODO: UNCOMMENT
+      //this.props._getUser(this.props.user.auth);
+      let userPerms = this.props.user.permissions;
+      console.log("userPerms", userPerms);
+      let menuItems = this.state.menuItems;
 
-  componentDidUpdate = (prevProps) => {
-    console.log(this.props);
+      if (userPerms.includes(8)) {
+        menuItems.push(
+          <Menu.Item key="inventory">
+            <Icon type="table" />
+            Inventory
+          </Menu.Item>
+        );
+        this.setState({"menuItems": menuItems});
+      }
+      if (userPerms.includes(1)) {
+        menuItems.push(
+          <Menu.Item key="files">
+            <Icon type="file" />
+            Files
+          </Menu.Item>
+        );
+        this.setState({"menuItems": menuItems});
+      }
+      if (userPerms.includes(7)) {
+        menuItems.push(
+          <Menu.Item key="communication">
+            <Icon type="message" />
+            Mass Communication
+          </Menu.Item>
+        );
+        this.setState({"menuItems": menuItems});
+      }
+      if (userPerms.includes(11)) {
+        menuItems.push(
+          <Menu.Item key="usermanagement">
+            <Icon type="team" />
+            User Management
+          </Menu.Item>
+        );
+      }
+      console.log("menu items", menuItems);
+      this.setState({"menuItems": menuItems});
+    }
   }
 
   handleClick = e => {
@@ -52,6 +91,7 @@ class BackgroundPage extends Component {
   };
 
   render() {
+
     return (
       <Layout>
         <Header>
@@ -69,22 +109,7 @@ class BackgroundPage extends Component {
                 <Icon type="calendar" />
                 Calendar
               </Menu.Item>
-              <Menu.Item key="inventory">
-                <Icon type="table" />
-                Inventory
-              </Menu.Item>
-              <Menu.Item key="files">
-                <Icon type="file" />
-                Files
-              </Menu.Item>
-              <Menu.Item key="communication">
-                <Icon type="message" />
-                Mass Communication
-              </Menu.Item>
-              <Menu.Item key="usermanagement">
-                <Icon type="team" />
-                User Management
-              </Menu.Item>
+              {this.state.menuItems? this.state.menuItems.map((route) => route) : ""}
             </Menu>
           </Sider>
           <Layout>
