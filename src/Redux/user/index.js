@@ -33,7 +33,6 @@ export const userLogin = user => dispatch => {
   return axios
     .post("/user/login", user)
     .then(response => {
-      console.log("Login Successful", response);
       // Set auth token
       localStorage.setItem("token", response.data.auth);
       // Set isSignedIn
@@ -104,6 +103,8 @@ export const getUserInfo = auth => dispatch => {
       } else {
         dispatch(getUser(response.data));
       }
+    }).catch((err) => {
+      
     });
 };
 
@@ -127,7 +128,6 @@ export const setUserInfo = info => dispatch => {
 export const userRegister = user => dispatch => {
   return axios.post('/user/register', user)
     .then(response => {
-      console.log("Registration Successful");
       // Set auth token
       localStorage.setItem("token", response.data.auth);
       // Set isSignedIn

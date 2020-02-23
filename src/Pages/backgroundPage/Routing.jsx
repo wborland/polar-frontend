@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Switch, Route } from "react-router";
 import { push } from "connected-react-router";
 import { connect } from "react-redux";
-import getPermissions from "../../Redux/permissions/index.js";
+import {getPermissions} from "../../Redux/permissions";
 
 class BackgroundPage extends Component {
   constructor(props) {

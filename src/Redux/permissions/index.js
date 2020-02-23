@@ -31,7 +31,6 @@ export const getPermissions = () => dispatch => {
 const blankState = {};
 
 const permissionsReducer = (state = blankState, action) => {
-  console.log("Action", action)
   switch (action.type) {
     case GET_ALL_PERMISSIONS:
       return { ...action.permissions};
