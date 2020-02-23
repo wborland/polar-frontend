@@ -7,7 +7,7 @@ import "antd/dist/antd.css";
 import Routing from "./Routing";
 import TopBar from "./Topbar";
 import { getUserInfo } from "../../Redux/user";
-import {getPermissions} from "../../Redux/permissions";
+import { getPermissions } from "../../Redux/permissions";
 
 const { Header, Content, Sider } = Layout;
 
@@ -24,14 +24,16 @@ class BackgroundPage extends Component {
     if (!this.props.user.auth) {
       this.props._push('/login');
     } else {
-      //TODO: UNCOMMENT
-      //this.props._getUser(this.props.user.auth);
-
+      this.props._getUser(this.props.user.auth);
       // Request All Permissions
-      if(Object.entries(this.props.permissions).length === 0) {
+      if (Object.entries(this.props.permissions).length === 0) {
         this.props._getPermissions();
       }
+    }
+  }
 
+  componentDidUpdate = (prevProps) => {
+    if (prevProps.user.permissions != this.props.user.permissions) {
       // Show nav options based on user permissions
       let userPerms = this.props.user.permissions;
       let menuItems = this.state.menuItems;
@@ -42,7 +44,7 @@ class BackgroundPage extends Component {
             Inventory
           </Menu.Item>
         );
-        this.setState({"menuItems": menuItems});
+        this.setState({ "menuItems": menuItems });
       }
       if (userPerms.includes(1)) {
         menuItems.push(
@@ -51,7 +53,7 @@ class BackgroundPage extends Component {
             Files
           </Menu.Item>
         );
-        this.setState({"menuItems": menuItems});
+        this.setState({ "menuItems": menuItems });
       }
       if (userPerms.includes(7)) {
         menuItems.push(
@@ -60,7 +62,7 @@ class BackgroundPage extends Component {
             Mass Communication
           </Menu.Item>
         );
-        this.setState({"menuItems": menuItems});
+        this.setState({ "menuItems": menuItems });
       }
       if (userPerms.includes(11)) {
         menuItems.push(
@@ -70,8 +72,9 @@ class BackgroundPage extends Component {
           </Menu.Item>
         );
       }
-      this.setState({"menuItems": menuItems});
+      this.setState({ "menuItems": menuItems });
     }
+
   }
 
   handleClick = e => {
@@ -114,7 +117,7 @@ class BackgroundPage extends Component {
                 <Icon type="calendar" />
                 Calendar
               </Menu.Item>
-              {this.state.menuItems? this.state.menuItems.map((route) => route) : ""}
+              {this.state.menuItems ? this.state.menuItems.map((route) => route) : ""}
             </Menu>
           </Sider>
           <Layout>
