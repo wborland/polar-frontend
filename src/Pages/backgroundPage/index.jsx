@@ -7,6 +7,7 @@ import "antd/dist/antd.css";
 import Routing from "./Routing";
 import TopBar from "./Topbar";
 import { getUserInfo } from "../../Redux/user";
+import {getPermissions} from "../../Redux/permissions";
 
 const { Header, Content, Sider } = Layout;
 
@@ -25,10 +26,14 @@ class BackgroundPage extends Component {
     } else {
       //TODO: UNCOMMENT
       //this.props._getUser(this.props.user.auth);
+      
+      this.props._getPermissions();
+
       let userPerms = this.props.user.permissions;
       console.log("userPerms", userPerms);
-      let menuItems = this.state.menuItems;
 
+      // Show nav options based on permissions
+      let menuItems = this.state.menuItems;
       if (userPerms.includes(8)) {
         menuItems.push(
           <Menu.Item key="inventory">
@@ -64,7 +69,6 @@ class BackgroundPage extends Component {
           </Menu.Item>
         );
       }
-      console.log("menu items", menuItems);
       this.setState({"menuItems": menuItems});
     }
   }
@@ -129,7 +133,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   _push: push,
-  _getUser: getUserInfo
+  _getUser: getUserInfo,
+  _getPermissions: getPermissions
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(BackgroundPage));
