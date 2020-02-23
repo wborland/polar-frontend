@@ -18,6 +18,8 @@ class ResetPasswordComponent extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 // TODO: Send API request
+                values.token = this.props.location.query.token;
+                console.log("values", values);
                 this.props._push("/login");
             }
         });
@@ -107,7 +109,7 @@ class ResetPasswordComponent extends Component {
                         })(<Input.Password onBlur={this.handleConfirmBlur} />)}
                     </Form.Item>
                     <Form.Item style={{ textAlign: "right" }}>
-                        <Button type="primary" htmlType="submit" className="login-form-button">Login</Button>
+                        <Button type="primary" htmlType="submit" className="login-form-button">Submit</Button>
                     </Form.Item>
                 </Form>
             </div>
@@ -117,10 +119,16 @@ class ResetPasswordComponent extends Component {
 
 const ResetPasswordForm = Form.create({ name: 'register' })(ResetPasswordComponent);
 
+const mapStoreToProps = state => {
+    return {
+        location: state.router.location
+    };
+};
+
 const mapDispatchToProps = {
     _push: push
 };
   
 
-export default connect(null, mapDispatchToProps)(ResetPasswordForm);
+export default connect(mapStoreToProps, mapDispatchToProps)(ResetPasswordForm);
   //replace null with mapStateToProps to connect to the state variables
