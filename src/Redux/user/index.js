@@ -3,7 +3,8 @@ import {
   LOGOUT_USER,
   GET_USER,
   REGISTER_USER,
-  UPDATE_DIALOG
+  UPDATE_DIALOG,
+  RESET_PASSWORD
 } from "../action_types";
 import axios from "axios";
 import { message } from "antd";
@@ -25,7 +26,10 @@ const getUser = user => ({
   type: GET_USER,
   user
 });
-
+const passwordReset = user => ({
+  type: RESET_PASSWORD,
+  user
+});
 // Action helpers
 export const userLogin = user => dispatch => {
   return axios
@@ -153,6 +157,20 @@ export const userRegister = user => dispatch => {
       });
   }
 };
+
+export const resetPassword = user => dispatch => {
+  console.log("Reset")
+  return axios
+    .post("/user/resetPassword", user)
+    .then(response => {
+      console.log("Response")
+      message.success("Password reset successfully");
+      dispatch(push('/login'));
+    }).catch(err => {
+      console.log("Reset Password Failed", err);
+      message.error("Failed to reset password");
+    });
+}
 
 // Initial user state
 const initialState = {

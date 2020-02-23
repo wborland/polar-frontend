@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import { Form, Icon, Input, Button, Checkbox, Divider, Typography } from 'antd';
+import axios from 'axios';
+import { resetPassword } from "../Redux/user";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -17,10 +19,12 @@ class ResetPasswordComponent extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                // TODO: Send API request
-                values.token = this.props.location.query.token;
-                console.log("values", values);
-                this.props._push("/login");
+                let requestBody = {
+                    token: this.props.location.query.token,
+                    email: values.email,
+                    newPassword: values.password
+                }
+                this.props._resetPassword(requestBody);
             }
         });
     };
@@ -126,7 +130,8 @@ const mapStoreToProps = state => {
 };
 
 const mapDispatchToProps = {
-    _push: push
+    _push: push,
+    _resetPassword: resetPassword
 };
   
 
