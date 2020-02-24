@@ -83,7 +83,7 @@ export const userLogout = () => dispatch => {
 
 export const deleteUser = auth => dispatch => {
   axios
-    .post("http://localhost:5000/user/delete", { auth: auth })
+    .post("/user/delete", { auth: auth })
     .then(response => {
       if (response.status !== 200) {
         message.error("Unable to delete account, please try again", 10);
@@ -96,7 +96,7 @@ export const deleteUser = auth => dispatch => {
 
 export const getUserInfo = auth => dispatch => {
   axios
-    .post("http://localhost:5000/user/getInfo", { auth: auth })
+    .post("/user/getInfo", { auth: auth })
     .then(response => {
       if (response.status !== 200) {
         message.error("Unable to get user information, please try again", 10);
@@ -105,7 +105,7 @@ export const getUserInfo = auth => dispatch => {
       }
     })
     .catch(err => {
-      dispatch(push("/login"));
+      logoutUser();
     });
 };
 
@@ -117,7 +117,7 @@ const closeModal = dispatch => {
 };
 
 export const setUserInfo = info => dispatch => {
-  axios.post("http://localhost:5000/user/setInfo", info).then(response => {
+  axios.post("/user/setInfo", info).then(response => {
     if (response.status !== 200) {
       message.error("Unable to set user information, please try again", 10);
     } else {
@@ -167,7 +167,7 @@ export const resetPassword = user => dispatch => {
       message.success("Password reset successfully");
       dispatch(push('/login'));
     }).catch(err => {
-      console.log("Reset Password Failed", err);
+      console.log("Reset Password Failed", err.message);
       message.error("Failed to reset password");
     });
 }

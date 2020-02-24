@@ -48,7 +48,7 @@ const initialState = {
 
 // Action helpers
 export const getUserList = () => dispatch => {
-  Axios.post("localhost:5000/iam/getUserList", {})
+  Axios.post("/iam/getUserList", {})
     .then(response => {
       if (response.status === 200) dispatch(saveUserList(response.data));
       else message.error("Something went wrong, please try again", 5);
@@ -76,7 +76,7 @@ export const getSpecificUser = userId => dispatch => {
       object: { title: "View User", content: <UserView /> }
     }
   });
-  // Axios.post("localhost:5000/iam/getOtherUser", {
+  // Axios.post("/iam/getOtherUser", {
   //   userId: userId
   // }).then(response => {
   //   if (response.status === 200) {
@@ -93,7 +93,7 @@ export const getSpecificUser = userId => dispatch => {
 };
 
 export const setUserRoles = (userId, roles) => dispatch => {
-  Axios.post("localhost:5000/iam/setUserRoles", {
+  Axios.post("/iam/setUserRoles", {
     id: userId,
     roles: roles
   }).then(response => {

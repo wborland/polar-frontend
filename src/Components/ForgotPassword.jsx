@@ -27,7 +27,7 @@ class ForgotPassword extends Component {
         // Send password to email service
         if(this.validateEmail(this.state.email)) {
             axios
-                .post("http://localhost:5000/user/forgotPassword", { 
+                .post("/user/forgotPassword", { 
                     email: this.state.email 
                 }).then((res) => {
                     console.log("Email sent");

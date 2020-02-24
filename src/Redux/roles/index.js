@@ -1,5 +1,5 @@
 import { GET_ROLES, UPDATE_FILTER_LIST, UPDATE_DIALOG } from "../action_types";
-import Axios from "axios";
+import axios from "axios";
 import { message } from "antd";
 
 // Action creators
@@ -12,6 +12,7 @@ const roleList = list => ({
   type: GET_ROLES,
   list
 });
+
 
 // Initial dialog state
 const initialState = {
@@ -35,7 +36,7 @@ export const updateFilterList = list => dispatch => {
 };
 
 export const deleteRole = roleId => dispatch => {
-  Axios.post("localhost:5000/iam/deleteRole", {
+  axios.post("/iam/deleteRole", {
     roleId: roleId
   }).then(response => {
     if (response.status === 200) {
@@ -50,11 +51,28 @@ export const deleteRole = roleId => dispatch => {
   });
 };
 
+export const addRole = data => dispatch => {
+  axios.post("/iam/createRole", data)
+    .then(response => {
+      console.log("created role", response);
+      dispatch({
+        type: UPDATE_DIALOG,
+        dialog: { open: false, object: { title: "", content: null } }
+      });
+    }).catch(err => {
+      console.log(err.message);
+      message.error("Failed to create role");
+    })
+}
+
 export const getRoleList = () => dispatch => {
-  Axios.post("http://localhost:5000/iam/getRoles", {}).then(response => {
-    if (response.status === 200) dispatch(roleList(response.data));
-    else message.error("Unable to get list of roles", 5);
-  });
+  axios.post("/iam/getRoles", {})
+    .then(response => {
+      console.log(response)
+      if (response.status === 200) dispatch(roleList(response.data));
+      else message.error("Unable to get list of roles", 5);
+    })
+    .catch(err => message.error("Unable to get list of roles", 5));
 };
 
 const roleReducer = (state = initialState, action) => {

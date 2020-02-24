@@ -14,13 +14,11 @@ const { Header, Content, Sider } = Layout;
 class BackgroundPage extends Component {
   constructor(props) {
     super(props);
-    if (!props.user.auth) {
-      props._push('/login');
-    }
     this.state = { menuItems: [] }
   }
 
   componentDidMount = () => {
+    console.log("Test")
     if (!this.props.user.auth) {
       this.props._push('/login');
     } else {

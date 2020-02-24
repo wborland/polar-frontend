@@ -3,16 +3,21 @@ import { Collapse } from "antd";
 import "antd/dist/antd.css";
 import RoleList from "./RoleList";
 import UserList from "./UserList";
-
+import AddRoleButton from '../../Components/Roles/AddRoleButton';
 const { Panel } = Collapse;
 
 class UserManagement extends Component {
+  constructor (props) {
+    super(props);
+  }
+
   render() {
     return (
       <div style={{ height: "calc(100vh - 64px)" }}>
         <Collapse>
           <Panel header="Roles">
             <RoleList />
+            <AddRoleButton />
           </Panel>
           <Panel header="Users">
             <UserList />
