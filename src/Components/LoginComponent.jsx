@@ -3,8 +3,7 @@ import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import { Form, Icon, Input, Button, Checkbox, Divider } from 'antd';
 import ForgotPassword from "./ForgotPassword";
-import userReducer, {userLogin} from "../Redux/user";
-import StoreTable from "antd/lib/table/Table";
+import {userLogin} from "../Redux/user";
 
 class LoginComponent extends Component {
     constructor(props) {
@@ -19,12 +18,14 @@ class LoginComponent extends Component {
     }
 
 
-    handleSubmit = async (e) => {
+    handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 this.props._userLogin(values).then(() => {
-                    this.setState({validateStatus: "error"});
+                    if(this.props.location.pathname === "/login") {
+                        this.setState({validateStatus: "error"});
+                    }
                 });     
 
             }
@@ -73,7 +74,7 @@ class LoginComponent extends Component {
                     <Form.Item>
                         <a className="login-form-forgot" href="" onClick={this.forgotPass}>Forgot password</a>
                         <Divider type="vertical" />
-                        <a href="">Register now</a>
+                        <a href="/register">Register now</a>
                     </Form.Item>
                 </Form>
                 <ForgotPassword visible={this.state.showForgotPasswordModal} forgotPass={this.forgotPass}/>
@@ -85,7 +86,10 @@ class LoginComponent extends Component {
 const LoginForm = Form.create({ name: 'login' })(LoginComponent);
 
 const mapStoreToProps = state => {
-    return {user: state.user};
+    return {
+        user: state.user,
+        location: state.router.location
+    };
 };
 
 const mapDispatchToProps = {
@@ -95,4 +99,4 @@ const mapDispatchToProps = {
   
 export default connect(mapStoreToProps, mapDispatchToProps)(LoginForm);
 //replace null with mapStateToProps to connect to the state variables
-  
+

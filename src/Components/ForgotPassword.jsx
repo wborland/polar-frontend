@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Form, Icon, Input, Button, Divider, Modal, Typography } from 'antd';
+import { Icon, Input, Button, Divider, Modal, Typography, message } from 'antd';
+import axios from 'axios';
 
 const { Title, Paragraph } = Typography;
 
@@ -25,7 +26,18 @@ class ForgotPassword extends Component {
     handleSubmit = (e) => {
         // Send password to email service
         if(this.validateEmail(this.state.email)) {
-            // TODO: SEND API REQUEST
+            axios
+                .post("http://localhost:5000/user/forgotPassword", { 
+                    email: this.state.email 
+                }).then((res) => {
+                    console.log("Email sent");
+                    message.success("Please check your email to recover your password");
+                    this.setState({ email: "", visible: false });
+                }).catch(() => {
+                    console.log("Unable to reset password");
+                    message.error("Unable to reset password");
+                    this.setState({ email: "", visible: false });
+                })
         }
         // Hide Modal
         this.props.forgotPass(e);
@@ -65,7 +77,7 @@ class ForgotPassword extends Component {
                     placeholder="Enter your email"
                     prefix={<Icon type="mail"/>}
                     type="email"
-                    allowClear="true"
+                    allowClear={true}
                     value={this.state.email || ''}
                     onChange={this.onChange}
                     onPressEnter={this.handleSubmit}

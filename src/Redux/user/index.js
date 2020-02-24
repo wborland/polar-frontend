@@ -2,10 +2,10 @@ import {
   LOGIN_USER,
   LOGOUT_USER,
   GET_USER,
-  UPDATE_DIALOG
+  REGISTER_USER,
+  UPDATE_DIALOG,
+  RESET_PASSWORD
 } from "../action_types";
-import React from "react";
-import { Button } from "antd";
 import axios from "axios";
 import { message } from "antd";
 import { push } from "connected-react-router";
@@ -18,20 +18,25 @@ const loginUser = user => ({
 const logoutUser = () => ({
   type: LOGOUT_USER
 });
-
+const registerUser = user => ({
+  type: REGISTER_USER,
+  user
+});
 const getUser = user => ({
   type: GET_USER,
   user
 });
-
+const passwordReset = user => ({
+  type: RESET_PASSWORD,
+  user
+});
 // Action helpers
 export const userLogin = user => dispatch => {
   return axios
     .post("/user/login", user)
     .then(response => {
-      console.log("Login Successful");
       // Set auth token
-      localStorage.setItem("user", response.data.auth);
+      localStorage.setItem("token", response.data.auth);
       // Set isSignedIn
       response.data.isSignedIn = true;
       dispatch(loginUser(response.data));
@@ -98,6 +103,9 @@ export const getUserInfo = auth => dispatch => {
       } else {
         dispatch(getUser(response.data));
       }
+    })
+    .catch(err => {
+      dispatch(push("/login"));
     });
 };
 
@@ -118,9 +126,64 @@ export const setUserInfo = info => dispatch => {
   });
 };
 
+export const userRegister = user => dispatch => {
+  if (user.token) {
+    return axios
+      .post("/user/registerEmail", user)
+      .then(response => {
+        // Set auth token
+        localStorage.setItem("token", response.data.auth);
+        // Set isSignedIn
+        response.data.isSignedIn = true;
+        dispatch(registerUser(response.data));
+        dispatch(push("/"));
+      })
+      .catch(err => {
+        message.error("Registration Failed: " + err.response.data.message);
+      });
+  } else {
+    return axios
+      .post("/user/register", user)
+      .then(response => {
+        // Set auth token
+        localStorage.setItem("token", response.data.auth);
+        // Set isSignedIn
+        response.data.isSignedIn = true;
+        dispatch(registerUser(response.data));
+        dispatch(push("/"));
+      })
+      .catch(err => {
+        message.error("Registration Failed: " + err.response.data.message);
+      });
+  }
+};
+
+export const resetPassword = user => dispatch => {
+  console.log("Reset")
+  return axios
+    .post("/user/resetPassword", user)
+    .then(response => {
+      console.log("Response")
+      message.success("Password reset successfully");
+      dispatch(push('/login'));
+    }).catch(err => {
+      console.log("Reset Password Failed", err);
+      message.error("Failed to reset password");
+    });
+}
+
 // Initial user state
 const initialState = {
   auth: localStorage.token || "",
+  firstName: "",
+  lastName: "",
+  permissions: "",
+  isSignedIn: false
+};
+
+// Blank user state
+const blankState = {
+  auth: "",
   firstName: "",
   lastName: "",
   permissions: "",
@@ -132,7 +195,9 @@ const userReducer = (state = initialState, action) => {
     case LOGIN_USER:
       return { ...action.user };
     case LOGOUT_USER:
-      return { ...initialState };
+      return { ...blankState };
+    case REGISTER_USER:
+      return { ...action.user };
     case GET_USER:
       return Object.assign({}, state, { ...action.user });
     default:
