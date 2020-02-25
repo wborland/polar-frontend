@@ -4,6 +4,8 @@ import "antd/dist/antd.css";
 import RoleList from "./RoleList";
 import UserList from "./UserList";
 import AddRoleButton from '../../Components/Roles/AddRoleButton';
+import InviteUserButton from '../../Components/Users/InviteUserButton';
+
 const { Panel } = Collapse;
 
 class UserManagement extends Component {
@@ -21,6 +23,7 @@ class UserManagement extends Component {
           </Panel>
           <Panel header="Users">
             <UserList />
+            <InviteUserButton />
           </Panel>
         </Collapse>
       </div>

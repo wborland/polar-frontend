@@ -8,6 +8,11 @@ import { updateFilterList, deleteRole, getRoleList } from "../../Redux/roles";
 import { updateDialog } from "../../Redux/dialog";
 
 class RoleList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {roleData: []}
+  }
+
   columns = [
     {
       title: "Role name",
@@ -35,7 +40,14 @@ class RoleList extends Component {
 
   componentDidMount = () => {
     this.props._getRoleList(this.props.user.auth);
+    this.setState({"roleData": this.props.roles.listRoles});
   };
+
+  componentDidUpdate = (prevProps) => {
+    if(this.props.roles.listRoles != prevProps.roles.listRoles) {
+      this.setState({"roleData": this.props.roles.listRoles});
+    }
+  }
 
   dialogContent = role => {
     return (
@@ -49,7 +61,7 @@ class RoleList extends Component {
         >
           No
         </Button>
-        <Button onClick={() => this.props._deleteRole(role.key)}>Yes</Button>
+        <Button onClick={() => this.props._deleteRole({auth: this.props.user.auth, roleId: role.key})}>Yes</Button>
       </div>
     );
   };
@@ -68,7 +80,7 @@ class RoleList extends Component {
       <div>
         <Table
           rowSelection={this.rowSelection}
-          dataSource={this.props.roles.listRoles}
+          dataSource={this.state.roleData}
           columns={this.columns}
         />
       </div>

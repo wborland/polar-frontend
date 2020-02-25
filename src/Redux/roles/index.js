@@ -35,32 +35,27 @@ export const updateFilterList = list => dispatch => {
   dispatch(updateRoleFilter(list));
 };
 
-export const deleteRole = roleId => dispatch => {
-  axios.post("/iam/deleteRole", {
-    roleId: roleId
-  }).then(response => {
-    if (response.status === 200) {
+export const deleteRole = data => dispatch => {
+  axios.post("/iam/removeRole", data)
+    .then(response => {
       dispatch({
         type: UPDATE_DIALOG,
         dialog: { open: false, object: { title: "", content: null } }
       });
-    } else {
-      message.error("Unable to delete role", 5);
       getRoleList();
-    }
-  });
+    }).catch((err) => {
+      message.error("Unable to delete role", 5);
+    });
 };
 
 export const addRole = data => dispatch => {
   axios.post("/iam/createRole", data)
     .then(response => {
-      console.log("created role", response);
       dispatch({
         type: UPDATE_DIALOG,
         dialog: { open: false, object: { title: "", content: null } }
       });
     }).catch(err => {
-      console.log(err.message);
       message.error("Failed to create role");
     })
 }
@@ -68,7 +63,6 @@ export const addRole = data => dispatch => {
 export const getRoleList = (user) => dispatch => {
   axios.post("/iam/getRoles", {auth: user})
     .then(response => {
-      console.log(response)
       if (response.status === 200) dispatch(roleList(response.data));
       else message.error("Unable to get list of roles", 5);
     })

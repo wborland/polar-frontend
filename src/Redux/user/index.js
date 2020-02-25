@@ -101,6 +101,7 @@ export const getUserInfo = auth => dispatch => {
       if (response.status !== 200) {
         message.error("Unable to get user information, please try again", 10);
       } else {
+        response.data.isSignedIn = true;
         dispatch(getUser(response.data));
       }
     })
@@ -159,17 +160,27 @@ export const userRegister = user => dispatch => {
 };
 
 export const resetPassword = user => dispatch => {
-  console.log("Reset")
   return axios
     .post("/user/resetPassword", user)
     .then(response => {
-      console.log("Response")
       message.success("Password reset successfully");
       dispatch(push('/login'));
     }).catch(err => {
-      console.log("Reset Password Failed", err.message);
       message.error("Failed to reset password");
     });
+}
+
+export const inviteUser = data => dispatch => {
+  axios.post("/iam/inviteUser", data)
+    .then(response => {
+      message.success("Invite Email sent to New User");
+      dispatch({
+        type: UPDATE_DIALOG,
+        dialog: { open: false, object: { title: "", content: null } }
+      });
+    }).catch(err => {
+      message.error("Failed to invite user");
+    })
 }
 
 // Initial user state
