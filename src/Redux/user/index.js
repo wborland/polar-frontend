@@ -42,7 +42,6 @@ export const userLogin = user => dispatch => {
       response.data.isSignedIn = true;
       dispatch(loginUser(response.data));
       dispatch(push("/"));
-      message.success("Deleted user account successfully", 5);
     })
     .catch(err => {
       message.error("Invalid Login");
@@ -91,6 +90,7 @@ export const deleteUser = auth => dispatch => {
         message.error("Unable to delete account, please try again", 10);
       } else {
         closeModal(dispatch);
+        message.success("Deleted user account successfully", 5);
         dispatch(logoutUser());
         dispatch(push("/login"));
       }

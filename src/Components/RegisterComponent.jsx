@@ -132,7 +132,6 @@ class RegisterComponent extends Component {
                     </Form.Item>
                     <Form.Item label="Phone Number" validateStatus={this.state.validateStatus}>
                         {getFieldDecorator('phone', {
-                            rules: [{ required: true, message: "Please enter your phone number" }],
                         })(<Input />)}
                     </Form.Item>
                     <Form.Item style={{ textAlign: "right" }}>
