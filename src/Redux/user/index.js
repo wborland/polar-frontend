@@ -5,8 +5,6 @@ import {
   REGISTER_USER,
   UPDATE_DIALOG
 } from "../action_types";
-import React from "react";
-import { Button } from "antd";
 import axios from "axios";
 import { message } from "antd";
 import { push } from "connected-react-router";
@@ -41,6 +39,7 @@ export const userLogin = user => dispatch => {
       response.data.isSignedIn = true;
       dispatch(loginUser(response.data));
       dispatch(push("/"));
+      message.success("Deleted user account successfully", 5);
     })
     .catch(err => {
       message.error("Invalid Login");
@@ -83,20 +82,25 @@ export const userLogout = () => dispatch => {
 
 export const deleteUser = auth => dispatch => {
   axios
-    .post("http://localhost:5000/user/delete", { auth: auth })
+    .post("/user/delete", { auth })
     .then(response => {
       if (response.status !== 200) {
         message.error("Unable to delete account, please try again", 10);
       } else {
         closeModal(dispatch);
+        dispatch(logoutUser());
+        dispatch(push("/login"));
       }
-    });
+    })
+    .catch(response =>
+      message.error("Something happened, please try again", 5)
+    );
   dispatch(logoutUser());
 };
 
 export const getUserInfo = auth => dispatch => {
   axios
-    .post("http://localhost:5000/user/getInfo", { auth: auth })
+    .post("/user/getInfo", { auth: auth })
     .then(response => {
       if(response.status == 401) {
         dispatch(push('/login'));
@@ -105,7 +109,10 @@ export const getUserInfo = auth => dispatch => {
       } else {
         dispatch(getUser(response.data));
       }
-    });
+    })
+    .catch(response =>
+      message.error("Something happened, please try again", 5)
+    );
 };
 
 const closeModal = dispatch => {
@@ -116,13 +123,18 @@ const closeModal = dispatch => {
 };
 
 export const setUserInfo = info => dispatch => {
-  axios.post("http://localhost:5000/user/setInfo", info).then(response => {
-    if (response.status !== 200) {
-      message.error("Unable to set user information, please try again", 10);
-    } else {
-      closeModal(dispatch);
-    }
-  });
+  axios
+    .post("/user/setInfo", info)
+    .then(response => {
+      if (response.status !== 200) {
+        message.error("Unable to set user information, please try again", 10);
+      } else {
+        closeModal(dispatch);
+      }
+    })
+    .catch(response =>
+      message.error("Something happened, please try again", 5)
+    );
 };
 
 export const userRegister = user => dispatch => {
