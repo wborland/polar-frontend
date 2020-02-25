@@ -34,6 +34,7 @@ export const userLogin = user => dispatch => {
       response.data.isSignedIn = true;
       dispatch(loginUser(response.data));
       dispatch(push("/"));
+      message.success("Deleted user account successfully", 5);
     })
     .catch(err => {
       message.error("Invalid Login");
@@ -44,7 +45,6 @@ export const userLogout = () => dispatch => {
   localStorage.removeItem("token");
   dispatch(logoutUser());
   dispatch(push("/login"));
-  message.success("Deleted user account successfully", 5);
 };
 
 /* export const userCheckToken = () => dispatch => {
