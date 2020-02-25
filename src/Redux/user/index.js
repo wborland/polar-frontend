@@ -2,6 +2,7 @@ import {
   LOGIN_USER,
   LOGOUT_USER,
   GET_USER,
+  REGISTER_USER,
   UPDATE_DIALOG
 } from "../action_types";
 import axios from "axios";
@@ -16,6 +17,10 @@ const loginUser = user => ({
 const logoutUser = () => ({
   type: LOGOUT_USER
 });
+const registerUser = user => ({
+  type: REGISTER_USER,
+  user
+});
 
 const getUser = user => ({
   type: GET_USER,
@@ -29,7 +34,7 @@ export const userLogin = user => dispatch => {
     .then(response => {
       console.log("Login Successful");
       // Set auth token
-      localStorage.setItem("user", response.data.auth);
+      localStorage.setItem("token", response.data.auth);
       // Set isSignedIn
       response.data.isSignedIn = true;
       dispatch(loginUser(response.data));
@@ -97,7 +102,9 @@ export const getUserInfo = auth => dispatch => {
   axios
     .post("/user/getInfo", { auth: auth })
     .then(response => {
-      if (response.status !== 200) {
+      if(response.status == 401) {
+        dispatch(push('/login'));
+      } else if (response.status !== 200) {
         message.error("Unable to get user information, please try again", 10);
       } else {
         dispatch(getUser(response.data));
@@ -130,13 +137,38 @@ export const setUserInfo = info => dispatch => {
     );
 };
 
+export const userRegister = user => dispatch => {
+  return axios.post('/user/register', user)
+    .then(response => {
+      console.log("Registration Successful");
+      // Set auth token
+      localStorage.setItem("token", response.data.auth);
+      // Set isSignedIn
+      response.data.isSignedIn = true;
+      dispatch(registerUser(response.data));
+      dispatch(push('/'));
+    })
+    .catch(err => {
+      message.error("Registration Failed: " + err.response.data.message);
+    });
+}
+
 // Initial user state
 const initialState = {
   auth: localStorage.token || "",
   firstName: "",
   lastName: "",
   permissions: "",
-  isSignedIn: false
+  isSignedIn: false,
+};
+
+// Blank user state
+const blankState = {
+  auth: "",
+  firstName: "",
+  lastName: "",
+  permissions: "",
+  isSignedIn: false,
 };
 
 const userReducer = (state = initialState, action) => {
@@ -144,7 +176,9 @@ const userReducer = (state = initialState, action) => {
     case LOGIN_USER:
       return { ...action.user };
     case LOGOUT_USER:
-      return { ...initialState };
+      return { ...blankState };
+    case REGISTER_USER:
+      return {...action.user};
     case GET_USER:
       return Object.assign({}, state, { ...action.user });
     default:
