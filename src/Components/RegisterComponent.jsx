@@ -12,6 +12,7 @@ class RegisterComponent extends Component {
         if(props.user.auth){
             props._push('/');
         }
+
         this.state = {
             validateStatus: null
         }
@@ -21,7 +22,7 @@ class RegisterComponent extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                // Send API request
+                values.token = this.props.location.query.token;
                 this.props._userRegister(values).then(() => {
                     if(this.props.location.pathname === "/register") {
                         this.setState({validateStatus: "error"});
@@ -53,6 +54,11 @@ class RegisterComponent extends Component {
         callback();
     };
 
+    componentDidMount = () => {
+        this.props.form.setFieldsValue({
+            email: this.props.location.query.email
+        });
+    }
 
 
     render() {
@@ -86,7 +92,7 @@ class RegisterComponent extends Component {
                                     message: 'Please enter your email!',
                                 },
                             ],
-                        })(<Input />)}
+                        })(<Input/>)}
                     </Form.Item>
                     <Form.Item label="Password" hasFeedback validateStatus={this.state.validateStatus}>
                         {getFieldDecorator('password', {

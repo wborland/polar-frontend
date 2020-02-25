@@ -12,6 +12,8 @@ class BackgroundPage extends Component {
     }
   }
 
+
+
   render() {
     return (
       <Switch>
@@ -32,7 +34,7 @@ class BackgroundPage extends Component {
 }
 
 const mapStoreToProps = state => {
-  return { user: state.user };
+  return {user: state.user, permissions: state.permissions};
 };
 const mapDispatchToProps = {
   _push: push

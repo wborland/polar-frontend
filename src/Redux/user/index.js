@@ -3,7 +3,8 @@ import {
   LOGOUT_USER,
   GET_USER,
   REGISTER_USER,
-  UPDATE_DIALOG
+  UPDATE_DIALOG,
+  RESET_PASSWORD
 } from "../action_types";
 import axios from "axios";
 import { message } from "antd";
@@ -26,13 +27,15 @@ const getUser = user => ({
   type: GET_USER,
   user
 });
-
+const passwordReset = user => ({
+  type: RESET_PASSWORD,
+  user
+});
 // Action helpers
 export const userLogin = user => dispatch => {
   return axios
     .post("/user/login", user)
     .then(response => {
-      console.log("Login Successful");
       // Set auth token
       localStorage.setItem("token", response.data.auth);
       // Set isSignedIn
@@ -82,7 +85,7 @@ export const userLogout = () => dispatch => {
 
 export const deleteUser = auth => dispatch => {
   axios
-    .post("/user/delete", { auth })
+    .post("/user/delete", { auth: auth })
     .then(response => {
       if (response.status !== 200) {
         message.error("Unable to delete account, please try again", 10);
@@ -107,12 +110,13 @@ export const getUserInfo = auth => dispatch => {
       } else if (response.status !== 200) {
         message.error("Unable to get user information, please try again", 10);
       } else {
+        response.data.isSignedIn = true;
         dispatch(getUser(response.data));
       }
     })
-    .catch(response =>
-      message.error("Something happened, please try again", 5)
-    );
+    .catch(err => {
+      logoutUser();
+    });
 };
 
 const closeModal = dispatch => {
@@ -138,19 +142,59 @@ export const setUserInfo = info => dispatch => {
 };
 
 export const userRegister = user => dispatch => {
-  return axios.post('/user/register', user)
+  if (user.token) {
+    return axios
+      .post("/user/registerEmail", user)
+      .then(response => {
+        // Set auth token
+        localStorage.setItem("token", response.data.auth);
+        // Set isSignedIn
+        response.data.isSignedIn = true;
+        dispatch(registerUser(response.data));
+        dispatch(push("/"));
+      })
+      .catch(err => {
+        message.error("Registration Failed: " + err.response.data.message);
+      });
+  } else {
+    return axios
+      .post("/user/register", user)
+      .then(response => {
+        // Set auth token
+        localStorage.setItem("token", response.data.auth);
+        // Set isSignedIn
+        response.data.isSignedIn = true;
+        dispatch(registerUser(response.data));
+        dispatch(push("/"));
+      })
+      .catch(err => {
+        message.error("Registration Failed: " + err.response.data.message);
+      });
+  }
+};
+
+export const resetPassword = user => dispatch => {
+  return axios
+    .post("/user/resetPassword", user)
     .then(response => {
-      console.log("Registration Successful");
-      // Set auth token
-      localStorage.setItem("token", response.data.auth);
-      // Set isSignedIn
-      response.data.isSignedIn = true;
-      dispatch(registerUser(response.data));
-      dispatch(push('/'));
-    })
-    .catch(err => {
-      message.error("Registration Failed: " + err.response.data.message);
+      message.success("Password reset successfully");
+      dispatch(push('/login'));
+    }).catch(err => {
+      message.error("Failed to reset password");
     });
+}
+
+export const inviteUser = data => dispatch => {
+  axios.post("/iam/inviteUser", data)
+    .then(response => {
+      message.success("Invite Email sent to New User");
+      dispatch({
+        type: UPDATE_DIALOG,
+        dialog: { open: false, object: { title: "", content: null } }
+      });
+    }).catch(err => {
+      message.error("Failed to invite user");
+    })
 }
 
 // Initial user state
@@ -171,6 +215,15 @@ const blankState = {
   isSignedIn: false,
 };
 
+// Blank user state
+const blankState = {
+  auth: "",
+  firstName: "",
+  lastName: "",
+  permissions: "",
+  isSignedIn: false
+};
+
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN_USER:
@@ -178,7 +231,7 @@ const userReducer = (state = initialState, action) => {
     case LOGOUT_USER:
       return { ...blankState };
     case REGISTER_USER:
-      return {...action.user};
+      return { ...action.user };
     case GET_USER:
       return Object.assign({}, state, { ...action.user });
     default:

@@ -39,6 +39,7 @@ export const getUserList = auth => dispatch => {
 
 export const getSpecificUser = userId => dispatch => {
   dispatch(setOtherUser(userId));
+
 };
 
 const filterUsers = (state, action) => {

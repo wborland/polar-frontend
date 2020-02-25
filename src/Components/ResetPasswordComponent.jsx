@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import { Form, Icon, Input, Button, Checkbox, Divider, Typography } from 'antd';
+import axios from 'axios';
+import { resetPassword } from "../Redux/user";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -17,8 +19,12 @@ class ResetPasswordComponent extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                // TODO: Send API request
-                this.props._push("/login");
+                let requestBody = {
+                    token: this.props.location.query.token,
+                    email: values.email,
+                    newPassword: values.password
+                }
+                this.props._resetPassword(requestBody);
             }
         });
     };
@@ -107,7 +113,7 @@ class ResetPasswordComponent extends Component {
                         })(<Input.Password onBlur={this.handleConfirmBlur} />)}
                     </Form.Item>
                     <Form.Item style={{ textAlign: "right" }}>
-                        <Button type="primary" htmlType="submit" className="login-form-button">Login</Button>
+                        <Button type="primary" htmlType="submit" className="login-form-button">Submit</Button>
                     </Form.Item>
                 </Form>
             </div>
@@ -117,10 +123,16 @@ class ResetPasswordComponent extends Component {
 
 const ResetPasswordForm = Form.create({ name: 'register' })(ResetPasswordComponent);
 
+const mapStoreToProps = state => {
+    return {
+        location: state.router.location
+    };
+};
+
 const mapDispatchToProps = {
-    _push: push
+    _push: push,
+    _resetPassword: resetPassword
 };
   
 
-export default connect(null, mapDispatchToProps)(ResetPasswordForm);
-  //replace null with mapStateToProps to connect to the state variables
+export default connect(mapStoreToProps, mapDispatchToProps)(ResetPasswordForm);

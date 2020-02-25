@@ -23,11 +23,13 @@ class Register extends Component {
         return (
             <Layout>
                 <Header>
-                    <Menu
+                <Menu
                         theme="dark"
                         mode="horizontal"
+                        selectable={false}
                     >
-                        <LogoImage src={Polar} alt="Polar Logo" />
+                        <Menu.Item><LogoImage src={Polar} alt="Polar Logo" /></Menu.Item>
+
                     </Menu>
                 </Header>
                 <Content>
