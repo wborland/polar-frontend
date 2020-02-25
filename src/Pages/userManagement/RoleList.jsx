@@ -34,7 +34,7 @@ class RoleList extends Component {
   ];
 
   componentDidMount = () => {
-    this.props._getRoleList();
+    this.props._getRoleList(this.props.user.auth);
   };
 
   dialogContent = role => {
@@ -77,7 +77,8 @@ class RoleList extends Component {
 }
 
 const mapStateToProps = state => ({
-  roles: state.roles
+  roles: state.roles,
+  user: state.user
 });
 
 const mapDispatchToProps = {

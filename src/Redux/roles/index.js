@@ -65,8 +65,8 @@ export const addRole = data => dispatch => {
     })
 }
 
-export const getRoleList = () => dispatch => {
-  axios.post("/iam/getRoles", {})
+export const getRoleList = (user) => dispatch => {
+  axios.post("/iam/getRoles", {auth: user})
     .then(response => {
       console.log(response)
       if (response.status === 200) dispatch(roleList(response.data));
