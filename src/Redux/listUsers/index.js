@@ -1,13 +1,10 @@
 import {
   GET_LIST_USERS,
   UPDATE_FILTER_LIST,
-  SET_OTHER_USER,
-  UPDATE_DIALOG
+  SET_OTHER_USER
 } from "../action_types";
 import Axios from "axios";
 import { message } from "antd";
-import UserView from "../../Pages/userManagement/UserView";
-import React from "react";
 
 // Action creators
 const saveUserList = list => ({
@@ -42,13 +39,6 @@ export const getUserList = auth => dispatch => {
 
 export const getSpecificUser = userId => dispatch => {
   dispatch(setOtherUser(userId));
-  dispatch({
-    type: UPDATE_DIALOG,
-    dialog: {
-      open: true,
-      object: { title: "View User", content: <UserView /> }
-    }
-  });
 };
 
 const filterUsers = (state, action) => {
@@ -69,7 +59,7 @@ const filterUsers = (state, action) => {
   return tempUsers;
 };
 
-export const assignRole = (auth, roleId, userId) => {
+export const assignRole = (auth, roleId, userId) => dispatch => {
   Axios.post("/iam/assignRole", { auth, roleId, userId })
     .then(response => {
       if (response.status === 200) {
@@ -83,7 +73,7 @@ export const assignRole = (auth, roleId, userId) => {
     );
 };
 
-export const revokeRole = (auth, roleId, userId) => {
+export const revokeRole = (auth, roleId, userId) => dispatch => {
   Axios.post("/iam/revokeRole", { auth, roleId, userId })
     .then(response => {
       if (response.status === 200) {

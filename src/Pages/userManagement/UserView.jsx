@@ -19,10 +19,9 @@ class UserView extends Component {
   componentDidMount = () => {
     let roleTemp = [];
     for (let i in this.props.userList.specificUser.roles) {
-      console.log(this.props.userList.specificUser.roles[i]);
+      if (this.props.userList.specificUser.roles[i] == null) continue;
       roleTemp.push(`${this.props.userList.specificUser.roles[i]}`);
     }
-    console.log(roleTemp);
     this.setState({ permissions: roleTemp });
   };
 
@@ -40,7 +39,6 @@ class UserView extends Component {
   };
 
   handleChange = value => {
-    console.log(value);
     //check removed
     for (let i in this.state.permissions) {
       if (!value.includes(this.state.permissions[i])) {

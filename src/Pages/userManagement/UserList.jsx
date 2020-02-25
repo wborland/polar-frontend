@@ -6,6 +6,8 @@ import { Table, Button, Skeleton } from "antd";
 import "antd/dist/antd.css";
 import { getUserList, getSpecificUser } from "../../Redux/listUsers";
 import { getRoleList } from "../../Redux/roles";
+import { updateDialog } from "../../Redux/dialog";
+import UserView from "./UserView";
 
 class UserList extends Component {
   columns = [
@@ -30,7 +32,15 @@ class UserList extends Component {
       dataIndex: "operation",
       render: (text, record) =>
         <div>
-          <Button onClick={() => this.props._getSpecificUser(record.key)}>
+          <Button
+            onClick={() => {
+              this.props._getSpecificUser(record.key);
+              this.props._updateDialog(true, {
+                title: "View User",
+                content: <UserView />
+              });
+            }}
+          >
             View User
           </Button>
         </div>
@@ -66,7 +76,8 @@ const mapDispatchToProps = {
   _push: push,
   _getUserList: getUserList,
   _getRolesList: getRoleList,
-  _getSpecificUser: getSpecificUser
+  _getSpecificUser: getSpecificUser,
+  _updateDialog: updateDialog
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
