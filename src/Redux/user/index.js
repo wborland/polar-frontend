@@ -4,8 +4,6 @@ import {
   GET_USER,
   UPDATE_DIALOG
 } from "../action_types";
-import React from "react";
-import { Button } from "antd";
 import axios from "axios";
 import { message } from "antd";
 import { push } from "connected-react-router";
@@ -44,9 +42,9 @@ export const userLogin = user => dispatch => {
 
 export const userLogout = () => dispatch => {
   localStorage.removeItem("token");
-  message.success("Deleted user account successfully", 5);
   dispatch(logoutUser());
   dispatch(push("/login"));
+  message.success("Deleted user account successfully", 5);
 };
 
 /* export const userCheckToken = () => dispatch => {
