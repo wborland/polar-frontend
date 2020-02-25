@@ -44,6 +44,7 @@ export const userLogin = user => dispatch => {
 
 export const userLogout = () => dispatch => {
   localStorage.removeItem("token");
+  message.success("Deleted user account successfully", 5);
   dispatch(logoutUser());
   dispatch(push("/login"));
 };
