@@ -78,27 +78,34 @@ export const userLogout = () => dispatch => {
 
 export const deleteUser = auth => dispatch => {
   axios
-    .post("http://localhost:5000/user/delete", { auth: auth })
+    .post("/user/delete", { auth })
     .then(response => {
       if (response.status !== 200) {
         message.error("Unable to delete account, please try again", 10);
       } else {
         closeModal(dispatch);
+        dispatch(logoutUser());
       }
-    });
+    })
+    .catch(response =>
+      message.error("Something happened, please try again", 5)
+    );
   dispatch(logoutUser());
 };
 
 export const getUserInfo = auth => dispatch => {
   axios
-    .post("http://localhost:5000/user/getInfo", { auth: auth })
+    .post("/user/getInfo", { auth: auth })
     .then(response => {
       if (response.status !== 200) {
         message.error("Unable to get user information, please try again", 10);
       } else {
         dispatch(getUser(response.data));
       }
-    });
+    })
+    .catch(response =>
+      message.error("Something happened, please try again", 5)
+    );
 };
 
 const closeModal = dispatch => {
@@ -109,13 +116,18 @@ const closeModal = dispatch => {
 };
 
 export const setUserInfo = info => dispatch => {
-  axios.post("http://localhost:5000/user/setInfo", info).then(response => {
-    if (response.status !== 200) {
-      message.error("Unable to set user information, please try again", 10);
-    } else {
-      closeModal(dispatch);
-    }
-  });
+  axios
+    .post("/user/setInfo", info)
+    .then(response => {
+      if (response.status !== 200) {
+        message.error("Unable to set user information, please try again", 10);
+      } else {
+        closeModal(dispatch);
+      }
+    })
+    .catch(response =>
+      message.error("Something happened, please try again", 5)
+    );
 };
 
 // Initial user state
