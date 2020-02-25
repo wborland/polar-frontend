@@ -11,28 +11,31 @@ import { getUserList } from "../../Redux/listUsers";
 class RoleList extends Component {
   constructor(props) {
     super(props);
-    this.state = {roleData: []}
+    this.state = { roleData: [] };
   }
 
   columns = [
     {
       title: "Role name",
+      width: "140px",
       dataIndex: "roleName"
     },
     {
       title: "Permissions",
-      dataIndex: "permissions"
+      dataIndex: "permissionsString"
     },
     {
       title: "Operations",
+      align: "right",
       dataIndex: "operations",
       render: (text, record) =>
         <Button
-          onClick={() =>
+          onClick={() => {
             this.props._updateDialog(true, {
               title: "Delete Role",
               content: this.dialogContent(record)
-            })}
+            });
+          }}
         >
           Delete
         </Button>
@@ -41,14 +44,14 @@ class RoleList extends Component {
 
   componentDidMount = () => {
     this.props._getRoleList(this.props.user.auth);
-    this.setState({"roleData": this.props.roles.listRoles});
+    this.setState({ roleData: this.props.roles.listRoles });
   };
 
-  componentDidUpdate = (prevProps) => {
-    if(this.props.roles.listRoles != prevProps.roles.listRoles) {
-      this.setState({"roleData": this.props.roles.listRoles});
+  componentDidUpdate = prevProps => {
+    if (this.props.roles.listRoles != prevProps.roles.listRoles) {
+      this.setState({ roleData: this.props.roles.listRoles });
     }
-  }
+  };
 
   dialogContent = role => {
     return (
@@ -62,7 +65,17 @@ class RoleList extends Component {
         >
           No
         </Button>
-        <Button onClick={() => this.props._deleteRole({auth: this.props.user.auth, roleId: role.key})}>Yes</Button>
+        <Button
+          onClick={() => {
+            this.props._deleteRole({
+              auth: this.props.user.auth,
+              roleId: role.key
+            });
+            this.props._getRoleList(this.props.user.auth);
+          }}
+        >
+          Yes
+        </Button>
       </div>
     );
   };
