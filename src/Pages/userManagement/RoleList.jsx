@@ -6,6 +6,7 @@ import { Table, Button, Skeleton } from "antd";
 import "antd/dist/antd.css";
 import { updateFilterList, deleteRole, getRoleList } from "../../Redux/roles";
 import { updateDialog } from "../../Redux/dialog";
+import { getUserList } from "../../Redux/listUsers";
 
 class RoleList extends Component {
   columns = [
@@ -34,7 +35,8 @@ class RoleList extends Component {
   ];
 
   componentDidMount = () => {
-    this.props._getRoleList();
+    this.props._getRoleList(this.props.user.auth);
+    this.props._getUserList(this.props.user.auth);
   };
 
   dialogContent = role => {
@@ -77,7 +79,8 @@ class RoleList extends Component {
 }
 
 const mapStateToProps = state => ({
-  roles: state.roles
+  roles: state.roles,
+  user: state.user
 });
 
 const mapDispatchToProps = {
@@ -85,7 +88,8 @@ const mapDispatchToProps = {
   _updateFilterList: updateFilterList,
   _updateDialog: updateDialog,
   _deleteRole: deleteRole,
-  _getRoleList: getRoleList
+  _getRoleList: getRoleList,
+  _getUserList: getUserList
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

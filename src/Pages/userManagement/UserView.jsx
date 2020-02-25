@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import { Select, Skeleton } from "antd";
 import "antd/dist/antd.css";
+import { assignRole, revokeRole } from "../../Redux/listUsers";
 
 const { Option } = Select;
 
@@ -14,6 +15,16 @@ class UserView extends Component {
       permissions: []
     };
   }
+
+  componentDidMount = () => {
+    let roleTemp = [];
+    for (let i in this.props.userList.specificUser.roles) {
+      console.log(this.props.userList.specificUser.roles[i]);
+      roleTemp.push(`${this.props.userList.specificUser.roles[i]}`);
+    }
+    console.log(roleTemp);
+    this.setState({ permissions: roleTemp });
+  };
 
   getChildren = () => {
     let tempChildren = [];
@@ -30,6 +41,28 @@ class UserView extends Component {
 
   handleChange = value => {
     console.log(value);
+    //check removed
+    for (let i in this.state.permissions) {
+      if (!value.includes(this.state.permissions[i])) {
+        //call remove role
+        this.props._revokeRole(
+          this.props.user.auth,
+          this.state.permissions[i],
+          this.props.userList.specificUser.key
+        );
+      }
+    }
+    //check added
+    for (let i in value) {
+      if (!this.state.permissions.includes(value[i])) {
+        //call add role
+        this.props._assignRole(
+          this.props.user.auth,
+          value[i],
+          this.props.userList.specificUser.key
+        );
+      }
+    }
     this.setState({ permissions: value });
   };
 
@@ -71,7 +104,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  _push: push
+  _push: push,
+  _assignRole: assignRole,
+  _revokeRole: revokeRole
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

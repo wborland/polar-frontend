@@ -15,18 +15,7 @@ const roleList = list => ({
 
 // Initial dialog state
 const initialState = {
-  listRoles: [
-    {
-      key: "1",
-      roleName: "Role 1",
-      permissions: "Permission 1, Permission 2"
-    },
-    {
-      key: "2",
-      roleName: "Role 2",
-      permissions: "Permission 3, Permission 4"
-    }
-  ]
+  listRoles: []
 };
 
 // Action helpers
@@ -37,24 +26,32 @@ export const updateFilterList = list => dispatch => {
 export const deleteRole = roleId => dispatch => {
   Axios.post("localhost:5000/iam/deleteRole", {
     roleId: roleId
-  }).then(response => {
-    if (response.status === 200) {
-      dispatch({
-        type: UPDATE_DIALOG,
-        dialog: { open: false, object: { title: "", content: null } }
-      });
-    } else {
+  })
+    .then(response => {
+      if (response.status === 200) {
+        dispatch({
+          type: UPDATE_DIALOG,
+          dialog: { open: false, object: { title: "", content: null } }
+        });
+      } else {
+        message.error("Unable to delete role", 5);
+        getRoleList();
+      }
+    })
+    .catch(reason => {
       message.error("Unable to delete role", 5);
-      getRoleList();
-    }
-  });
+    });
 };
 
-export const getRoleList = () => dispatch => {
-  Axios.post("http://localhost:5000/iam/getRoles", {}).then(response => {
-    if (response.status === 200) dispatch(roleList(response.data));
-    else message.error("Unable to get list of roles", 5);
-  });
+export const getRoleList = auth => dispatch => {
+  Axios.post("http://localhost:5000/iam/getRoles", { auth })
+    .then(response => {
+      if (response.status === 200) dispatch(roleList(response.data));
+      else message.error("Unable to get list of roles", 5);
+    })
+    .catch(reason => {
+      message.error("Unable to get list of roles", 5);
+    });
 };
 
 const roleReducer = (state = initialState, action) => {

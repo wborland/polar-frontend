@@ -22,33 +22,15 @@ const setOtherUser = user => ({
 
 // Initial dialog state
 const initialState = {
-  listUsers: [
-    {
-      key: "321651",
-      firstName: "Johnny",
-      lastName: "Cage",
-      phone: "11879451",
-      email: "sbeve@polarapp.xyz",
-      roles: ["12", "4"]
-    }
-  ],
-  showUsers: [
-    {
-      key: "321651",
-      firstName: "Johnny",
-      lastName: "Cage",
-      phone: "11879451",
-      email: "sbeve@polarapp.xyz",
-      roles: ["12", "4"]
-    }
-  ],
+  listUsers: [],
+  showUsers: [],
   currFilter: [],
   specificUser: null
 };
 
 // Action helpers
-export const getUserList = () => dispatch => {
-  Axios.post("localhost:5000/iam/getUserList", {})
+export const getUserList = auth => dispatch => {
+  Axios.post("/iam/getUserRoles", { auth })
     .then(response => {
       if (response.status === 200) dispatch(saveUserList(response.data));
       else message.error("Something went wrong, please try again", 5);
@@ -59,46 +41,12 @@ export const getUserList = () => dispatch => {
 };
 
 export const getSpecificUser = userId => dispatch => {
-  dispatch(
-    setOtherUser({
-      key: "654654654654765",
-      firstName: "Jim",
-      lastName: "Bean",
-      permissions: [1, 8, 5, 7],
-      phone: null,
-      email: "sbeve@polarapp.xyz"
-    })
-  );
+  dispatch(setOtherUser(userId));
   dispatch({
     type: UPDATE_DIALOG,
     dialog: {
       open: true,
       object: { title: "View User", content: <UserView /> }
-    }
-  });
-  // Axios.post("localhost:5000/iam/getOtherUser", {
-  //   userId: userId
-  // }).then(response => {
-  //   if (response.status === 200) {
-  //     dispatch(setOtherUser(response.data));
-  //     dispatch({
-  //       type: UPDATE_DIALOG,
-  //       dialog: {
-  //         open: true,
-  //         object: { title: "View User", content: UserView }
-  //       }
-  //     });
-  //   }
-  // });
-};
-
-export const setUserRoles = (userId, roles) => dispatch => {
-  Axios.post("localhost:5000/iam/setUserRoles", {
-    id: userId,
-    roles: roles
-  }).then(response => {
-    if (response.status !== 200) {
-      message.error("Unable to make role changes", 10);
     }
   });
 };
@@ -121,6 +69,34 @@ const filterUsers = (state, action) => {
   return tempUsers;
 };
 
+export const assignRole = (auth, roleId, userId) => {
+  Axios.post("/iam/assignRole", { auth, roleId, userId })
+    .then(response => {
+      if (response.status === 200) {
+        message.success("Role added to user successfully");
+      } else {
+        message.error("Role unable to be added to user, try again");
+      }
+    })
+    .catch(reason =>
+      message.error("Role unable to be added to user, try again")
+    );
+};
+
+export const revokeRole = (auth, roleId, userId) => {
+  Axios.post("/iam/revokeRole", { auth, roleId, userId })
+    .then(response => {
+      if (response.status === 200) {
+        message.success("Role revoked from user successfully");
+      } else {
+        message.error("Role unable to be revoked from user, try again");
+      }
+    })
+    .catch(reason =>
+      message.error("Role unable to be revoked from user, try again")
+    );
+};
+
 const userListReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_LIST_USERS:
@@ -140,7 +116,13 @@ const userListReducer = (state = initialState, action) => {
         currFilter: action.filter
       });
     case SET_OTHER_USER:
-      return Object.assign({}, state, { specificUser: action.user });
+      for (let i in state.listUsers) {
+        if (action.user === state.listUsers[i].key) {
+          return Object.assign({}, state, { specificUser: state.listUsers[i] });
+        }
+      }
+      message.error("Unable to find user", 5);
+      return state;
     default:
       return state;
   }

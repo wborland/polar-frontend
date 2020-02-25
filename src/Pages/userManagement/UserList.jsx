@@ -5,6 +5,7 @@ import { push } from "connected-react-router";
 import { Table, Button, Skeleton } from "antd";
 import "antd/dist/antd.css";
 import { getUserList, getSpecificUser } from "../../Redux/listUsers";
+import { getRoleList } from "../../Redux/roles";
 
 class UserList extends Component {
   columns = [
@@ -38,6 +39,7 @@ class UserList extends Component {
 
   componentDidMount = () => {
     this.props._getUserList(this.props.user.auth);
+    this.props._getRolesList(this.props.user.auth);
   };
 
   render() {
@@ -63,6 +65,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   _push: push,
   _getUserList: getUserList,
+  _getRolesList: getRoleList,
   _getSpecificUser: getSpecificUser
 };
 
