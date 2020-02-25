@@ -85,6 +85,7 @@ export const deleteUser = auth => dispatch => {
       } else {
         closeModal(dispatch);
         dispatch(logoutUser());
+        dispatch(push("/login"));
       }
     })
     .catch(response =>
