@@ -10,17 +10,45 @@ class BackgroundPage extends Component {
     if (!props.user.auth) {
       props._push("/login");
     }
+    this.state = { menuItems: [] };
   }
 
-
+  componentDidUpdate = prevProps => {
+    if (prevProps.user.permissions != this.props.user.permissions) {
+      // Show nav options based on user permissions
+      let userPerms = this.props.user.permissions;
+      let menuItems = [];
+      if (userPerms.includes(8)) {
+        menuItems.push(
+          <Route path="/inventory" />
+        );
+        this.setState({ menuItems: menuItems });
+      }
+      if (userPerms.includes(1)) {
+        menuItems.push(
+          <Route path="/files" />
+        );
+        this.setState({ menuItems: menuItems });
+      }
+      if (userPerms.includes(7)) {
+        menuItems.push(
+          <Route path="/communication" />
+        );
+        this.setState({ menuItems: menuItems });
+      }
+      if (userPerms.includes(11)) {
+        menuItems.push(
+          <Route path="/usermanagement" render={() => <UserManagement />} />
+        );
+      }
+      this.setState({ menuItems: menuItems });
+    }
+  };
 
   render() {
     return (
       <Switch>
-        <Route path="/files" />
-        <Route path="/communication" />
-        <Route path="/usermanagement" render={() => <UserManagement />} />
-        <Route path="/inventory" />
+        {this.state.menuItems}
         <Route
           exact
           path="/"

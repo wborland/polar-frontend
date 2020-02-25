@@ -102,11 +102,12 @@ export const deleteUser = auth => dispatch => {
 };
 
 export const getUserInfo = auth => dispatch => {
+  console.log("Getting user info")
   axios
     .post("/user/getInfo", { auth: auth })
     .then(response => {
-      if(response.status == 401) {
-        dispatch(push('/login'));
+      if (response.status == 401) {
+        dispatch(push("/login"));
       } else if (response.status !== 200) {
         message.error("Unable to get user information, please try again", 10);
       } else {
@@ -115,7 +116,12 @@ export const getUserInfo = auth => dispatch => {
       }
     })
     .catch(err => {
-      logoutUser();
+      if(err.response.status == 401) {
+        closeModal(dispatch);
+        localStorage.removeItem("token");
+        dispatch(logoutUser());
+        dispatch(push("/login"));
+      }
     });
 };
 
@@ -178,24 +184,27 @@ export const resetPassword = user => dispatch => {
     .post("/user/resetPassword", user)
     .then(response => {
       message.success("Password reset successfully");
-      dispatch(push('/login'));
-    }).catch(err => {
+      dispatch(push("/login"));
+    })
+    .catch(err => {
       message.error("Failed to reset password");
     });
-}
+};
 
 export const inviteUser = data => dispatch => {
-  axios.post("/iam/inviteUser", data)
+  axios
+    .post("/iam/inviteUser", data)
     .then(response => {
       message.success("Invite Email sent to New User");
       dispatch({
         type: UPDATE_DIALOG,
         dialog: { open: false, object: { title: "", content: null } }
       });
-    }).catch(err => {
-      message.error("Failed to invite user");
     })
-}
+    .catch(err => {
+      message.error("Failed to invite user");
+    });
+};
 
 // Initial user state
 const initialState = {
@@ -203,7 +212,7 @@ const initialState = {
   firstName: "",
   lastName: "",
   permissions: "",
-  isSignedIn: false,
+  isSignedIn: false
 };
 
 // Blank user state
@@ -212,9 +221,8 @@ const blankState = {
   firstName: "",
   lastName: "",
   permissions: "",
-  isSignedIn: false,
+  isSignedIn: false
 };
-
 
 const userReducer = (state = initialState, action) => {
   switch (action.type) {

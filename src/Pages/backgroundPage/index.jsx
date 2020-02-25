@@ -18,11 +18,10 @@ class BackgroundPage extends Component {
   }
 
   componentDidMount = () => {
-    console.log("Test");
     if (!this.props.user.auth) {
       this.props._push("/login");
     } else {
-      this.props._getUser(this.props.user.auth);
+        this.props._getUser(this.props.user.auth);
       // Request All Permissions
       if (Object.entries(this.props.permissions).length === 0) {
         this.props._getPermissions();
