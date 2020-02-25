@@ -9,33 +9,32 @@ import TopBar from "./Topbar";
 import { getUserInfo } from "../../Redux/user";
 import { getPermissions } from "../../Redux/permissions";
 
-
 const { Header, Content, Sider } = Layout;
 
 class BackgroundPage extends Component {
   constructor(props) {
     super(props);
-    this.state = { menuItems: [] }
+    this.state = { menuItems: [] };
   }
 
   componentDidMount = () => {
-    console.log("Test")
+    console.log("Test");
     if (!this.props.user.auth) {
-      this.props._push('/login');
+      this.props._push("/login");
     } else {
-      this.props._getUser(this.props.user.auth);  
+      this.props._getUser(this.props.user.auth);
       // Request All Permissions
       if (Object.entries(this.props.permissions).length === 0) {
         this.props._getPermissions();
       }
     }
-  }
+  };
 
-  componentDidUpdate = (prevProps) => {
+  componentDidUpdate = prevProps => {
     if (prevProps.user.permissions != this.props.user.permissions) {
       // Show nav options based on user permissions
       let userPerms = this.props.user.permissions;
-      let menuItems = this.state.menuItems;
+      let menuItems = [];
       if (userPerms.includes(8)) {
         menuItems.push(
           <Menu.Item key="inventory">
@@ -43,7 +42,7 @@ class BackgroundPage extends Component {
             Inventory
           </Menu.Item>
         );
-        this.setState({ "menuItems": menuItems });
+        this.setState({ menuItems: menuItems });
       }
       if (userPerms.includes(1)) {
         menuItems.push(
@@ -52,7 +51,7 @@ class BackgroundPage extends Component {
             Files
           </Menu.Item>
         );
-        this.setState({ "menuItems": menuItems });
+        this.setState({ menuItems: menuItems });
       }
       if (userPerms.includes(7)) {
         menuItems.push(
@@ -61,7 +60,7 @@ class BackgroundPage extends Component {
             Mass Communication
           </Menu.Item>
         );
-        this.setState({ "menuItems": menuItems });
+        this.setState({ menuItems: menuItems });
       }
       if (userPerms.includes(11)) {
         menuItems.push(
@@ -71,9 +70,9 @@ class BackgroundPage extends Component {
           </Menu.Item>
         );
       }
-      this.setState({ "menuItems": menuItems });
+      this.setState({ menuItems: menuItems });
     }
-  }
+  };
 
   handleClick = e => {
     if (e.key === "calendar") {
@@ -97,7 +96,6 @@ class BackgroundPage extends Component {
   };
 
   render() {
-
     return (
       <Layout>
         <Header>
@@ -115,7 +113,9 @@ class BackgroundPage extends Component {
                 <Icon type="calendar" />
                 Calendar
               </Menu.Item>
-              {this.state.menuItems ? this.state.menuItems.map((route) => route) : ""}
+              {this.state.menuItems
+                ? this.state.menuItems.map(route => route)
+                : ""}
             </Menu>
           </Sider>
           <Layout>
@@ -132,7 +132,7 @@ class BackgroundPage extends Component {
 const mapStateToProps = state => ({
   user: state.user,
   permissions: state.permissions
-})
+});
 
 const mapDispatchToProps = {
   _push: push,
@@ -140,5 +140,7 @@ const mapDispatchToProps = {
   _getPermissions: getPermissions
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(BackgroundPage));
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withRouter(BackgroundPage)
+);
 //replace null with mapStateToProps to connect to the state variables
