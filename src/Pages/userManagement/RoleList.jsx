@@ -6,6 +6,7 @@ import { Table, Button, Skeleton } from "antd";
 import "antd/dist/antd.css";
 import { updateFilterList, deleteRole, getRoleList } from "../../Redux/roles";
 import { updateDialog } from "../../Redux/dialog";
+import { getUserList } from "../../Redux/listUsers";
 
 class RoleList extends Component {
   constructor(props) {
@@ -98,7 +99,8 @@ const mapDispatchToProps = {
   _updateFilterList: updateFilterList,
   _updateDialog: updateDialog,
   _deleteRole: deleteRole,
-  _getRoleList: getRoleList
+  _getRoleList: getRoleList,
+  _getUserList: getUserList
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

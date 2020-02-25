@@ -12,7 +12,7 @@ class RegisterComponent extends Component {
         if(props.user.auth){
             props._push('/');
         }
-        
+
         this.state = {
             validateStatus: null
         }
@@ -60,6 +60,7 @@ class RegisterComponent extends Component {
         });
     }
 
+
     render() {
         const formItemLayout = {
             labelCol: {
@@ -72,7 +73,7 @@ class RegisterComponent extends Component {
             },
         };
         const { getFieldDecorator } = this.props.form;
-        
+
         return (
             <div style={{textAlign: "center"}}>
 

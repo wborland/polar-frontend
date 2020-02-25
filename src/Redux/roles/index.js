@@ -16,18 +16,7 @@ const roleList = list => ({
 
 // Initial dialog state
 const initialState = {
-  listRoles: [
-    {
-      key: "1",
-      roleName: "Role 1",
-      permissions: "Permission 1, Permission 2"
-    },
-    {
-      key: "2",
-      roleName: "Role 2",
-      permissions: "Permission 3, Permission 4"
-    }
-  ]
+  listRoles: []
 };
 
 // Action helpers
@@ -44,7 +33,7 @@ export const deleteRole = data => dispatch => {
       });
       getRoleList();
     }).catch((err) => {
-      message.error("Unable to delete role", 5);
+      message.error("Unable to delete role");
     });
 };
 
@@ -66,7 +55,9 @@ export const getRoleList = (user) => dispatch => {
       if (response.status === 200) dispatch(roleList(response.data));
       else message.error("Unable to get list of roles", 5);
     })
-    .catch(err => message.error("Unable to get list of roles", 5));
+    .catch(reason => {
+      message.error("Unable to get list of roles", 5);
+    });
 };
 
 const roleReducer = (state = initialState, action) => {

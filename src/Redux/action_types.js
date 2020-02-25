@@ -8,4 +8,7 @@ export const GET_ALL_PERMISSIONS="[Permissions] - get all permissions";
 export const GET_ROLES = "[User Management] - get role info";
 export const GET_LIST_USERS = "[User Management] - get user list";
 export const UPDATE_FILTER_LIST = "[User Management] - update role filter";
+
 export const SET_OTHER_USER = "[User Management] - get other user information";
+export const UPDATE_USER_ROLES =
+  "[User Management] - set other user role information";

@@ -9,6 +9,7 @@ import TopBar from "./Topbar";
 import { getUserInfo } from "../../Redux/user";
 import { getPermissions } from "../../Redux/permissions";
 
+
 const { Header, Content, Sider } = Layout;
 
 class BackgroundPage extends Component {
@@ -72,7 +73,6 @@ class BackgroundPage extends Component {
       }
       this.setState({ "menuItems": menuItems });
     }
-
   }
 
   handleClick = e => {

@@ -22,6 +22,7 @@ const registerUser = user => ({
   type: REGISTER_USER,
   user
 });
+
 const getUser = user => ({
   type: GET_USER,
   user
@@ -41,6 +42,7 @@ export const userLogin = user => dispatch => {
       response.data.isSignedIn = true;
       dispatch(loginUser(response.data));
       dispatch(push("/"));
+      message.success("Deleted user account successfully", 5);
     })
     .catch(err => {
       message.error("Invalid Login");
@@ -89,8 +91,13 @@ export const deleteUser = auth => dispatch => {
         message.error("Unable to delete account, please try again", 10);
       } else {
         closeModal(dispatch);
+        dispatch(logoutUser());
+        dispatch(push("/login"));
       }
-    });
+    })
+    .catch(response =>
+      message.error("Something happened, please try again", 5)
+    );
   dispatch(logoutUser());
 };
 
@@ -98,7 +105,9 @@ export const getUserInfo = auth => dispatch => {
   axios
     .post("/user/getInfo", { auth: auth })
     .then(response => {
-      if (response.status !== 200) {
+      if(response.status == 401) {
+        dispatch(push('/login'));
+      } else if (response.status !== 200) {
         message.error("Unable to get user information, please try again", 10);
       } else {
         response.data.isSignedIn = true;
@@ -118,13 +127,18 @@ const closeModal = dispatch => {
 };
 
 export const setUserInfo = info => dispatch => {
-  axios.post("/user/setInfo", info).then(response => {
-    if (response.status !== 200) {
-      message.error("Unable to set user information, please try again", 10);
-    } else {
-      closeModal(dispatch);
-    }
-  });
+  axios
+    .post("/user/setInfo", info)
+    .then(response => {
+      if (response.status !== 200) {
+        message.error("Unable to set user information, please try again", 10);
+      } else {
+        closeModal(dispatch);
+      }
+    })
+    .catch(response =>
+      message.error("Something happened, please try again", 5)
+    );
 };
 
 export const userRegister = user => dispatch => {
@@ -189,7 +203,16 @@ const initialState = {
   firstName: "",
   lastName: "",
   permissions: "",
-  isSignedIn: false
+  isSignedIn: false,
+};
+
+// Blank user state
+const blankState = {
+  auth: "",
+  firstName: "",
+  lastName: "",
+  permissions: "",
+  isSignedIn: false,
 };
 
 // Blank user state

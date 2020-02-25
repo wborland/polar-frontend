@@ -29,6 +29,7 @@ class Register extends Component {
                         selectable={false}
                     >
                         <Menu.Item><LogoImage src={Polar} alt="Polar Logo" /></Menu.Item>
+
                     </Menu>
                 </Header>
                 <Content>

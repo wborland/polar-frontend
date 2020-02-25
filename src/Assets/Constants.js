@@ -12,3 +12,4 @@ export const permissionsMapping = {
     10: "Edit Inventory Table Cells",
     11: "User Management"
 };
+

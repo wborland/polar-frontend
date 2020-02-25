@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Icon, Input, Button, Divider, Modal, Typography, message } from 'antd';
 import axios from 'axios';
 
+
 const { Title, Paragraph } = Typography;
 
 class ForgotPassword extends Component {

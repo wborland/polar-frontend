@@ -1,13 +1,10 @@
 import {
   GET_LIST_USERS,
   UPDATE_FILTER_LIST,
-  SET_OTHER_USER,
-  UPDATE_DIALOG
+  SET_OTHER_USER
 } from "../action_types";
 import Axios from "axios";
 import { message } from "antd";
-import UserView from "../../Pages/userManagement/UserView";
-import React from "react";
 
 // Action creators
 const saveUserList = list => ({
@@ -22,33 +19,15 @@ const setOtherUser = user => ({
 
 // Initial dialog state
 const initialState = {
-  listUsers: [
-    {
-      key: "321651",
-      firstName: "Johnny",
-      lastName: "Cage",
-      phone: "11879451",
-      email: "sbeve@polarapp.xyz",
-      roles: ["12", "4"]
-    }
-  ],
-  showUsers: [
-    {
-      key: "321651",
-      firstName: "Johnny",
-      lastName: "Cage",
-      phone: "11879451",
-      email: "sbeve@polarapp.xyz",
-      roles: ["12", "4"]
-    }
-  ],
+  listUsers: [],
+  showUsers: [],
   currFilter: [],
   specificUser: null
 };
 
 // Action helpers
-export const getUserList = () => dispatch => {
-  Axios.post("/iam/getUserList", {})
+export const getUserList = auth => dispatch => {
+  Axios.post("/iam/getUserRoles", { auth })
     .then(response => {
       if (response.status === 200) dispatch(saveUserList(response.data));
       else message.error("Something went wrong, please try again", 5);
@@ -59,48 +38,8 @@ export const getUserList = () => dispatch => {
 };
 
 export const getSpecificUser = userId => dispatch => {
-  dispatch(
-    setOtherUser({
-      key: "654654654654765",
-      firstName: "Jim",
-      lastName: "Bean",
-      permissions: [1, 8, 5, 7],
-      phone: null,
-      email: "sbeve@polarapp.xyz"
-    })
-  );
-  dispatch({
-    type: UPDATE_DIALOG,
-    dialog: {
-      open: true,
-      object: { title: "View User", content: <UserView /> }
-    }
-  });
-  // Axios.post("/iam/getOtherUser", {
-  //   userId: userId
-  // }).then(response => {
-  //   if (response.status === 200) {
-  //     dispatch(setOtherUser(response.data));
-  //     dispatch({
-  //       type: UPDATE_DIALOG,
-  //       dialog: {
-  //         open: true,
-  //         object: { title: "View User", content: UserView }
-  //       }
-  //     });
-  //   }
-  // });
-};
+  dispatch(setOtherUser(userId));
 
-export const setUserRoles = (userId, roles) => dispatch => {
-  Axios.post("/iam/setUserRoles", {
-    id: userId,
-    roles: roles
-  }).then(response => {
-    if (response.status !== 200) {
-      message.error("Unable to make role changes", 10);
-    }
-  });
 };
 
 const filterUsers = (state, action) => {
@@ -119,6 +58,34 @@ const filterUsers = (state, action) => {
     }
   }
   return tempUsers;
+};
+
+export const assignRole = (auth, roleId, userId) => dispatch => {
+  Axios.post("/iam/assignRole", { auth, roleId, userId })
+    .then(response => {
+      if (response.status === 200) {
+        message.success("Role added to user successfully");
+      } else {
+        message.error("Role unable to be added to user, try again");
+      }
+    })
+    .catch(reason =>
+      message.error("Role unable to be added to user, try again")
+    );
+};
+
+export const revokeRole = (auth, roleId, userId) => dispatch => {
+  Axios.post("/iam/revokeRole", { auth, roleId, userId })
+    .then(response => {
+      if (response.status === 200) {
+        message.success("Role revoked from user successfully");
+      } else {
+        message.error("Role unable to be revoked from user, try again");
+      }
+    })
+    .catch(reason =>
+      message.error("Role unable to be revoked from user, try again")
+    );
 };
 
 const userListReducer = (state = initialState, action) => {
@@ -140,7 +107,13 @@ const userListReducer = (state = initialState, action) => {
         currFilter: action.filter
       });
     case SET_OTHER_USER:
-      return Object.assign({}, state, { specificUser: action.user });
+      for (let i in state.listUsers) {
+        if (action.user === state.listUsers[i].key) {
+          return Object.assign({}, state, { specificUser: state.listUsers[i] });
+        }
+      }
+      message.error("Unable to find user", 5);
+      return state;
     default:
       return state;
   }

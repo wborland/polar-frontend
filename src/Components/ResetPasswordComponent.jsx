@@ -136,4 +136,3 @@ const mapDispatchToProps = {
   
 
 export default connect(mapStoreToProps, mapDispatchToProps)(ResetPasswordForm);
-  //replace null with mapStateToProps to connect to the state variables
