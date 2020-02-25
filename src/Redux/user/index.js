@@ -215,14 +215,6 @@ const blankState = {
   isSignedIn: false,
 };
 
-// Blank user state
-const blankState = {
-  auth: "",
-  firstName: "",
-  lastName: "",
-  permissions: "",
-  isSignedIn: false
-};
 
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
