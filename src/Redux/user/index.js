@@ -180,6 +180,7 @@ export const userRegister = user => dispatch => {
 };
 
 export const resetPassword = user => dispatch => {
+  console.log("user", user);
   return axios
     .post("/user/resetPassword", user)
     .then(response => {
