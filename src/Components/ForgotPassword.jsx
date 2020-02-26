@@ -31,11 +31,9 @@ class ForgotPassword extends Component {
                 .post("/user/forgotPassword", { 
                     email: this.state.email 
                 }).then((res) => {
-                    console.log("Email sent");
                     message.success("Please check your email to recover your password");
                     this.setState({ email: "", visible: false });
                 }).catch(() => {
-                    console.log("Unable to reset password");
                     message.error("Unable to reset password");
                     this.setState({ email: "", visible: false });
                 })
