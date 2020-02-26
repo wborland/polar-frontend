@@ -23,6 +23,9 @@ class RegisterComponent extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 values.token = this.props.location.query.token;
+                if(!values.phone) {
+                    values.phone = "";
+                }
                 this.props._userRegister(values).then(() => {
                     if(this.props.location.pathname === "/register") {
                         this.setState({validateStatus: "error"});
