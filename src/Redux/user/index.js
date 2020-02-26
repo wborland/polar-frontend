@@ -189,6 +189,7 @@ export const resetPassword = user => dispatch => {
     .catch(err => {
       message.error("Failed to reset password");
       console.log(err.message);
+      console.log(err.response)
     });
 };
 
