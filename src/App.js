@@ -10,6 +10,7 @@ import { updateDialog } from "./Redux/dialog";
 import Register from "./Pages/Register";
 import ResetPassword from "./Pages/ResetPassword";
 import { push } from "connected-react-router";
+import {history} from "./Redux/store"
 
 const renderContent = props => {
   if (props.dialog.object.content == null) {
@@ -30,6 +31,10 @@ const isClassComponent = component => {
 };
 
 const App = props => {
+  const path = (/#!(\/.*)$/.exec(history.location.hash) || [])[1];
+if (path) {
+    history.replace(path);
+}
   return (
     <div>
       <Switch>
