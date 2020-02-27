@@ -9,7 +9,7 @@ import { Modal } from "antd";
 import { updateDialog } from "./Redux/dialog";
 import Register from "./Pages/Register";
 import ResetPassword from "./Pages/ResetPassword";
-import { push } from "connected-react-router";
+import { push, replace } from "connected-react-router";
 import {history} from "./Redux/store"
 
 const renderContent = props => {
@@ -31,9 +31,9 @@ const isClassComponent = component => {
 };
 
 const App = props => {
-  const path = (/#!(\/.*)$/.exec(history.location.hash) || [])[1];
+  const path = (/#!(\/.*)$/.exec(props.router.history.location.hash) || [])[1];
 if (path) {
-    history.replace(path);
+    props._replace(path);
 }
   return (
     <div>
@@ -56,11 +56,13 @@ if (path) {
 };
 
 const mapStateToProps = state => ({
-  dialog: state.dialog
+  dialog: state.dialog,
+  router: state.router
 });
 
 const mapDispatchToProps = {
-  _updateDialog: updateDialog
+  _updateDialog: updateDialog,
+  _replace: replace
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
