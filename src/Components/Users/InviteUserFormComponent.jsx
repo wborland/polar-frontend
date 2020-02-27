@@ -67,7 +67,7 @@ class InviteUserFormComponent extends Component {
                                 {type: 'array' },
                             ],
                         })(
-                            <Select mode="multiple" placeholder="Please select at least 1 role">
+                            <Select mode="multiple" placeholder="Select a role">
                                 {this.state.roles}
                             </Select>
                         )}
