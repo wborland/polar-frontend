@@ -89,6 +89,7 @@ export const deleteUser = auth => dispatch => {
       if (response.status !== 200) {
         message.error("Unable to delete account, please try again", 10);
       } else {
+        localStorage.removeItem("token");
         closeModal(dispatch);
         message.success("Deleted user account successfully", 5);
         dispatch(logoutUser());
@@ -102,7 +103,7 @@ export const deleteUser = auth => dispatch => {
 };
 
 export const getUserInfo = auth => dispatch => {
-  console.log("Getting user info")
+  console.log("Getting user info");
   axios
     .post("/user/getInfo", { auth: auth })
     .then(response => {
@@ -116,7 +117,7 @@ export const getUserInfo = auth => dispatch => {
       }
     })
     .catch(err => {
-      if(err.response.status == 401) {
+      if (err.response.status == 401) {
         closeModal(dispatch);
         localStorage.removeItem("token");
         dispatch(logoutUser());
