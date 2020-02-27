@@ -12,6 +12,11 @@ axios.defaults.baseURL = "https://api.polarapp.xyz";
 
 const store = configureStore({});
 
+const path = (/#!(\/.*)$/.exec(location.hash) || [])[1];
+if (path) {
+    history.replace(path);
+}
+
 ReactDOM.render(
   <Provider store={store}>
     <ConnectedRouter history={history}>

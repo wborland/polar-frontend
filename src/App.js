@@ -10,7 +10,7 @@ import { updateDialog } from "./Redux/dialog";
 import Register from "./Pages/Register";
 import ResetPassword from "./Pages/ResetPassword";
 import { push, replace } from "connected-react-router";
-import {history} from "./Redux/store"
+import { history } from "./Redux/store";
 
 const renderContent = props => {
   if (props.dialog.object.content == null) {
@@ -25,21 +25,18 @@ const renderContent = props => {
 
 const isClassComponent = component => {
   return typeof component === "function" &&
-  !!component.prototype.isReactComponent
+    !!component.prototype.isReactComponent
     ? true
     : false;
 };
 
 const App = props => {
-  const path = (/#!(\/.*)$/.exec(props.router.history.location.hash) || [])[1];
-if (path) {
-    props._replace(path);
-}
+  
   return (
     <div>
       <Switch>
-        <Route path="/login" component={Login}/>
-        <Route path="/resetpassword" component={ResetPassword}/>
+        <Route path="/login" component={Login} />
+        <Route path="/resetpassword" component={ResetPassword} />
         <Route path="/register" component={Register} />
         <Route path="/" render={() => <BackgroundPage />} />
       </Switch>
