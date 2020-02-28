@@ -20,7 +20,6 @@ class LoginComponent extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
-        console.log("Event", e);
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 this.props._userLogin(values).then(() => {

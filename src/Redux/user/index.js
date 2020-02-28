@@ -44,6 +44,7 @@ export const userLogin = user => dispatch => {
       dispatch(push("/"));
     })
     .catch(err => {
+      console.log(err.response);
       message.error("Invalid Login");
     });
 };
