@@ -14,7 +14,7 @@ class EmailComponent extends Component {
   constructor(props) {
     super(props);
     if (!props.user.auth) {
-      props._push('/');
+      props._push('/login');
     }
 
     this.state = {
@@ -29,7 +29,6 @@ class EmailComponent extends Component {
   componentDidMount = () => {
     this.props._getRoleList(this.props.user.auth);
     this.props._getUserList(this.props.user.auth);
-
   }
 
   componentDidUpdate = (prevProps) => {
@@ -55,7 +54,6 @@ class EmailComponent extends Component {
       this.setState({ "users": users });
     }
   }
-
 
   handleSubmit = (e) => {
     e.preventDefault();

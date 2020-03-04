@@ -13,7 +13,7 @@ class TextComponent extends Component {
   constructor(props) {
     super(props);
     if (!props.user.auth) {
-      props._push('/');
+      props._push('/login');
     }
 
     this.state = {
