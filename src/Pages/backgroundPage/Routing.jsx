@@ -3,6 +3,7 @@ import { Switch, Route } from "react-router";
 import { push } from "connected-react-router";
 import { connect } from "react-redux";
 import UserManagement from "../userManagement";
+import MassCommunication from "../MassCommunication";
 
 class BackgroundPage extends Component {
   constructor(props) {
@@ -32,7 +33,7 @@ class BackgroundPage extends Component {
       }
       if (userPerms.includes(7)) {
         menuItems.push(
-          <Route path="/communication" />
+          <Route path="/communication" render={() => <MassCommunication />} />
         );
         this.setState({ menuItems: menuItems });
       }
