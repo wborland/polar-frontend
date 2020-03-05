@@ -3,6 +3,7 @@ import { Switch, Route } from "react-router";
 import { push } from "connected-react-router";
 import { connect } from "react-redux";
 import UserManagement from "../userManagement";
+import Tables from "../Tables/Tables";
 
 class BackgroundPage extends Component {
   constructor(props) {
@@ -20,21 +21,18 @@ class BackgroundPage extends Component {
       let menuItems = [];
       if (userPerms.includes(8)) {
         menuItems.push(
-          <Route path="/inventory" />
+          <Route path="/inventory" render={() => <Tables />}/>
         );
-        this.setState({ menuItems: menuItems });
       }
       if (userPerms.includes(1)) {
         menuItems.push(
           <Route path="/files" />
         );
-        this.setState({ menuItems: menuItems });
       }
       if (userPerms.includes(7)) {
         menuItems.push(
           <Route path="/communication" />
         );
-        this.setState({ menuItems: menuItems });
       }
       if (userPerms.includes(11)) {
         menuItems.push(
@@ -55,7 +53,7 @@ class BackgroundPage extends Component {
           render={() => <div style={{ height: "calc(100vh - 64px)" }} />}
         />
         {/* calendar */}
-        <Route render={() => this.props._push("/login")} />
+        <Route path="/login" render={() => this.props._push("/login")} />
       </Switch>
     );
   }
