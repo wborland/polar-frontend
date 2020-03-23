@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import TextForm from "../Components/TextComponent";
-import EmailForm from "../Components/EmailComponent";
+import TextForm from "../Components/Communication/TextComponent";
+import EmailForm from "../Components/Communication/EmailComponent";
 import { Radio, Typography } from 'antd';
 
 const {Title} = Typography;

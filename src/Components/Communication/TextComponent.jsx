@@ -1,16 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import { Form, Icon, Input, Button, Radio, Select, Upload, Typography } from 'antd';
-import { getRoleList } from "../Redux/roles";
-import { getUserList } from "../Redux/listUsers";
-import { CloudUploadOutlined } from '@ant-design/icons';
+import { Form, Icon, Input, Button, Radio, Select, Typography } from 'antd';
+import { getRoleList } from "../../Redux/roles";
+import { getUserList } from "../../Redux/listUsers";
 
 const { Option, OptGroup } = Select;
 const { Title } = Typography;
 const { TextArea } = Input;
 
-class EmailComponent extends Component {
+class TextComponent extends Component {
   constructor(props) {
     super(props);
     if (!props.user.auth) {
@@ -29,6 +28,7 @@ class EmailComponent extends Component {
   componentDidMount = () => {
     this.props._getRoleList(this.props.user.auth);
     this.props._getUserList(this.props.user.auth);
+
   }
 
   componentDidUpdate = (prevProps) => {
@@ -55,10 +55,12 @@ class EmailComponent extends Component {
     }
   }
 
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        // TODO: Handle Submit
         const roles = [];
         const users = [];
         values.To.forEach((key) => {
@@ -68,37 +70,16 @@ class EmailComponent extends Component {
             users.push(key.substring(1));
           }
         });
-        const reqBody = {
+        let reqBody = {
           "auth": this.props.user.auth,
           "roles": roles,
           "users": users,
-          "subject": values.subject,
-          "body": values.body,
+          "body": values.body
         }
-        if(this.state.fileList.length !== 0) {
-          // TODO: API request with form data
-          let formData = new FormData();
-          formData.append('file', this.state.fileList[0]);
-          formData.append('body', reqBody);
-        } else {
-          // TODO: API request as normal json
-        }
-        
       }
     });
   };
 
-  handleFileBeforeUpload = (file) => {
-    this.setState({
-      fileList: [file]
-    });
-    return false;
-  }
-
-  handleFileRemove = (file) => {
-    this.setState({fileList: []});
-    return {fileList: []}
-  }
 
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -114,7 +95,7 @@ class EmailComponent extends Component {
     };
     return (
       <div>
-        <Form {...formItemLayout} onSubmit={this.handleSubmit} style={{ background: "#FFFFFF", padding: "10vh", textAlign: "center", minHeight: "calc(100vh - 64px)" }}>
+        <Form {...formItemLayout} onSubmit={this.handleSubmit} style={{ background: "#FFFFFF", padding: "10vh", textAlign: "center"  }}>
           <Form.Item label="To">
             {getFieldDecorator('To', {
               rules: [
@@ -134,16 +115,6 @@ class EmailComponent extends Component {
               </Select>
             )}
           </Form.Item>
-          <Form.Item label="Subject">
-            {getFieldDecorator('subject', {
-              rules: [
-                {
-                  required: true,
-                  message: 'Please enter a subject',
-                },
-              ],
-            })(<Input />)}
-          </Form.Item>
           <Form.Item label="Body">
             {getFieldDecorator('body', {
               rules: [
@@ -157,14 +128,6 @@ class EmailComponent extends Component {
             />)}
           </Form.Item>
           <Form.Item style={{ textAlign: "right" }}>
-            <Upload onRemove={this.handleFileRemove} beforeUpload={this.handleFileBeforeUpload} fileList={this.state.fileList}>
-              <Button disabled={this.state.fileList.length !== 0}>
-                <CloudUploadOutlined /> Click to Upload a File
-              </Button>
-
-            </Upload>
-          </Form.Item>
-          <Form.Item style={{ textAlign: "right" }}>
             <Button type="primary" htmlType="submit" loading={this.state.uploading}>Submit</Button>
           </Form.Item>
         </Form>
@@ -173,7 +136,7 @@ class EmailComponent extends Component {
   }
 }
 
-const EmailForm = Form.create({ name: 'Email' })(EmailComponent);
+const TextForm = Form.create({ name: 'Text' })(TextComponent);
 
 const mapStoreToProps = state => {
   return {
@@ -189,6 +152,6 @@ const mapDispatchToProps = {
   _push: push
 };
 
-export default connect(mapStoreToProps, mapDispatchToProps)(EmailForm);
+export default connect(mapStoreToProps, mapDispatchToProps)(TextForm);
 //replace null with mapStateToProps to connect to the state variables
 
