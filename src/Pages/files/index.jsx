@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Table, Button } from "antd";
 import "antd/dist/antd.css";
-import { callGetFiles } from "../../Redux/files";
+import { callGetFiles, deleteFiles } from "../../Redux/files";
 import { connect } from "react-redux";
 import { updateDialog } from "../../Redux/dialog";
 
@@ -47,7 +47,13 @@ class Files extends Component {
           Are you sure you want to delete {record.displayName}?
         </p>
         <div>
-          <Button style={{ margin: "5px" }}>Yes</Button>
+          <Button
+            style={{ margin: "5px" }}
+            onClick={() =>
+              this.props._deleteFiles(this.props.user.auth, record.storageName)}
+          >
+            Yes
+          </Button>
           <Button
             style={{ margin: "5px" }}
             onClick={() => this.props._updateDialog(false, null)}
@@ -79,7 +85,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   _callGetFiles: callGetFiles,
-  _updateDialog: updateDialog
+  _updateDialog: updateDialog,
+  _deleteFiles: deleteFiles
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Files);

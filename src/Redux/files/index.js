@@ -1,4 +1,4 @@
-import { GET_ALL_FILES } from "../action_types";
+import { GET_ALL_FILES, UPDATE_DIALOG } from "../action_types";
 import Axios from "axios";
 import { message } from "antd";
 
@@ -39,6 +39,23 @@ export const callGetFiles = auth => dispatch => {
         "Something went wrong, please reload the page to try again",
         10
       );
+    });
+};
+
+export const deleteFiles = (auth, fileName) => dispatch => {
+  Axios.post("/files/delete", { auth, fileName })
+    .then(response => {
+      if (response.status === 200)
+        dispatch({
+          type: UPDATE_DIALOG,
+          dialog: { open: false, object: { title: "", content: null } }
+        });
+      else {
+        message.error("Something went wrong, please try again", 10);
+      }
+    })
+    .catch(err => {
+      message.error("Something went wrong, please try again", 10);
     });
 };
 
