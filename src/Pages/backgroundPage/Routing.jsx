@@ -19,6 +19,11 @@ class BackgroundPage extends Component {
       // Show nav options based on user permissions
       let userPerms = this.props.user.permissions;
       let menuItems = [];
+      if (userPerms.includes(8)) {
+        menuItems.push(
+          <Route path="/inventory" />
+        );
+      }
       if (userPerms.includes(1)) {
         menuItems.push(
           <Route path="/files" />
