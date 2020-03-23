@@ -4,7 +4,6 @@ import { push } from "connected-react-router";
 import { connect } from "react-redux";
 import UserManagement from "../userManagement";
 import MassCommunication from "../MassCommunication";
-import Tables from "../Tables/Tables";
 
 class BackgroundPage extends Component {
   constructor(props) {
@@ -20,11 +19,6 @@ class BackgroundPage extends Component {
       // Show nav options based on user permissions
       let userPerms = this.props.user.permissions;
       let menuItems = [];
-      if (userPerms.includes(8)) {
-        menuItems.push(
-          <Route path="/inventory" render={() => <Tables />}/>
-        );
-      }
       if (userPerms.includes(1)) {
         menuItems.push(
           <Route path="/files" />
