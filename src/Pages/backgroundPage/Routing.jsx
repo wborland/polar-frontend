@@ -3,6 +3,7 @@ import { Switch, Route } from "react-router";
 import { push } from "connected-react-router";
 import { connect } from "react-redux";
 import UserManagement from "../userManagement";
+import Files from "../files";
 
 class BackgroundPage extends Component {
   constructor(props) {
@@ -19,21 +20,15 @@ class BackgroundPage extends Component {
       let userPerms = this.props.user.permissions;
       let menuItems = [];
       if (userPerms.includes(8)) {
-        menuItems.push(
-          <Route path="/inventory" />
-        );
+        menuItems.push(<Route path="/inventory" />);
         this.setState({ menuItems: menuItems });
       }
       if (userPerms.includes(1)) {
-        menuItems.push(
-          <Route path="/files" />
-        );
+        menuItems.push(<Route path="/files" render={() => <Files />} />);
         this.setState({ menuItems: menuItems });
       }
       if (userPerms.includes(7)) {
-        menuItems.push(
-          <Route path="/communication" />
-        );
+        menuItems.push(<Route path="/communication" />);
         this.setState({ menuItems: menuItems });
       }
       if (userPerms.includes(11)) {
@@ -62,7 +57,7 @@ class BackgroundPage extends Component {
 }
 
 const mapStoreToProps = state => {
-  return {user: state.user, permissions: state.permissions};
+  return { user: state.user, permissions: state.permissions };
 };
 const mapDispatchToProps = {
   _push: push
