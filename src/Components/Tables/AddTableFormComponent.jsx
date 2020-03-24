@@ -8,29 +8,11 @@ class AddTableFormComponent extends Component {
     super(props);
   }
 
-  componentDidMount = () => {
-    if (this.props.permissions) {
-      let checkboxes = this.state.checkboxes;
-      for (let key in this.props.permissions) {
-        checkboxes.push(
-          <Row>
-            <Checkbox value={parseInt(key)}>
-              {permissionsMapping[key]}
-            </Checkbox>
-          </Row>
-        );
-      }
-      this.setState({ checkboxes: checkboxes });
-    }
-  };
-
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        values.auth = this.props.user.auth;
-        this.props._AddTable(values);
-        this.props._gettableList(this.props.user.auth);
+        console.log("Add Table Form Values:", values);
       }
     });
   };
@@ -60,19 +42,18 @@ class AddTableFormComponent extends Component {
               ]
             })(<Input />)}
           </Form.Item>
-          <Form.Item label="Select Permissions for New table (some permissions may require others and will be automatically selected)">
-            {getFieldDecorator("permissions", {
-              valuePropName: "value",
+          <Form.Item label="Column Names" extra="Enter each column name on a new line">
+            {getFieldDecorator('columns', {
               rules: [
-                { required: true, message: "Select at least 1 Permission" }
-              ]
-            })(
-              <Checkbox.Group onChange={this.handleChange}>
-                {this.state.checkboxes}
-              </Checkbox.Group>
-            )}
+                {
+                  required: true,
+                  message: 'Please enter column names, with each name on a new line',
+                },
+              ],
+            })(<TextArea
+              autoSize={{ minRows: 4, maxRows: 20 }}
+            />)}
           </Form.Item>
-
           <Form.Item>
             <Button
               type="primary"
@@ -94,14 +75,11 @@ const mapStoreToProps = state => {
   return {
     user: state.user,
     location: state.router.location,
-    permissions: state.permissions
   };
 };
 
 const mapDispatchToProps = {
   _push: push,
-  _AddTable: AddTable,
-  _gettableList: gettableList
 };
 
 export default connect(mapStoreToProps, mapDispatchToProps)(AddTableForm);
