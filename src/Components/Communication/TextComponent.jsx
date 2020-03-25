@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import { Form, Icon, Input, Button, Radio, Select, Typography } from 'antd';
+import { Form, Icon, Input, Button, Radio, Select, Typography, message } from 'antd';
 import { getRoleList } from "../../Redux/roles";
 import { getUserList } from "../../Redux/listUsers";
+import axios from "axios";
 
 const { Option, OptGroup } = Select;
 const { Title } = Typography;
@@ -60,7 +61,6 @@ class TextComponent extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        // TODO: Handle Submit
         const roles = [];
         const users = [];
         values.To.forEach((key) => {
@@ -74,8 +74,16 @@ class TextComponent extends Component {
           "auth": this.props.user.auth,
           "roles": roles,
           "users": users,
-          "body": values.body
+          "message": values.body
         }
+        axios.post("/message/text", reqBody)
+          .then((response) => {
+            message.success("Text sent");
+            this.props.form.resetFields();
+          })
+          .catch((err) => {
+            message.error("Unable to send text");
+          });
       }
     });
   };
@@ -95,7 +103,7 @@ class TextComponent extends Component {
     };
     return (
       <div>
-        <Form {...formItemLayout} onSubmit={this.handleSubmit} style={{ background: "#FFFFFF", padding: "10vh", textAlign: "center"  }}>
+        <Form {...formItemLayout} onSubmit={this.handleSubmit} style={{ background: "#FFFFFF", padding: "10vh", textAlign: "center" }}>
           <Form.Item label="To">
             {getFieldDecorator('To', {
               rules: [

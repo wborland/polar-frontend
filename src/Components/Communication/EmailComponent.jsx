@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import { Form, Icon, Input, Button, Radio, Select, Upload, Typography } from 'antd';
+import { Form, Icon, Input, Button, Radio, Select, Upload, Typography, message } from 'antd';
 import { getRoleList } from "../../Redux/roles";
 import { getUserList } from "../../Redux/listUsers";
 import { CloudUploadOutlined } from '@ant-design/icons';
+import axios from "axios";
 
 const { Option, OptGroup } = Select;
 const { Title } = Typography;
@@ -73,17 +74,26 @@ class EmailComponent extends Component {
           "roles": roles,
           "users": users,
           "subject": values.subject,
-          "body": values.body,
+          "message": values.body,
         }
-        if(this.state.fileList.length !== 0) {
-          // TODO: API request with form data
+        if (this.state.fileList.length !== 0) {
           let formData = new FormData();
           formData.append('file', this.state.fileList[0]);
           formData.append('body', reqBody);
+          axios.post("/message/email", formData)
+            .then((response) => {
+              message.success("Email sent");
+            }).catch((error) => {
+              message.error("Email failed to send");
+            });
         } else {
-          // TODO: API request as normal json
+          axios.post("/message/email", reqBody)
+            .then((response) => {
+              message.success("Email sent");
+            }).catch((error) => {
+              message.error("Email failed to send");
+            });
         }
-        
       }
     });
   };
@@ -96,8 +106,8 @@ class EmailComponent extends Component {
   }
 
   handleFileRemove = (file) => {
-    this.setState({fileList: []});
-    return {fileList: []}
+    this.setState({ fileList: [] });
+    return { fileList: [] }
   }
 
   render() {
@@ -161,7 +171,6 @@ class EmailComponent extends Component {
               <Button disabled={this.state.fileList.length !== 0}>
                 <CloudUploadOutlined /> Click to Upload a File
               </Button>
-
             </Upload>
           </Form.Item>
           <Form.Item style={{ textAlign: "right" }}>
