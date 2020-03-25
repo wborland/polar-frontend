@@ -76,15 +76,26 @@ class EmailComponent extends Component {
           "subject": values.subject,
           "message": values.body,
         }
+
+        
+        console.log("State", this.state);
         if (this.state.fileList.length !== 0) {
+          // Upload test:
+          const uploadReqBody = {
+            "auth": this.props.user.auth,
+            "name": this.state.fileList[0].name,
+            "desc": "testFileUpload",
+            "file": this.state.fileList[0],
+            "roles": roles
+          }
           let formData = new FormData();
           formData.append('file', this.state.fileList[0]);
-          formData.append('body', reqBody);
-          axios.post("/message/email", formData)
+          formData.append('body', uploadReqBody);
+          axios.post("/files/upload", formData)
             .then((response) => {
-              message.success("Email sent");
+              message.success("file uploaded");
             }).catch((error) => {
-              message.error("Email failed to send");
+              message.error("file failed to upload");
             });
         } else {
           axios.post("/message/email", reqBody)
