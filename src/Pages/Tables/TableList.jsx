@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { Table, Button, Skeleton, Typography, message } from 'antd';
+import { Table, Button, Skeleton, Typography, Divider } from 'antd';
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import axios from "axios";
+import { getTableList } from "../../Redux/tables";
 
 const { Title } = Typography;
 
@@ -22,31 +22,21 @@ class TableList extends Component {
         },
         {
           title: "Operations",
+          align: "right",
           dataIndex: "operation",
           render: (text, record) =>
             <div>
-              <Button onClick={this.handleEdit(record.key)}> Edit Table Settings </Button>
-              <Button danger onClick={this.handleDelete(record.key)}> Delete Table </Button>
+              <Button onClick={() => this.handleEdit(record.key)}> Edit Table Settings </Button>
+              <Divider type="vertical"/>
+              <Button onClick={() => this.handleDelete(record.key)}> Delete Table </Button>
             </div>
         }
-      ],
-      tableList: []
+      ]
     }
   }
 
   componentDidMount = () => {
-    // TODO: Make API request to get list of files
-    axios.post('/table/all', { "auth": this.props.user.auth })
-      .then((response) => {
-        console.log("response", response);
-      }).catch((err) => {
-        message.error("Failed to retrieve table")
-      });
-  }
-
-  componentDidUpdate = (prevState) => {
-    // TODO: Update files list
-
+    this.props._getTableList(this.props.user.auth);
   }
 
   handleEdit = (tableKey) => {
@@ -58,7 +48,7 @@ class TableList extends Component {
   }
 
   render() {
-    if (!this.state.tableList || this.state.tableList.length === 0) {
+    if (!this.props.tables.tableList || this.props.tables.tableList.length === 0) {
       return (
         <div style={{ background: "#FFFFFF", height: "calc(100vh - 64px)", textAlign: "center", paddingTop: "10px" }}>
           <Title>Inventory</Title>
@@ -70,7 +60,7 @@ class TableList extends Component {
       <div style={{ background: "#FFFFFF", height: "calc(100vh - 64px)", textAlign: "center", paddingTop: "10px" }}>
         <Title>Inventory</Title>
         <Table
-          dataSource={this.state.tableList}
+          dataSource={this.props.tables.tableList}
           columns={this.state.columns}
         />
       </div>
@@ -81,11 +71,13 @@ class TableList extends Component {
 const mapStoreToProps = state => {
   return {
     user: state.user,
+    tables: state.tables
   };
 };
 
 const mapDispatchToProps = {
-  _push: push
+  _push: push,
+  _getTableList: getTableList
 };
 
 export default connect(mapStoreToProps, mapDispatchToProps)(withRouter(TableList));
