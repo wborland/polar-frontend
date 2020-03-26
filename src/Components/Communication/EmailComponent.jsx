@@ -88,7 +88,7 @@ class EmailComponent extends Component {
           }
           let formData = new FormData();
           formData.append('file', this.state.fileList[0]);
-          formData.append('data', uploadReqBody);
+          formData.append('data', JSON.stringify(uploadReqBody));
           formData.append('auth', this.props.user.auth);
           axios.post("/files/upload", formData, {headers: {"auth": this.props.user.auth}})
             .then((response) => {
