@@ -45,11 +45,14 @@ class TextComponent extends Component {
       let usersArr = this.props.userList.showUsers
       let users = this.state.users;
       for (let i in usersArr) {
+        if(!usersArr[i].phone) {
+          continue;
+        }
         let display = "";
         if (usersArr[i].firstName && usersArr[i].lastName) {
           display = usersArr[i].firstName + " " + usersArr[i].lastName + " - "
         }
-        display += usersArr[i].email
+        display += usersArr[i].phone
         users.push(<Option value={"u" + usersArr[i].key} label={display}>{display}</Option>)
       }
       this.setState({ "users": users });

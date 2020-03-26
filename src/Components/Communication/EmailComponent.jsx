@@ -77,8 +77,6 @@ class EmailComponent extends Component {
           "message": values.body,
         }
 
-        
-        console.log("State", this.state);
         if (this.state.fileList.length !== 0) {
           // Upload test:
           const uploadReqBody = {
@@ -102,6 +100,7 @@ class EmailComponent extends Component {
           axios.post("/message/email", reqBody)
             .then((response) => {
               message.success("Email sent");
+              this.props.form.resetFields();
             }).catch((error) => {
               message.error("Email failed to send");
             });
