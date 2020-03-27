@@ -16,8 +16,8 @@ class Files extends Component {
       dataIndex: "description"
     },
     {
-      title: "Date Uploaded",
-      dataIndex: "timestamp"
+      title: "Uploaded by",
+      dataIndex: "uploaderName"
     },
     {
       title: "Actions",
@@ -70,6 +70,7 @@ class Files extends Component {
   };
 
   render() {
+    console.log(this.props.files);
     return (
       <div style={{ height: "calc(100vh - 64px)" }}>
         <Table dataSource={this.props.files.fileList} columns={this.columns} />
