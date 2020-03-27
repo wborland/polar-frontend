@@ -59,7 +59,7 @@ class AddFiles extends Component {
   };
 
   handleSubmit = () => {
-    if (Object.keys(this.state.file).length === 0) {
+    if (this.state.fileList.length === 0) {
       message.error("Please add a file to upload", 5);
       return;
     }
@@ -75,10 +75,22 @@ class AddFiles extends Component {
       roles: this.state.roles
     };
     let formData = new FormData();
-    formData.append("file", this.state.file);
+    console.log(this.state.fileList[0]);
+    formData.append("file", this.state.fileList[0]);
     formData.append("data", JSON.stringify(uploadParam));
     formData.append("auth", this.props.user.auth);
     this.props._uploadFile(formData, this.props.user.auth);
+  };
+
+  handleFileBeforeUpload = file => {
+    console.log(file);
+    this.setState({ fileList: [file] });
+    return false;
+  };
+
+  handleFileRemove = file => {
+    this.setState({ fileList: [] });
+    return { fileList: [] };
   };
 
   render() {
@@ -114,7 +126,11 @@ class AddFiles extends Component {
         >
           {this.getChildren()}
         </Select>
-        <Upload onChange={this.handleFileChange} fileList={this.state.fileList}>
+        <Upload
+          onRemove={this.handleFileRemove}
+          beforeUpload={this.handleFileBeforeUpload}
+          fileList={this.state.fileList}
+        >
           <Button style={{ marginTop: "10px", marginRight: "15px" }}>
             Upload file
           </Button>

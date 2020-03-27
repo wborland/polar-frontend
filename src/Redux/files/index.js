@@ -60,6 +60,7 @@ export const uploadFile = (body, auth) => dispatch => {
     })
     .catch(err => {
       message.error("Something went wrong, please try again", 10);
+      console.log(err.response);
     });
 };
 
