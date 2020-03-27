@@ -1,4 +1,4 @@
-import { GET_ALL_FILES, UPDATE_DIALOG } from "../action_types";
+import { GET_ALL_FILES, UPDATE_DIALOG, OPEN_FILE } from "../action_types";
 import Axios from "axios";
 import { message } from "antd";
 
@@ -10,7 +10,8 @@ const getFiles = fileList => ({
 
 // Initial dialog state
 const initialState = {
-  fileList: []
+  fileList: [],
+  open: {}
 };
 
 // Action helpers
@@ -45,8 +46,29 @@ export const callGetFiles = auth => dispatch => {
     });
 };
 
-export const deleteFiles = (auth, fileName) => dispatch => {
-  Axios.post("/files/delete", { auth, fileName })
+export const openFile = (auth, name) => dispatch => {
+  Axios.post("/files/download", { auth, name })
+    .then(response => {
+      if (response.status === 200) {
+        dispatch({ type: OPEN_FILE, open: response.data });
+        console.log(response.data);
+      } else {
+        message.error(
+          "Something went wrong, please reload the page to try again",
+          10
+        );
+      }
+    })
+    .catch(err => {
+      message.error(
+        "Something went wrong, please reload the page to try again",
+        10
+      );
+    });
+};
+
+export const deleteFiles = (auth, fileId, name) => dispatch => {
+  Axios.post("/files/delete", { auth, fileId, name })
     .then(response => {
       if (response.status === 200)
         dispatch({
@@ -65,7 +87,9 @@ export const deleteFiles = (auth, fileName) => dispatch => {
 const fileReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_ALL_FILES:
-      return { ...action };
+      return Object.assign({}, state, { fileList: action.fileList });
+    case OPEN_FILE:
+      return Object.assign({}, state, { open: action.open });
     default:
       return state;
   }

@@ -13,3 +13,4 @@ export const SET_OTHER_USER = "[User Management] - get other user information";
 export const UPDATE_USER_ROLES =
   "[User Management] - set other user role information";
 export const GET_ALL_FILES = "[Files] - get all files";
+export const OPEN_FILE = "[Files] - open specific file";
