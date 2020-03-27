@@ -28,7 +28,11 @@ class Files extends Component {
           <Button
             style={{ margin: "5px" }}
             onClick={() =>
-              this.props._openFile(this.props.user.auth, record.storageName)}
+              this.props._openFile(
+                this.props.user.auth,
+                record.storageName,
+                record.displayName
+              )}
           >
             Open
           </Button>
@@ -80,7 +84,7 @@ class Files extends Component {
   };
 
   render() {
-    console.log(this.props.files);
+    console.log(this.props.files.open);
     return (
       <div style={{ height: "calc(100vh - 64px)" }}>
         <Table dataSource={this.props.files.fileList} columns={this.columns} />

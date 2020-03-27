@@ -1,6 +1,7 @@
 import { GET_ALL_FILES, UPDATE_DIALOG, OPEN_FILE } from "../action_types";
 import Axios from "axios";
-import { message } from "antd";
+import React from "react";
+import { message, Button } from "antd";
 
 // Action creators
 const getFiles = fileList => ({
@@ -46,12 +47,30 @@ export const callGetFiles = auth => dispatch => {
     });
 };
 
-export const openFile = (auth, name) => dispatch => {
+export const openFile = (auth, name, displayName) => dispatch => {
   Axios.post("/files/download", { auth, name })
     .then(response => {
       if (response.status === 200) {
         dispatch({ type: OPEN_FILE, open: response.data });
         console.log(response.data);
+        debugger;
+        let file = new File(response.data, displayName);
+        var objectURL = URL.createObjectURL(file);
+        window.open(objectURL);
+        dispatch({
+          type: UPDATE_DIALOG,
+          dialog: {
+            open: true,
+            object: {
+              title: `Download ${displayName}`,
+              content: (
+                <Button download={displayName} href={response.data}>
+                  Download File
+                </Button>
+              )
+            }
+          }
+        });
       } else {
         message.error(
           "Something went wrong, please reload the page to try again",
