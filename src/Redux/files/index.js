@@ -42,10 +42,25 @@ export const callGetFiles = auth => dispatch => {
     });
 };
 
-export const uploadFile = body => dispatch => {
-  Axios.post("/files/upload", body).then(response =>
-    console.log(response.status)
-  );
+export const uploadFile = (body, auth) => dispatch => {
+  Axios.post("/files/upload", body, {
+    headers: { auth: auth }
+  })
+    .then(response => {
+      console.log(response.status);
+      if (response.status === 200) {
+        message.success("Successfully added file, please refresh the page");
+        dispatch({
+          type: UPDATE_DIALOG,
+          dialog: { open: false, object: { title: "", content: null } }
+        });
+      } else {
+        message.error("Something went wrong, please try again", 10);
+      }
+    })
+    .catch(err => {
+      message.error("Something went wrong, please try again", 10);
+    });
 };
 
 export const deleteFiles = (auth, fileName) => dispatch => {
