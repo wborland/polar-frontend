@@ -42,6 +42,12 @@ export const callGetFiles = auth => dispatch => {
     });
 };
 
+export const uploadFile = body => dispatch => {
+  Axios.post("/files/upload", body).then(response =>
+    console.log(response.status)
+  );
+};
+
 export const deleteFiles = (auth, fileName) => dispatch => {
   Axios.post("/files/delete", { auth, fileName })
     .then(response => {

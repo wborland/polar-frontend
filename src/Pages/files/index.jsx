@@ -4,6 +4,7 @@ import "antd/dist/antd.css";
 import { callGetFiles, deleteFiles } from "../../Redux/files";
 import { connect } from "react-redux";
 import { updateDialog } from "../../Redux/dialog";
+import AddFiles from "./addFiles";
 
 class Files extends Component {
   columns = [
@@ -72,6 +73,16 @@ class Files extends Component {
   render() {
     return (
       <div style={{ height: "calc(100vh - 64px)" }}>
+        <Button
+          style={{ marginLeft: "5px", marginTop: "10px" }}
+          onClick={() =>
+            this.props._updateDialog(true, {
+              title: "Add new File",
+              content: <AddFiles />
+            })}
+        >
+          Add File
+        </Button>
         <Table dataSource={this.props.files.fileList} columns={this.columns} />
       </div>
     );
