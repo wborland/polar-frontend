@@ -83,8 +83,14 @@ class AddFiles extends Component {
   };
 
   handleFileBeforeUpload = file => {
-    console.log(file);
-    this.setState({ fileList: [file] });
+    let tempName = this.state.name;
+    if (tempName === "") {
+      tempName = file.name;
+    }
+    this.setState({
+      fileList: [file],
+      name: tempName
+    });
     return false;
   };
 

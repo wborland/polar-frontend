@@ -59,8 +59,16 @@ export const uploadFile = (body, auth) => dispatch => {
       }
     })
     .catch(err => {
-      message.error("Something went wrong, please try again", 10);
-      console.log(err.response);
+      if (
+        err.response.data.message === "A file with this name already exists."
+      ) {
+        message.error(
+          "A file with this display name already exists, please change display name.",
+          10
+        );
+      } else {
+        message.error("Something went wrong, please try again", 10);
+      }
     });
 };
 
