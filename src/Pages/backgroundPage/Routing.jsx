@@ -20,20 +20,26 @@ class BackgroundPage extends Component {
       let userPerms = this.props.user.permissions;
       let menuItems = [];
       if (userPerms.includes(8)) {
-        menuItems.push(<Route path="/inventory" />);
+        menuItems.push(<Route key={0} path="/inventory" />);
         this.setState({ menuItems: menuItems });
       }
       if (userPerms.includes(1)) {
-        menuItems.push(<Route path="/files" render={() => <Files />} />);
+        menuItems.push(
+          <Route key={1} path="/files" render={() => <Files />} />
+        );
         this.setState({ menuItems: menuItems });
       }
       if (userPerms.includes(7)) {
-        menuItems.push(<Route path="/communication" />);
+        menuItems.push(<Route key={2} path="/communication" />);
         this.setState({ menuItems: menuItems });
       }
       if (userPerms.includes(11)) {
         menuItems.push(
-          <Route path="/usermanagement" render={() => <UserManagement />} />
+          <Route
+            key={4}
+            path="/usermanagement"
+            render={() => <UserManagement />}
+          />
         );
       }
       this.setState({ menuItems: menuItems });

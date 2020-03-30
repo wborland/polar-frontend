@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Table, Button } from "antd";
 import "antd/dist/antd.css";
-import { callGetFiles, deleteFiles } from "../../Redux/files";
+import { callGetFiles, deleteFiles, openFile } from "../../Redux/files";
 import { connect } from "react-redux";
 import { updateDialog } from "../../Redux/dialog";
 import AddFiles from "./addFiles";
@@ -17,8 +17,8 @@ class Files extends Component {
       dataIndex: "description"
     },
     {
-      title: "Date Uploaded",
-      dataIndex: "timestamp"
+      title: "Uploaded by",
+      dataIndex: "uploaderName"
     },
     {
       title: "Actions",
@@ -26,7 +26,17 @@ class Files extends Component {
       dataIndex: "Actions",
       render: (text, record) =>
         <div>
-          <Button style={{ margin: "5px" }}>Open</Button>
+          <Button
+            style={{ margin: "5px" }}
+            onClick={() =>
+              this.props._openFile(
+                this.props.user.auth,
+                record.storageName,
+                record.displayName
+              )}
+          >
+            Download
+          </Button>
           <Button
             style={{ margin: "5px" }}
             onClick={() =>
@@ -51,7 +61,11 @@ class Files extends Component {
           <Button
             style={{ margin: "5px" }}
             onClick={() =>
-              this.props._deleteFiles(this.props.user.auth, record.storageName)}
+              this.props._deleteFiles(
+                this.props.user.auth,
+                record.fileId,
+                record.storageName
+              )}
           >
             Yes
           </Button>
@@ -97,7 +111,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   _callGetFiles: callGetFiles,
   _updateDialog: updateDialog,
-  _deleteFiles: deleteFiles
+  _deleteFiles: deleteFiles,
+  _openFile: openFile
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Files);
