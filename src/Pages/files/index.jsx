@@ -34,7 +34,7 @@ class Files extends Component {
                 record.displayName
               )}
           >
-            Open
+            Download
           </Button>
           <Button
             style={{ margin: "5px" }}
@@ -84,7 +84,6 @@ class Files extends Component {
   };
 
   render() {
-    console.log(this.props.files.open);
     return (
       <div style={{ height: "calc(100vh - 64px)" }}>
         <Table dataSource={this.props.files.fileList} columns={this.columns} />

@@ -55,30 +55,8 @@ export const openFile = (auth, name, displayName) => dispatch => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", displayName); //or any other extension
-        document.body.appendChild(link);
+        link.setAttribute("download", displayName);
         link.click();
-        //window.open(response);
-        window.open("data:application/pdf," + encodeURI(response.data));
-        console.log(response.data);
-        debugger;
-        let file = new File(response.data, displayName);
-        var objectURL = URL.createObjectURL(file);
-        window.open(objectURL);
-        dispatch({
-          type: UPDATE_DIALOG,
-          dialog: {
-            open: true,
-            object: {
-              title: `Download ${displayName}`,
-              content: (
-                <Button download={displayName} href={response.data}>
-                  Download File
-                </Button>
-              )
-            }
-          }
-        });
       } else {
         message.error(
           "Something went wrong, please reload the page to try again",
