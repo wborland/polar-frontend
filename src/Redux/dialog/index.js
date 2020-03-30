@@ -17,7 +17,6 @@ const initialState = {
 
 // Action helpers
 export const updateDialog = (open, object) => dispatch => {
-  console.log(open);
   const dialog = object == null ? initialState.object : object;
   dispatch(openDialog({ open, object: dialog }));
 };

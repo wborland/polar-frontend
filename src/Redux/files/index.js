@@ -72,8 +72,39 @@ export const openFile = (auth, name, displayName) => dispatch => {
     });
 };
 
+export const uploadFile = (body, auth) => dispatch => {
+  Axios.post("/files/upload", body, {
+    headers: { auth: auth }
+  })
+    .then(response => {
+      console.log(response.status);
+      if (response.status === 200) {
+        message.success("Successfully added file, please refresh the page");
+        dispatch({
+          type: UPDATE_DIALOG,
+          dialog: { open: false, object: { title: "", content: null } }
+        });
+      } else {
+        message.error("Something went wrong, please try again", 10);
+      }
+    })
+    .catch(err => {
+      if (
+        err.response.data.message === "A file with this name already exists."
+      ) {
+        message.error(
+          "A file with this display name already exists, please change display name.",
+          10
+        );
+      } else {
+        message.error("Something went wrong, please try again", 10);
+      }
+    });
+};
+
 export const deleteFiles = (auth, fileId, name) => dispatch => {
   Axios.post("/files/delete", { auth, fileId, name })
+
     .then(response => {
       if (response.status === 200)
         dispatch({
