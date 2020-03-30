@@ -1,7 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import { Form, Icon, Input, Button, Checkbox, Divider, Row, Col } from "antd";
+import { Form, Input, Button, message } from "antd";
+import axios from 'axios';
+import { updateDialog } from "../../Redux/dialog";
+import { getTableList } from "../../Redux/tables";
+
+const { TextArea } = Input;
 
 class AddTableFormComponent extends Component {
   constructor(props) {
@@ -12,7 +17,18 @@ class AddTableFormComponent extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log("Add Table Form Values:", values);
+        let cols  = values.columns.split("\n");
+        cols = cols.map((col) => col.trim());
+        values.columns =  cols.filter(Boolean);
+        values.auth = this.props.user.auth;
+        axios.post("/table/create", values)
+          .then((response) => {
+            this.props._updateDialog(false, null);
+            message.success("Table Created");
+            this.props._getTableList(this.props.user.auth);
+          }).catch((err) => {
+            message.error("Failed to create table");
+          });
       }
     });
   };
@@ -80,6 +96,9 @@ const mapStoreToProps = state => {
 
 const mapDispatchToProps = {
   _push: push,
+  _updateDialog: updateDialog,
+  _getTableList: getTableList,
+
 };
 
 export default connect(mapStoreToProps, mapDispatchToProps)(AddTableForm);

@@ -30,12 +30,10 @@ const mapStoreToProps = state => {
   return {
     user: state.user,
     router: state.router,
-    // TODO: Add files list
   };
 };
 
 const mapDispatchToProps = {
-  // TODO: API call to get files
   _push: push
 };
 

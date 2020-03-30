@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import { Form, Button } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { updateDialog } from "../../Redux/dialog";
 import AddTableForm from "./AddTableFormComponent";
 
@@ -20,8 +21,9 @@ class AddTableButton extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{textAlign:"right"}}>
         <Button
+          type="primary"
           onClick={() =>
             this.props._updateDialog(true, {
               title: "Add Table",
