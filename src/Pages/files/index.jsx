@@ -37,16 +37,7 @@ class Files extends Component {
           >
             Download
           </Button>
-          <Button
-            style={{ margin: "5px" }}
-            onClick={() =>
-              this.props._updateDialog(true, {
-                title: "Delete file",
-                content: this.deleteFile(record)
-              })}
-          >
-            Delete
-          </Button>
+          {this.deleteFileButton(record)}
         </div>
     }
   ];
@@ -80,13 +71,30 @@ class Files extends Component {
     );
   };
 
+  deleteFileButton = record => {
+    if (this.props.user.permissions.includes(2)) {
+      return (
+        <Button
+          style={{ margin: "5px" }}
+          onClick={() =>
+            this.props._updateDialog(true, {
+              title: "Delete file",
+              content: this.deleteFile(record)
+            })}
+        >
+          Delete
+        </Button>
+      );
+    }
+  };
+
   componentDidMount = () => {
     this.props._callGetFiles(this.props.user.auth);
   };
 
-  render() {
-    return (
-      <div style={{ height: "calc(100vh - 64px)" }}>
+  addFileButton = () => {
+    if (this.props.user.permissions.includes(2)) {
+      return (
         <Button
           style={{ marginLeft: "5px", marginTop: "10px" }}
           onClick={() =>
@@ -97,6 +105,21 @@ class Files extends Component {
         >
           Add File
         </Button>
+      );
+    }
+    return null;
+  };
+
+  render() {
+    return (
+      <div style={{ height: "calc(100vh - 64px)", overflowY: "auto" }}>
+        {this.addFileButton()}
+        <Button
+          style={{ float: "right", marginRight: "5px", marginTop: "10px" }}
+          onClick={() => this.props._callGetFiles(this.props.user.auth)}
+        >
+          Refresh
+        </Button>
         <Table dataSource={this.props.files.fileList} columns={this.columns} />
       </div>
     );
@@ -105,7 +128,8 @@ class Files extends Component {
 
 const mapStateToProps = state => ({
   files: state.files,
-  user: state.user
+  user: state.user,
+  permissions: state.permissions
 });
 
 const mapDispatchToProps = {

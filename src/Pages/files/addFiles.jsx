@@ -75,7 +75,6 @@ class AddFiles extends Component {
       roles: this.state.roles
     };
     let formData = new FormData();
-    console.log(this.state.fileList[0]);
     formData.append("file", this.state.fileList[0]);
     formData.append("data", JSON.stringify(uploadParam));
     formData.append("auth", this.props.user.auth);

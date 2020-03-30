@@ -1,7 +1,6 @@
 import { GET_ALL_FILES, UPDATE_DIALOG, OPEN_FILE } from "../action_types";
 import Axios from "axios";
-import React from "react";
-import { message, Button } from "antd";
+import { message } from "antd";
 
 // Action creators
 const getFiles = fileList => ({
@@ -104,14 +103,17 @@ export const uploadFile = (body, auth) => dispatch => {
 
 export const deleteFiles = (auth, fileId, name) => dispatch => {
   Axios.post("/files/delete", { auth, fileId, name })
-
     .then(response => {
-      if (response.status === 200)
+      if (response.status === 200) {
         dispatch({
           type: UPDATE_DIALOG,
           dialog: { open: false, object: { title: "", content: null } }
         });
-      else {
+        message.success(
+          "File deleted successfully, refresh page to see changes",
+          5
+        );
+      } else {
         message.error("Something went wrong, please try again", 10);
       }
     })
