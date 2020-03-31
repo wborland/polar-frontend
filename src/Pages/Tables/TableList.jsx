@@ -64,11 +64,11 @@ class TableList extends Component {
         <p>
           Are you sure you want to delete <b>{tableInfo.tableName}</b>?
         </p>
-        <div style={{textAlign: "right"}}>
+        <div style={{ textAlign: "right" }}>
           <Button style={{ marginRight: "10px" }} onClick={() => this.props._updateDialog(false, null)}>
             No
           </Button>
-          <Button onClick={(tableInfo) => this.deleteTable(tableInfo.key)}>
+          <Button onClick={() => this.deleteTable(tableInfo.key)}>
             Yes
           </Button>
         </div>
@@ -78,14 +78,14 @@ class TableList extends Component {
   };
 
 
-  deleteTable = (tableId) =>  {
-    axios.post("/table/delete", {"tableId": tableId, "auth": this.props.user.auth})
-      .then((response)  => {
-        console.log("Deleted Table", response);
+  deleteTable = (tableId) => {
+    let reqBody = { "tableId": tableId, "auth": this.props.user.auth }
+    axios.post("/table/delete", reqBody)
+      .then((response) => {
+        this.props._updateDialog(false, null)
         message.success("Table Deleted");
         this.props._getTableList(this.props.user.auth);
       }).catch((err) => {
-        console.log("Failed Delete Table", err);
         message.error("Failed to deleted table");
       });
   }

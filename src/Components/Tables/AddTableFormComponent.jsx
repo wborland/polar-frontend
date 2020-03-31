@@ -49,7 +49,8 @@ class AddTableFormComponent extends Component {
               rules: [
                 {
                   type: "string",
-                  message: "Please enter alpha-numeric characters"
+                  pattern: "^[a-zA-Z0-9() ]+$",
+                  message: "Please enter letters or numbers only"
                 },
                 {
                   required: true,
@@ -61,6 +62,11 @@ class AddTableFormComponent extends Component {
           <Form.Item label="Column Names" extra="Enter each column name on a new line">
             {getFieldDecorator('columns', {
               rules: [
+                {
+                  type: "string",
+                  pattern: "^[a-zA-Z0-9()\n\r ]+$",
+                  message: "Please enter letters or numbers only"
+                },
                 {
                   required: true,
                   message: 'Please enter column names, with each name on a new line',
