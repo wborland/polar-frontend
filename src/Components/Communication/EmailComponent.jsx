@@ -69,6 +69,7 @@ class EmailComponent extends Component {
             users.push(key.substring(1));
           }
         });
+        
         const reqBody = {
           "auth": this.props.user.auth,
           "roles": roles,
@@ -76,35 +77,23 @@ class EmailComponent extends Component {
           "subject": values.subject,
           "message": values.body,
         }
-
+        
+        let formData = new FormData();
+        formData.append('data', JSON.stringify(reqBody));
+        
         if (this.state.fileList.length !== 0) {
-          // Upload test:
-          const uploadReqBody = {
-            "auth": this.props.user.auth,
-            "name": this.state.fileList[0].name,
-            "desc": "testFileUpload",
-            "file": this.state.fileList[0],
-            "roles": roles
-          }
-          let formData = new FormData();
           formData.append('file', this.state.fileList[0]);
-          formData.append('data', JSON.stringify(uploadReqBody));
-          formData.append('auth', this.props.user.auth);
-          axios.post("/files/upload", formData, {headers: {"auth": this.props.user.auth}})
-            .then((response) => {
-              message.success("file uploaded");
-            }).catch((error) => {
-              message.error("file failed to upload");
-            });
-        } else {
-          axios.post("/message/email", reqBody)
-            .then((response) => {
-              message.success("Email sent");
-              this.props.form.resetFields();
-            }).catch((error) => {
-              message.error("Email failed to send");
-            });
-        }
+          // formData.append('auth', this.props.user.auth);
+        } 
+
+        axios.post("/message/email", formData, {headers: {"auth": this.props.user.auth}})
+          .then((response) => {
+            message.success("Email sent");
+            this.props.form.resetFields();
+          }).catch((error) => {
+            message.error("Email failed to send");
+          });
+        
       }
     });
   };

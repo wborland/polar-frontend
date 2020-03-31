@@ -117,11 +117,13 @@ export const getUserInfo = auth => dispatch => {
       }
     })
     .catch(err => {
-      if (err.response.status == 401) {
-        closeModal(dispatch);
-        localStorage.removeItem("token");
-        dispatch(logoutUser());
-        dispatch(push("/login"));
+      if(err.response) {
+        if (err.response.status == 401) {
+          closeModal(dispatch);
+          localStorage.removeItem("token");
+          dispatch(logoutUser());
+          dispatch(push("/login"));
+        }
       }
     });
 };
