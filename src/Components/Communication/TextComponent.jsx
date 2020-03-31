@@ -27,33 +27,32 @@ class TextComponent extends Component {
   }
 
   componentDidMount = () => {
-    this.props._getRoleList(this.props.user.auth);
-    this.props._getUserList(this.props.user.auth);
-
+    axios.post("/message/getRoles", {"auth": this.props.user.auth})
+      .then((response) => {
+        this.setState({unfilteredRoles: response.data})
+      }).catch((err) => {
+        this.props._push('/');
+      });
+    axios.post("/message/getUsers", {"auth": this.props.user.auth})
+      .then((response) => {
+        this.setState({unfilteredUsers: response.data})
+      }).catch((err) => {
+        this.props._push('/');
+      });
   }
 
-  componentDidUpdate = (prevProps) => {
-    if (this.props.roles.listRoles != prevProps.roles.listRoles) {
-      let rolesArr = this.props.roles.listRoles
+  componentDidUpdate = (prevProps, prevState) => {
+    if(this.state.unfilteredRoles != prevState.unfilteredRoles) {
       let roles = this.state.roles;
-      for (let i in rolesArr) {
-        roles.push(<Option value={"r" + rolesArr[i].key} label={rolesArr[i].roleName}>{rolesArr[i].roleName}</Option>)
+      for (let i in this.state.unfilteredRoles) {
+        roles.push(<Option key={"r" + this.state.unfilteredRoles[i][0]} value={"r" + this.state.unfilteredRoles[i][0]} label={this.state.unfilteredRoles[i][1]}>{this.state.unfilteredRoles[i][1]}</Option>)
       }
       this.setState({ "roles": roles });
     }
-    if (this.props.userList != prevProps.userList) {
-      let usersArr = this.props.userList.showUsers
+    if(this.state.unfilteredUsers != prevState.unfilteredUsers) {
       let users = this.state.users;
-      for (let i in usersArr) {
-        if(!usersArr[i].phone) {
-          continue;
-        }
-        let display = "";
-        if (usersArr[i].firstName && usersArr[i].lastName) {
-          display = usersArr[i].firstName + " " + usersArr[i].lastName + " - "
-        }
-        display += usersArr[i].phone
-        users.push(<Option value={"u" + usersArr[i].key} label={display}>{display}</Option>)
+      for(let i in this.state.unfilteredUsers) {
+        users.push(<Option key={"u" + this.state.unfilteredUsers[i][0]} value={"u" + this.state.unfilteredUsers[i][0]} label={this.state.unfilteredUsers[i][1]}>{this.state.unfilteredUsers[i][1]}</Option>)
       }
       this.setState({ "users": users });
     }

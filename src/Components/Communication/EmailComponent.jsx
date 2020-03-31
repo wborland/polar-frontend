@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import { Form, Icon, Input, Button, Radio, Select, Upload, Typography, message } from 'antd';
-import { getRoleList } from "../../Redux/roles";
-import { getUserList } from "../../Redux/listUsers";
+import { Form, Icon, Input, Button, Radio, Select, Upload, Typography, Spin, message } from 'antd';
 import { CloudUploadOutlined } from '@ant-design/icons';
 import axios from "axios";
 
@@ -19,38 +17,43 @@ class EmailComponent extends Component {
     }
 
     this.state = {
+      unfilteredRoles: [],
+      unfilteredUsers: [],
       roles: [],
       users: [],
       fileList: [],
       uploading: false,
-
+      loading: false
     }
   }
 
   componentDidMount = () => {
-    this.props._getRoleList(this.props.user.auth);
-    this.props._getUserList(this.props.user.auth);
+    axios.post("/message/getRoles", {"auth": this.props.user.auth})
+      .then((response) => {
+        this.setState({unfilteredRoles: response.data})
+      }).catch((err) => {
+        this.props._push('/');
+      });
+    axios.post("/message/getUsers", {"auth": this.props.user.auth})
+      .then((response) => {
+        this.setState({unfilteredUsers: response.data})
+      }).catch((err) => {
+        this.props._push('/');
+      });
   }
 
-  componentDidUpdate = (prevProps) => {
-    if (this.props.roles.listRoles != prevProps.roles.listRoles) {
-      let rolesArr = this.props.roles.listRoles
+  componentDidUpdate = (prevProps, prevState) => {
+    if(this.state.unfilteredRoles != prevState.unfilteredRoles) {
       let roles = this.state.roles;
-      for (let i in rolesArr) {
-        roles.push(<Option value={"r" + rolesArr[i].key} label={rolesArr[i].roleName}>{rolesArr[i].roleName}</Option>)
+      for (let i in this.state.unfilteredRoles) {
+        roles.push(<Option key={"r" + this.state.unfilteredRoles[i][0]} value={"r" + this.state.unfilteredRoles[i][0]} label={this.state.unfilteredRoles[i][1]}>{this.state.unfilteredRoles[i][1]}</Option>)
       }
       this.setState({ "roles": roles });
     }
-    if (this.props.userList != prevProps.userList) {
-      let usersArr = this.props.userList.showUsers
+    if(this.state.unfilteredUsers != prevState.unfilteredUsers) {
       let users = this.state.users;
-      for (let i in usersArr) {
-        let display = "";
-        if (usersArr[i].firstName && usersArr[i].lastName) {
-          display = usersArr[i].firstName + " " + usersArr[i].lastName + " - "
-        }
-        display += usersArr[i].email
-        users.push(<Option value={"u" + usersArr[i].key} label={display}>{display}</Option>)
+      for(let i in this.state.unfilteredUsers) {
+        users.push(<Option key={"u" + this.state.unfilteredUsers[i][0]} value={"u" + this.state.unfilteredUsers[i][0]} label={this.state.unfilteredUsers[i][1]}>{this.state.unfilteredUsers[i][1]}</Option>)
       }
       this.setState({ "users": users });
     }
@@ -83,12 +86,12 @@ class EmailComponent extends Component {
         
         if (this.state.fileList.length !== 0) {
           formData.append('file', this.state.fileList[0]);
-          // formData.append('auth', this.props.user.auth);
         } 
-
+        this.setState({loading: true})
         axios.post("/message/email", formData, {headers: {"auth": this.props.user.auth}})
           .then((response) => {
             message.success("Email sent");
+            this.setState({fileList: [], loading: false})
             this.props.form.resetFields();
           }).catch((error) => {
             message.error("Email failed to send");
@@ -175,6 +178,7 @@ class EmailComponent extends Component {
           </Form.Item>
           <Form.Item style={{ textAlign: "right" }}>
             <Button type="primary" htmlType="submit" loading={this.state.uploading}>Submit</Button>
+            {this.state.loading ? <Spin style={{marginLeft: "10px"}}/>: ""}
           </Form.Item>
         </Form>
       </div>
@@ -193,8 +197,6 @@ const mapStoreToProps = state => {
 };
 
 const mapDispatchToProps = {
-  _getRoleList: getRoleList,
-  _getUserList: getUserList,
   _push: push
 };
 
