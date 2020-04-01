@@ -44,7 +44,40 @@ export const getTableList = auth => dispatch => {
     });
 };
 
-// export const getIndivTable=(auth, )
+export const getIndivTable = (auth, tableId) => dispatch => {
+  axios
+    .post("/table/view", { auth, tableId })
+    .then(response => {
+      let tempCols = [];
+      for (let i in response.data[0]) {
+        if (i == 0) continue;
+        tempCols.push({
+          title: response.data[0][i],
+          dataIndex: response.data[0][i],
+          editable: true
+        });
+      }
+
+      let tempData = [];
+      for (let i in response.data) {
+        if (i == 0) {
+          continue;
+        }
+        let temp = {};
+        for (let j in response.data[i]) {
+          temp[response.data[0][j]] = response.data[i][j];
+        }
+        temp["key"] = response.data[i][0];
+        tempData.push(temp);
+      }
+
+      dispatch(saveIndivTable({ columns: tempCols, data: tempData }));
+    })
+    .catch(err => {
+      console.log(err.response);
+      message.error("Something went wrong, please try again", 5);
+    });
+};
 
 const tableListReducer = (state = initialState, action) => {
   switch (action.type) {
