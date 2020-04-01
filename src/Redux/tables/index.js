@@ -79,6 +79,41 @@ export const getIndivTable = (auth, tableId) => dispatch => {
     });
 };
 
+export const modifyRow = (auth, tableId, contents) => dispatch => {
+  let sendArr = Object.values(contents);
+  sendArr.pop();
+
+  axios
+    .post("/table/modifyEntry", { auth, tableId, contents: sendArr })
+    .then(response => {
+      if (response.status === 200) {
+        message.success("Row saved successfully", 3);
+        dispatch(getIndivTable(auth, tableId));
+      } else {
+        message.error("Saving failed, please try again", 5);
+      }
+    })
+    .catch(err => {
+      message.error("Saving failed, please try again", 5);
+    });
+};
+
+export const deleteRow = (auth, tableId, id) => dispatch => {
+  axios
+    .post("/table/removeEntry", { auth, tableId, id })
+    .then(response => {
+      if (response.status === 200) {
+        message.success("Row successfully deleted", 3);
+        dispatch(getIndivTable(auth, tableId));
+      } else {
+        message.error("Error removing row, please try again", 5);
+      }
+    })
+    .catch(err => {
+      message.error("Error removing row, please try again", 5);
+    });
+};
+
 const tableListReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_TABLE_LIST:

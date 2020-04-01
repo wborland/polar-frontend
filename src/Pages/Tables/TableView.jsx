@@ -11,7 +11,7 @@ import {
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import { getIndivTable } from "../../Redux/tables";
+import { getIndivTable, modifyRow, deleteRow } from "../../Redux/tables";
 
 const { Title } = Typography;
 
@@ -42,7 +42,9 @@ class TableView extends Component {
   };
 
   setValue = (dataIndex, e) => {
-    console.log(e.target.value);
+    let temp = this.state.data;
+    temp[dataIndex] = e.target.value;
+    this.setState({ data: temp });
   };
 
   EditableCell = ({
@@ -55,11 +57,13 @@ class TableView extends Component {
     children,
     ...restProps
   }) => {
-    console.log(dataIndex);
     return (
       <td {...restProps}>
         {editing
-          ? <Input onChange={e => this.setValue(dataIndex, e)} />
+          ? <Input
+              value={this.state.data[dataIndex]}
+              onChange={e => this.setValue(dataIndex, e)}
+            />
           : children}
       </td>
     );
@@ -74,14 +78,38 @@ class TableView extends Component {
     );
   };
 
-  saveRecord = () => {};
+  saveRecord = () => {
+    this.props._modifyRow(
+      this.props.user.auth,
+      parseInt(this.getUrlVars()["tableId"]),
+      this.state.data
+    );
+    this.setState({ editingKey: "" });
+    this.props._getIndivTable(
+      this.props.user.auth,
+      parseInt(this.getUrlVars()["tableId"])
+    );
+  };
 
   componentDidUpdate = prevProps => {
     // TODO: Update file data
   };
 
   edit = record => {
-    this.setState({ editingKey: record.id, data: record });
+    this.setState({ editingKey: record.id, data: { ...record } });
+  };
+
+  cancelEdit = () => {
+    for (let i in this.props.tables.tableInfo.data) {
+      if (this.props.tables.tableInfo.data[i].id === this.state.editingKey) {
+        console.log(this.props.tables.tableInfo.data[i]);
+        this.setState({ data: this.props.tables.tableInfo.data[i] }, () =>
+          this.setState({
+            editingKey: ""
+          })
+        );
+      }
+    }
   };
 
   modifyColumns = () => {
@@ -104,7 +132,7 @@ class TableView extends Component {
               </Button>
               <Popconfirm
                 title="Sure to cancel? Unsaved changes will be lost"
-                onConfirm={() => this.setState({ editingKey: "" })}
+                onConfirm={() => this.cancelEdit()}
               >
                 <Button>Cancel</Button>
               </Popconfirm>
@@ -131,7 +159,8 @@ class TableView extends Component {
         }
       }
     });
-    columnArr.map(col => {
+
+    columnArr = columnArr.map(col => {
       if (!col.editable) {
         return col;
       }
@@ -148,7 +177,17 @@ class TableView extends Component {
     return columnArr;
   };
 
-  delete = record => {};
+  delete = record => {
+    this.props._deleteRow(
+      this.props.user.auth,
+      parseInt(this.getUrlVars()["tableId"]),
+      parseInt(record.id)
+    );
+    this.props._getIndivTable(
+      this.props.user.auth,
+      parseInt(this.getUrlVars()["tableId"])
+    );
+  };
 
   isEditing = record => {
     return record.id === this.state.editingKey;
@@ -206,7 +245,9 @@ const mapStoreToProps = state => {
 const mapDispatchToProps = {
   // TODO: API call to get files
   _push: push,
-  _getIndivTable: getIndivTable
+  _getIndivTable: getIndivTable,
+  _modifyRow: modifyRow,
+  _deleteRow: deleteRow
 };
 
 export default connect(mapStoreToProps, mapDispatchToProps)(
