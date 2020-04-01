@@ -125,6 +125,7 @@ export const getUserInfo = auth => dispatch => {
           dispatch(push("/login"));
         }
       }
+      
     });
 };
 

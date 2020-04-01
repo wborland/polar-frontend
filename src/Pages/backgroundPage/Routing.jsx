@@ -3,6 +3,7 @@ import { Switch, Route } from "react-router";
 import { push } from "connected-react-router";
 import { connect } from "react-redux";
 import UserManagement from "../userManagement";
+import Tables from "../Tables/Tables";
 import MassCommunication from "../MassCommunication";
 
 class BackgroundPage extends Component {
@@ -21,7 +22,7 @@ class BackgroundPage extends Component {
       let menuItems = [];
       if (userPerms.includes(8)) {
         menuItems.push(
-          <Route path="/inventory" />
+          <Route path="/inventory" render={() => <Tables />}/>
         );
       }
       if (userPerms.includes(1)) {
