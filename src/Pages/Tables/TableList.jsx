@@ -6,6 +6,7 @@ import { push } from "connected-react-router";
 import { getTableList } from "../../Redux/tables";
 import { updateDialog } from "../../Redux/dialog";
 import AddTableButton from "../../Components/Tables/AddTableButton";
+import TableEdit from "../../Components/Tables/TableEdit";
 import axios from "axios";
 
 const { Title } = Typography;
@@ -48,17 +49,20 @@ class TableList extends Component {
   }
 
   handleEdit = (row) => {
-    console.log("Editing Table:", row);
+    this.props._updateDialog(true, {
+      title: "Edit Table",
+      content: (<TableEdit table={row} />)
+    });
   }
 
   handleDelete = (row) => {
     this.props._updateDialog(true, {
       title: "Delete Table",
-      content: this.dialogContent(row)
+      content: this.dialogContentDelete(row)
     });
   }
 
-  dialogContent = tableInfo => {
+  dialogContentDelete = tableInfo => {
     return (
       <div>
         <p>
