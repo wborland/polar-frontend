@@ -14,39 +14,48 @@ class BackgroundPage extends Component {
     this.state = { menuItems: [] };
   }
 
+  componentDidMount() {
+    // Show nav options based on user permissions
+    let userPerms = this.props.user.permissions;
+    let menuItems = [];
+    if (userPerms.includes(8)) {
+      menuItems.push(<Route key={0} path="/inventory" />);
+      this.setState({
+        menuItems: menuItems
+      });
+    }
+    menuItems.push(<Route key={1} path="/files" render={() => <Files />} />);
+    this.setState({
+      menuItems: menuItems
+    });
+    if (userPerms.includes(7)) {
+      menuItems.push(<Route key={2} path="/communication" />);
+      this.setState({
+        menuItems: menuItems
+      });
+    }
+    if (userPerms.includes(11)) {
+      menuItems.push(
+        <Route
+          key={4}
+          path="/usermanagement"
+          render={() => <UserManagement />}
+        />
+      );
+    }
+    this.setState({
+      menuItems: menuItems
+    });
+  }
+
   componentDidUpdate = prevProps => {
     if (prevProps.user.permissions != this.props.user.permissions) {
-      // Show nav options based on user permissions
-      let userPerms = this.props.user.permissions;
-      let menuItems = [];
-      if (userPerms.includes(8)) {
-        menuItems.push(<Route key={0} path="/inventory" />);
-        this.setState({ menuItems: menuItems });
-      }
-      if (userPerms.includes(1)) {
-        menuItems.push(
-          <Route key={1} path="/files" render={() => <Files />} />
-        );
-        this.setState({ menuItems: menuItems });
-      }
-      if (userPerms.includes(7)) {
-        menuItems.push(<Route key={2} path="/communication" />);
-        this.setState({ menuItems: menuItems });
-      }
-      if (userPerms.includes(11)) {
-        menuItems.push(
-          <Route
-            key={4}
-            path="/usermanagement"
-            render={() => <UserManagement />}
-          />
-        );
-      }
-      this.setState({ menuItems: menuItems });
+      this.componentDidMount();
     }
   };
 
   render() {
+    console.log(this.state.menuItems);
     return (
       <Switch>
         {this.state.menuItems}
