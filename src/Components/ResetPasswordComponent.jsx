@@ -19,10 +19,11 @@ class ResetPasswordComponent extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
+                console.log("token", this.props.location.query.token);
                 let requestBody = {
-                    token: this.props.location.query.token,
-                    email: values.email,
-                    newPassword: values.password
+                    "token": this.props.location.query.token,
+                    "email": values.email,
+                    "newPassword": values.password
                 }
                 this.props._resetPassword(requestBody);
             }
