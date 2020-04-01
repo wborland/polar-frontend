@@ -39,9 +39,9 @@ class TableList extends Component {
         dataIndex: "operation",
         render: (text, record) =>
           <div>
-            <Button onClick={() => this.handleEdit(record)}> Edit Table Settings </Button>
+            <Button type="primary" onClick={() => this.handleEdit(record)}> Edit Table Settings </Button>
             <Divider type="vertical" />
-            <Button onClick={() => this.handleDelete(record)}> Delete Table </Button>
+            <Button type="danger" onClick={() => this.handleDelete(record)}> Delete Table </Button>
           </div>
       });
       this.setState({ columns: cols });
@@ -97,18 +97,19 @@ class TableList extends Component {
   render() {
     if (!this.props.tables.tableList || this.props.tables.tableList.length === 0) {
       return (
-        <div style={{ background: "#FFFFFF", height: "calc(100vh - 64px)", textAlign: "center", paddingTop: "10px" }}>
+        <div style={{ background: "#FFFFFF", height: "calc(100vh - 64px)", maxHeight: "calc(100vh - 64px)", textAlign: "center", paddingTop: "10px" }}>
           <Title>Inventory</Title>
           <Skeleton active />
         </div>
       );
     }
     return (
-      <div style={{ background: "#FFFFFF", height: "calc(100vh - 64px)", textAlign: "center", paddingTop: "10px" }}>
+      <div style={{ background: "#FFFFFF", minHeight: "calc(100vh - 64px)", textAlign: "center", paddingTop: "10px" }}>
         <Title>Inventory</Title>
         <Table
           dataSource={this.props.tables.tableList}
           columns={this.state.columns}
+          pagination={{ responsive: true, defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['5', '10', '15', '20', '25', '50'] }}
           footer={() => <AddTableButton />}
         />
       </div>
