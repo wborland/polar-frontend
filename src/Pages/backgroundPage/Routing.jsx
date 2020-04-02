@@ -33,7 +33,7 @@ class BackgroundPage extends Component {
       menuItems: menuItems
     });
     if (userPerms.includes(7)) {
-      menuItems.push(<Route key={2} path="/communication" />);
+      menuItems.push(<Route key={2} path="/communication" render={() => <MassCommunication />}/>);
       this.setState({
         menuItems: menuItems
       });
