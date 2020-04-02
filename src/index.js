@@ -6,7 +6,7 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import configureStore, { history } from "./Redux/store";
-import axios from 'axios';
+import axios from "axios";
 
 axios.defaults.baseURL = "http://localhost:5000";
 
