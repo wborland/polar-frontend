@@ -73,7 +73,9 @@ class TableView extends Component {
 
   componentDidMount = () => {
     // TODO: Make API request to get file data
-    this.setState({ tableName: this.getUrlVars()["tableName"] });
+    this.setState({
+      tableName: this.getUrlVars()["tableName"].replace(/%20/g, " ")
+    });
     this.props._getIndivTable(
       this.props.user.auth,
       parseInt(this.getUrlVars()["tableId"])
