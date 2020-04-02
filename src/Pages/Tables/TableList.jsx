@@ -95,6 +95,8 @@ class TableList extends Component {
   }
 
   render() {
+    let userPerms = this.props.user.permissions;
+
     if (!this.props.tables.tableList || this.props.tables.tableList.length === 0) {
       return (
         <div style={{ background: "#FFFFFF", height: "calc(100vh - 64px)", maxHeight: "calc(100vh - 64px)", textAlign: "center", paddingTop: "10px" }}>
@@ -110,7 +112,7 @@ class TableList extends Component {
           dataSource={this.props.tables.tableList}
           columns={this.state.columns}
           pagination={{ responsive: true, defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['5', '10', '15', '20', '25', '50'] }}
-          footer={() => <AddTableButton />}
+          footer={() => this.props.user.permissions.includes(9) ? <AddTableButton /> : ""}
         />
       </div>
     );
