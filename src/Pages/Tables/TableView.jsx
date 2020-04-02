@@ -12,6 +12,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import { getIndivTable, modifyRow, deleteRow } from "../../Redux/tables";
+import { updateDialog } from "../../Redux/dialog";
+import AddEntry from "./AddEntry";
 
 const { Title } = Typography;
 
@@ -218,6 +220,15 @@ class TableView extends Component {
           paddingTop: "10px"
         }}
       >
+        <Button
+          onClick={() =>
+            this.props._updateDialog(true, {
+              title: "Add new row",
+              content: <AddEntry />
+            })}
+        >
+          Add Row
+        </Button>
         <Title>
           {this.state.tableName}
         </Title>
@@ -247,7 +258,8 @@ const mapDispatchToProps = {
   _push: push,
   _getIndivTable: getIndivTable,
   _modifyRow: modifyRow,
-  _deleteRow: deleteRow
+  _deleteRow: deleteRow,
+  _updateDialog: updateDialog
 };
 
 export default connect(mapStoreToProps, mapDispatchToProps)(

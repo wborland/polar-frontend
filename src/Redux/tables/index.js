@@ -1,6 +1,7 @@
 import { GET_TABLE_LIST, GET_INDIV_TABLE } from "../action_types";
 import axios from "axios";
 import { message } from "antd";
+import { updateDialog } from "../dialog";
 
 // Action creators
 const saveTableList = list => ({
@@ -111,6 +112,28 @@ export const deleteRow = (auth, tableId, id) => dispatch => {
     })
     .catch(err => {
       message.error("Error removing row, please try again", 5);
+    });
+};
+
+export const addRow = (auth, tableId, contents) => dispatch => {
+  axios
+    .post("/table/addEntry", {
+      auth,
+      tableId,
+      contents: Object.values(contents)
+    })
+    .then(response => {
+      if (response.status === 200) {
+        message.success("Row successfully added", 3);
+        dispatch(getIndivTable(auth, tableId));
+        dispatch(updateDialog(false, null));
+      } else {
+        message.error("Error adding row, please try again", 5);
+      }
+    })
+    .catch(err => {
+      console.log(err.response);
+      message.error("Error adding row, please try again", 5);
     });
 };
 
