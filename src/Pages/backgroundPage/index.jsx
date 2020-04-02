@@ -21,55 +21,66 @@ class BackgroundPage extends Component {
     if (!this.props.user.auth) {
       this.props._push("/login");
     } else {
-        this.props._getUser(this.props.user.auth);
+      this.props._getUser(this.props.user.auth);
       // Request All Permissions
       if (Object.entries(this.props.permissions).length === 0) {
         this.props._getPermissions();
       }
+      this.setNavOptions();
     }
+  };
+
+  setNavOptions = () => {
+    // Show nav options based on user permissions
+    let userPerms = this.props.user.permissions;
+    let menuItems = [];
+    if (userPerms.includes(8)) {
+      menuItems.push(
+        <Menu.Item key="inventory">
+          <Icon type="table" />
+          Inventory
+        </Menu.Item>
+      );
+      this.setState({
+        menuItems: menuItems
+      });
+    }
+    menuItems.push(
+      <Menu.Item key="files">
+        <Icon type="file" />
+        Files
+      </Menu.Item>
+    );
+    this.setState({
+      menuItems: menuItems
+    });
+    if (userPerms.includes(7)) {
+      menuItems.push(
+        <Menu.Item key="communication">
+          <Icon type="message" />
+          Mass Communication
+        </Menu.Item>
+      );
+      this.setState({
+        menuItems: menuItems
+      });
+    }
+    if (userPerms.includes(11)) {
+      menuItems.push(
+        <Menu.Item key="usermanagement">
+          <Icon type="team" />
+          User Management
+        </Menu.Item>
+      );
+    }
+    this.setState({
+      menuItems: menuItems
+    });
   };
 
   componentDidUpdate = prevProps => {
     if (prevProps.user.permissions != this.props.user.permissions) {
-      // Show nav options based on user permissions
-      let userPerms = this.props.user.permissions;
-      let menuItems = [];
-      if (userPerms.includes(8)) {
-        menuItems.push(
-          <Menu.Item key="inventory">
-            <Icon type="table" />
-            Inventory
-          </Menu.Item>
-        );
-        this.setState({ menuItems: menuItems });
-      }
-      if (userPerms.includes(1)) {
-        menuItems.push(
-          <Menu.Item key="files">
-            <Icon type="file" />
-            Files
-          </Menu.Item>
-        );
-        this.setState({ menuItems: menuItems });
-      }
-      if (userPerms.includes(7)) {
-        menuItems.push(
-          <Menu.Item key="communication">
-            <Icon type="message" />
-            Mass Communication
-          </Menu.Item>
-        );
-        this.setState({ menuItems: menuItems });
-      }
-      if (userPerms.includes(11)) {
-        menuItems.push(
-          <Menu.Item key="usermanagement">
-            <Icon type="team" />
-            User Management
-          </Menu.Item>
-        );
-      }
-      this.setState({ menuItems: menuItems });
+      this.setNavOptions();
     }
   };
 
