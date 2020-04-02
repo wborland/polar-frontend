@@ -12,6 +12,11 @@ axios.defaults.baseURL = "http://localhost:5000";
 
 const store = configureStore({});
 
+// const path = (/#!(\/.*)$/.exec(history.location.hash) || [])[1];
+// if (path) {
+//     history.replace(path);
+// }
+
 ReactDOM.render(
   <Provider store={store}>
     <ConnectedRouter history={history}>

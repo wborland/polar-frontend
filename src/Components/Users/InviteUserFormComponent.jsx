@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import { Form, Icon, Input, Button, Select} from 'antd';
-import {inviteUser} from "../../Redux/user/index";
+import { Form, Icon, Input, Button, Select } from 'antd';
+import { inviteUser } from "../../Redux/user/index";
 import { getRoleList } from "../../Redux/roles";
 
 const { Option } = Select;
@@ -10,7 +10,7 @@ const { Option } = Select;
 class InviteUserFormComponent extends Component {
     constructor(props) {
         super(props);
-        this.state = {roles: []}
+        this.state = { roles: [] }
     }
 
     componentDidMount = () => {
@@ -21,10 +21,10 @@ class InviteUserFormComponent extends Component {
         if (this.props.roles.listRoles != prevProps.roles.listRoles) {
             let rolesArr = this.props.roles.listRoles
             let roles = this.state.roles;
-            for(let i in rolesArr) {
-                roles.push(<Option value={parseInt(rolesArr[i].key)}>{rolesArr[i].roleName}</Option>)
+            for (let i in rolesArr) {
+                roles.push(<Option value={parseInt(rolesArr[i].key)} label={rolesArr[i].roleName}>{rolesArr[i].roleName}</Option>)
             }
-            this.setState({"roles": roles});
+            this.setState({ "roles": roles });
         }
     }
 
@@ -34,7 +34,7 @@ class InviteUserFormComponent extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 values.auth = this.props.user.auth;
-                if(!values.roles) {
+                if (!values.roles) {
                     values.roles = [];
                 }
                 this.props._inviteUser(values);
@@ -64,10 +64,10 @@ class InviteUserFormComponent extends Component {
                     <Form.Item label="Select roles for the new user to be added to">
                         {getFieldDecorator('roles', {
                             rules: [
-                                {type: 'array' },
+                                { type: 'array' },
                             ],
                         })(
-                            <Select mode="multiple" placeholder="Please select at least 1 role">
+                            <Select mode="multiple" placeholder="Select a role"  optionFilterProp="label">
                                 {this.state.roles}
                             </Select>
                         )}

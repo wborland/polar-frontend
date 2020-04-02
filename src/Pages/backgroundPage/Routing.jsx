@@ -4,6 +4,8 @@ import { push } from "connected-react-router";
 import { connect } from "react-redux";
 import UserManagement from "../userManagement";
 import Files from "../files";
+import Tables from "../Tables/Tables";
+import MassCommunication from "../MassCommunication";
 
 class BackgroundPage extends Component {
   constructor(props) {
@@ -64,7 +66,7 @@ class BackgroundPage extends Component {
           render={() => <div style={{ height: "calc(100vh - 64px)" }} />}
         />
         {/* calendar */}
-        <Route render={() => this.props._push("/login")} />
+        <Route path="/login" render={() => this.props._push("/login")} />
       </Switch>
     );
   }

@@ -39,6 +39,7 @@ class UserView extends Component {
   };
 
   handleChange = value => {
+    console.log(value);
     //check removed
     for (let i in this.state.permissions) {
       if (!value.includes(this.state.permissions[i])) {
