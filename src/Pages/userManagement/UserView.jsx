@@ -30,7 +30,7 @@ class UserView extends Component {
     for (let i in this.props.roles.listRoles) {
       let currRole = this.props.roles.listRoles[i];
       tempChildren.push(
-        <Option key={currRole.key}>
+        <Option key={currRole.key} label={currRole.roleName}>
           {currRole.roleName}
         </Option>
       );
@@ -39,6 +39,7 @@ class UserView extends Component {
   };
 
   handleChange = value => {
+    console.log(value);
     //check removed
     for (let i in this.state.permissions) {
       if (!value.includes(this.state.permissions[i])) {
@@ -87,6 +88,7 @@ class UserView extends Component {
           placeholder="Select Roles"
           value={this.state.permissions}
           onChange={this.handleChange}
+          optionFilterProp="label"
         >
           {this.getChildren()}
         </Select>

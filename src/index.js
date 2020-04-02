@@ -6,11 +6,16 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import configureStore, { history } from "./Redux/store";
-import axios from 'axios';
+import axios from "axios";
 
 axios.defaults.baseURL = "http://localhost:5000";
 
 const store = configureStore({});
+
+// const path = (/#!(\/.*)$/.exec(history.location.hash) || [])[1];
+// if (path) {
+//     history.replace(path);
+// }
 
 ReactDOM.render(
   <Provider store={store}>

@@ -3,7 +3,9 @@ import { Switch, Route } from "react-router";
 import { push } from "connected-react-router";
 import { connect } from "react-redux";
 import UserManagement from "../userManagement";
+import Files from "../files";
 import Tables from "../Tables/Tables";
+import MassCommunication from "../MassCommunication";
 
 class BackgroundPage extends Component {
   constructor(props) {
@@ -14,32 +16,43 @@ class BackgroundPage extends Component {
     this.state = { menuItems: [] };
   }
 
+  componentDidMount() {
+    // Show nav options based on user permissions
+    let userPerms = this.props.user.permissions;
+    let menuItems = [];
+    if (userPerms.includes(8)) {
+      menuItems.push(<Route key={0} path="/inventory" />);
+      this.setState({
+        menuItems: menuItems
+      });
+    }
+    menuItems.push(<Route key={1} path="/files" render={() => <Files />} />);
+    this.setState({
+      menuItems: menuItems
+    });
+    if (userPerms.includes(7)) {
+      menuItems.push(<Route key={2} path="/communication" />);
+      this.setState({
+        menuItems: menuItems
+      });
+    }
+    if (userPerms.includes(11)) {
+      menuItems.push(
+        <Route
+          key={4}
+          path="/usermanagement"
+          render={() => <UserManagement />}
+        />
+      );
+    }
+    this.setState({
+      menuItems: menuItems
+    });
+  }
+
   componentDidUpdate = prevProps => {
     if (prevProps.user.permissions != this.props.user.permissions) {
-      // Show nav options based on user permissions
-      let userPerms = this.props.user.permissions;
-      let menuItems = [];
-      if (userPerms.includes(8)) {
-        menuItems.push(
-          <Route path="/inventory" render={() => <Tables />}/>
-        );
-      }
-      if (userPerms.includes(1)) {
-        menuItems.push(
-          <Route path="/files" />
-        );
-      }
-      if (userPerms.includes(7)) {
-        menuItems.push(
-          <Route path="/communication" />
-        );
-      }
-      if (userPerms.includes(11)) {
-        menuItems.push(
-          <Route path="/usermanagement" render={() => <UserManagement />} />
-        );
-      }
-      this.setState({ menuItems: menuItems });
+      this.componentDidMount();
     }
   };
 
@@ -60,7 +73,7 @@ class BackgroundPage extends Component {
 }
 
 const mapStoreToProps = state => {
-  return {user: state.user, permissions: state.permissions};
+  return { user: state.user, permissions: state.permissions };
 };
 const mapDispatchToProps = {
   _push: push

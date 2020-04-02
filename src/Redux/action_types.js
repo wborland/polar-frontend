@@ -11,5 +11,7 @@ export const UPDATE_FILTER_LIST = "[User Management] - update role filter";
 export const SET_OTHER_USER = "[User Management] - get other user information";
 export const UPDATE_USER_ROLES =
   "[User Management] - set other user role information";
-export const GET_TABLE_LIST = "[Inventory] - get list of tables";
 export const GET_INDIV_TABLE = "[Inventory] - get individual table";
+export const GET_ALL_FILES = "[Files] - get all files";
+export const OPEN_FILE = "[Files] - open specific file";
+export const GET_TABLE_LIST = "[Inventory] - get list of tables";

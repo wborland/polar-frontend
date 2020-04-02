@@ -44,6 +44,7 @@ export const userLogin = user => dispatch => {
       dispatch(push("/"));
     })
     .catch(err => {
+      console.log(err);
       message.error("Invalid Login");
     });
 };
@@ -184,6 +185,7 @@ export const userRegister = user => dispatch => {
 };
 
 export const resetPassword = user => dispatch => {
+  console.log("user", user);
   return axios
     .post("/user/resetPassword", user)
     .then(response => {
@@ -192,6 +194,8 @@ export const resetPassword = user => dispatch => {
     })
     .catch(err => {
       message.error("Failed to reset password");
+      console.log(err.message);
+      console.log(err.response)
     });
 };
 

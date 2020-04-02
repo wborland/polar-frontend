@@ -6,6 +6,7 @@ import { push } from "connected-react-router";
 import { getTableList } from "../../Redux/tables";
 import { updateDialog } from "../../Redux/dialog";
 import AddTableButton from "../../Components/Tables/AddTableButton";
+import TableEdit from "../../Components/Tables/TableEdit";
 import axios from "axios";
 
 const { Title } = Typography;
@@ -38,9 +39,9 @@ class TableList extends Component {
         dataIndex: "operation",
         render: (text, record) =>
           <div>
-            <Button onClick={() => this.handleEdit(record)}> Edit Table Settings </Button>
+            <Button type="primary" onClick={() => this.handleEdit(record)}> Edit Table Settings </Button>
             <Divider type="vertical" />
-            <Button onClick={() => this.handleDelete(record)}> Delete Table </Button>
+            <Button type="danger" onClick={() => this.handleDelete(record)}> Delete Table </Button>
           </div>
       });
       this.setState({ columns: cols });
@@ -48,27 +49,30 @@ class TableList extends Component {
   }
 
   handleEdit = (row) => {
-    console.log("Editing Table:", row);
+    this.props._updateDialog(true, {
+      title: "Edit Table",
+      content: (<TableEdit table={row} />)
+    });
   }
 
   handleDelete = (row) => {
     this.props._updateDialog(true, {
       title: "Delete Table",
-      content: this.dialogContent(row)
+      content: this.dialogContentDelete(row)
     });
   }
 
-  dialogContent = tableInfo => {
+  dialogContentDelete = tableInfo => {
     return (
       <div>
         <p>
           Are you sure you want to delete <b>{tableInfo.tableName}</b>?
         </p>
-        <div style={{textAlign: "right"}}>
+        <div style={{ textAlign: "right" }}>
           <Button style={{ marginRight: "10px" }} onClick={() => this.props._updateDialog(false, null)}>
             No
           </Button>
-          <Button onClick={(tableInfo) => this.deleteTable(tableInfo.key)}>
+          <Button onClick={() => this.deleteTable(tableInfo.key)}>
             Yes
           </Button>
         </div>
@@ -78,14 +82,14 @@ class TableList extends Component {
   };
 
 
-  deleteTable = (tableId) =>  {
-    axios.post("/table/delete", {"tableId": tableId, "auth": this.props.user.auth})
-      .then((response)  => {
-        console.log("Deleted Table", response);
+  deleteTable = (tableId) => {
+    let reqBody = { "tableId": tableId, "auth": this.props.user.auth }
+    axios.post("/table/delete", reqBody)
+      .then((response) => {
+        this.props._updateDialog(false, null)
         message.success("Table Deleted");
         this.props._getTableList(this.props.user.auth);
       }).catch((err) => {
-        console.log("Failed Delete Table", err);
         message.error("Failed to deleted table");
       });
   }
@@ -93,18 +97,19 @@ class TableList extends Component {
   render() {
     if (!this.props.tables.tableList || this.props.tables.tableList.length === 0) {
       return (
-        <div style={{ background: "#FFFFFF", height: "calc(100vh - 64px)", textAlign: "center", paddingTop: "10px" }}>
+        <div style={{ background: "#FFFFFF", height: "calc(100vh - 64px)", maxHeight: "calc(100vh - 64px)", textAlign: "center", paddingTop: "10px" }}>
           <Title>Inventory</Title>
           <Skeleton active />
         </div>
       );
     }
     return (
-      <div style={{ background: "#FFFFFF", height: "calc(100vh - 64px)", textAlign: "center", paddingTop: "10px" }}>
+      <div style={{ background: "#FFFFFF", minHeight: "calc(100vh - 64px)", textAlign: "center", paddingTop: "10px" }}>
         <Title>Inventory</Title>
         <Table
           dataSource={this.props.tables.tableList}
           columns={this.state.columns}
+          pagination={{ responsive: true, defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['5', '10', '15', '20', '25', '50'] }}
           footer={() => <AddTableButton />}
         />
       </div>
