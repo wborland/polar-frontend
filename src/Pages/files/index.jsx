@@ -76,6 +76,7 @@ class Files extends Component {
       return (
         <Button
           style={{ margin: "5px" }}
+          type="danger"
           onClick={() =>
             this.props._updateDialog(true, {
               title: "Delete file",
@@ -97,6 +98,7 @@ class Files extends Component {
       return (
         <Button
           style={{ marginLeft: "5px", marginTop: "10px" }}
+          type="primary"
           onClick={() =>
             this.props._updateDialog(true, {
               title: "Add new File",

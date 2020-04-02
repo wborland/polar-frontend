@@ -21,7 +21,9 @@ class BackgroundPage extends Component {
     let userPerms = this.props.user.permissions;
     let menuItems = [];
     if (userPerms.includes(8)) {
-      menuItems.push(<Route key={0} path="/inventory" />);
+      menuItems.push(
+        <Route key={0} path="/inventory" render={() => <Tables />} />
+      );
       this.setState({
         menuItems: menuItems
       });
