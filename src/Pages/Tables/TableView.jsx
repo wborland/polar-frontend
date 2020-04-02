@@ -119,48 +119,50 @@ class TableView extends Component {
       return [];
     }
     let columnArr = [...this.props.tables.tableInfo.columns];
-    columnArr.push({
-      title: "Operations",
-      render: (text, record) => {
-        const editable = this.isEditing(record);
-        if (editable) {
-          return (
-            <div>
-              <Button
-                onClick={() => this.saveRecord(record.key)}
-                style={{ marginRight: "8px" }}
-              >
-                Save
-              </Button>
-              <Popconfirm
-                title="Sure to cancel? Unsaved changes will be lost"
-                onConfirm={() => this.cancelEdit()}
-              >
-                <Button>Cancel</Button>
-              </Popconfirm>
-            </div>
-          );
-        } else {
-          return (
-            <div>
-              <Button
-                disabled={this.state.editingKey !== ""}
-                onClick={() => this.edit(record)}
-                style={{ marginRight: "8px" }}
-              >
-                Edit
-              </Button>
-              <Button
-                disabled={this.state.editingKey !== ""}
-                onClick={() => this.delete(record)}
-              >
-                Delete
-              </Button>
-            </div>
-          );
+    if (this.props.user.permissions.includes(10)) {
+      columnArr.push({
+        title: "Operations",
+        render: (text, record) => {
+          const editable = this.isEditing(record);
+          if (editable && this.props.user.permissions.includes(10)) {
+            return (
+              <div>
+                <Button
+                  onClick={() => this.saveRecord(record.key)}
+                  style={{ marginRight: "8px" }}
+                >
+                  Save
+                </Button>
+                <Popconfirm
+                  title="Sure to cancel? Unsaved changes will be lost"
+                  onConfirm={() => this.cancelEdit()}
+                >
+                  <Button>Cancel</Button>
+                </Popconfirm>
+              </div>
+            );
+          } else if (this.props.user.permissions.includes(10)) {
+            return (
+              <div>
+                <Button
+                  disabled={this.state.editingKey !== ""}
+                  onClick={() => this.edit(record)}
+                  style={{ marginRight: "8px" }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  disabled={this.state.editingKey !== ""}
+                  onClick={() => this.delete(record)}
+                >
+                  Delete
+                </Button>
+              </div>
+            );
+          }
         }
-      }
-    });
+      });
+    }
 
     columnArr = columnArr.map(col => {
       if (!col.editable) {
@@ -217,30 +219,30 @@ class TableView extends Component {
           background: "#FFFFFF",
           height: "calc(100vh - 64px)",
           textAlign: "center",
-          paddingTop: "10px"
+          paddingTop: "10px",
+          overflowY: "auto"
         }}
       >
-        <Button
-          onClick={() =>
-            this.props._updateDialog(true, {
-              title: "Add new row",
-              content: <AddEntry />
-            })}
-        >
-          Add Row
-        </Button>
         <Title>
           {this.state.tableName}
         </Title>
         <Table
-          components={{
-            body: {
-              cell: this.EditableCell
-            }
-          }}
+          components={{ body: { cell: this.EditableCell } }}
           dataSource={this.props.tables.tableInfo.data}
           columns={this.modifyColumns()}
         />
+        {this.props.user.permissions.includes(10)
+          ? <Button
+              style={{ marginTop: "-50px" }}
+              onClick={() =>
+                this.props._updateDialog(true, {
+                  title: "Add new row",
+                  content: <AddEntry />
+                })}
+            >
+              Add Row
+            </Button>
+          : null}
       </div>
     );
   }
