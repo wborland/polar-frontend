@@ -41,23 +41,6 @@ class AddFiles extends Component {
     this.setState({ roles: e });
   };
 
-  handleFileChange = e => {
-    if (e.fileList.length > 1) {
-      message.error("Only one file can be uploaded at a time", 5);
-      return;
-    }
-    let tempName = this.state.name;
-    if (tempName === "") {
-      console.log(e.fileList[0].name);
-      tempName = e.fileList[0].name;
-    }
-    this.setState({
-      fileList: e.fileList,
-      file: e.fileList[0],
-      name: tempName
-    });
-  };
-
   handleSubmit = () => {
     if (this.state.fileList.length === 0) {
       message.error("Please add a file to upload", 5);

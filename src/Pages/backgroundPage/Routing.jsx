@@ -55,7 +55,6 @@ class BackgroundPage extends Component {
   };
 
   render() {
-    console.log(this.state.menuItems);
     return (
       <Switch>
         {this.state.menuItems}

@@ -76,13 +76,13 @@ export const uploadFile = (body, auth) => dispatch => {
     headers: { auth: auth }
   })
     .then(response => {
-      console.log(response.status);
       if (response.status === 200) {
-        message.success("Successfully added file, please refresh the page");
+        message.success("Successfully added file");
         dispatch({
           type: UPDATE_DIALOG,
           dialog: { open: false, object: { title: "", content: null } }
         });
+        dispatch(callGetFiles(auth));
       } else {
         message.error("Something went wrong, please try again", 10);
       }
@@ -109,10 +109,8 @@ export const deleteFiles = (auth, fileId, name) => dispatch => {
           type: UPDATE_DIALOG,
           dialog: { open: false, object: { title: "", content: null } }
         });
-        message.success(
-          "File deleted successfully, refresh page to see changes",
-          5
-        );
+        message.success("File deleted successfully", 5);
+        dispatch(callGetFiles(auth));
       } else {
         message.error("Something went wrong, please try again", 10);
       }
