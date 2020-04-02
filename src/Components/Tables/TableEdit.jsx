@@ -127,10 +127,21 @@ class TableEdit extends Component {
     
   }
 
+  handleTabChange = (key) => {
+    if(key == 2) {
+      axios.post("/table/columns", { "auth": this.props.user.auth, "tableId": this.props.table.key })
+      .then((response) => {
+        this.setState({ columns: response.data });
+      }).catch((err) => {
+        message.error("Something went wrong, sorry")
+      });
+    }
+  }
+
   render() {
     return (
       <div>
-        <Tabs defaultActiveKey="1">
+        <Tabs defaultActiveKey="1" onChange={this.handleTabChange}>
           <TabPane tab="Edit Table Name" key="1">
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
               <Col lg={18}>
