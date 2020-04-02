@@ -49,7 +49,7 @@ class AddTableFormComponent extends Component {
               rules: [
                 {
                   type: "string",
-                  pattern: "^[a-zA-Z0-9() ]+$",
+                  pattern: "^[a-zA-Z0-9 ]+$",
                   message: "Please enter letters or numbers only"
                 },
                 {
