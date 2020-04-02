@@ -95,8 +95,6 @@ class TableList extends Component {
   }
 
   render() {
-    let userPerms = this.props.user.permissions;
-
     if (!this.props.tables.tableList || this.props.tables.tableList.length === 0) {
       return (
         <div style={{ background: "#FFFFFF", height: "calc(100vh - 64px)", maxHeight: "calc(100vh - 64px)", textAlign: "center", paddingTop: "10px" }}>
