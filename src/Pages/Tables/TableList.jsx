@@ -110,7 +110,7 @@ class TableList extends Component {
           dataSource={this.props.tables.tableList}
           columns={this.state.columns}
           pagination={{ responsive: true, defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['5', '10', '15', '20', '25', '50'] }}
-          footer={() => <AddTableButton />}
+          footer={() => this.props.user.permissions.includes(9) ? <AddTableButton /> : ""}
         />
       </div>
     );

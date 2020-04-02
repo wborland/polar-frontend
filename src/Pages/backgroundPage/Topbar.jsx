@@ -12,6 +12,7 @@ const LogoImage = styled.img`
   height: 60px;
   margin-top: -2px;
   padding-left: 0px;
+  padding-bottom: 5px;
 `;
 
 const AccountButton = styled(Button)`
