@@ -93,10 +93,6 @@ class TableView extends Component {
     );
   };
 
-  componentDidUpdate = prevProps => {
-    // TODO: Update file data
-  };
-
   edit = record => {
     this.setState({ editingKey: record.id, data: { ...record } });
   };
@@ -104,7 +100,6 @@ class TableView extends Component {
   cancelEdit = () => {
     for (let i in this.props.tables.tableInfo.data) {
       if (this.props.tables.tableInfo.data[i].id === this.state.editingKey) {
-        console.log(this.props.tables.tableInfo.data[i]);
         this.setState({ data: this.props.tables.tableInfo.data[i] }, () =>
           this.setState({
             editingKey: ""
@@ -148,12 +143,14 @@ class TableView extends Component {
                   disabled={this.state.editingKey !== ""}
                   onClick={() => this.edit(record)}
                   style={{ marginRight: "8px" }}
+                  type="link"
                 >
                   Edit
                 </Button>
                 <Button
                   disabled={this.state.editingKey !== ""}
                   onClick={() => this.delete(record)}
+                  type="danger"
                 >
                   Delete
                 </Button>
@@ -233,6 +230,7 @@ class TableView extends Component {
         />
         {this.props.user.permissions.includes(10)
           ? <Button
+              type="primary"
               style={{ marginTop: "-50px" }}
               onClick={() =>
                 this.props._updateDialog(true, {
