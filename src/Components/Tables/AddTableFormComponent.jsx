@@ -64,8 +64,8 @@ class AddTableFormComponent extends Component {
               rules: [
                 {
                   type: "string",
-                  pattern: "^[a-zA-Z0-9()\n\r ]+$",
-                  message: "Please enter letters or numbers only"
+                  pattern: "^[a-zA-Z0-9\n\r]+$",
+                  message: "Please enter letters or numbers only with no spaces in a column name"
                 },
                 {
                   required: true,
