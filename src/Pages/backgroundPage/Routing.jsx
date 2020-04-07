@@ -6,6 +6,7 @@ import UserManagement from "../userManagement";
 import Files from "../files";
 import Tables from "../Tables/Tables";
 import MassCommunication from "../MassCommunication";
+import EventsHome from "../Events/EventsHome";
 
 class BackgroundPage extends Component {
   constructor(props) {
@@ -65,7 +66,11 @@ class BackgroundPage extends Component {
         <Route
           exact
           path="/"
-          render={() => <div style={{ height: "calc(100vh - 64px)" }} />}
+          render={() => <EventsHome />}
+        />
+        <Route
+          path="/events"
+          render={() => <EventsHome />}
         />
         {/* calendar */}
         <Route path="/login" render={() => this.props._push("/login")} />

@@ -7,6 +7,7 @@ import roleReducer from "../roles";
 import userListReducer from "../listUsers";
 import fileReducer from "../files";
 import tableListReducer from "../tables";
+import eventsReducer from "../events";
 
 export default history =>
   combineReducers({
@@ -17,5 +18,6 @@ export default history =>
     userList: userListReducer,
     roles: roleReducer,
     files: fileReducer,
-    tables: tableListReducer 
+    tables: tableListReducer,
+    events: eventsReducer
   });
