@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Button, Calendar, Typography, message } from 'antd';
+import { Calendar } from 'antd';
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
@@ -111,7 +111,7 @@ class CalendarView extends Component {
 
   render() {
     return (
-        <Calendar dateCellRender={this.dateCellRender} monthCellRender={this.monthCellRender} onSelect={this.onSelect} onPanelChange={this.onPanelChange}/>
+      <Calendar dateCellRender={this.dateCellRender} monthCellRender={this.monthCellRender} onSelect={this.onSelect} onPanelChange={this.onPanelChange}/>
     );
   }
 }
