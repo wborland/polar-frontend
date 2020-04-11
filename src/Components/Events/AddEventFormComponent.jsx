@@ -196,6 +196,17 @@ class AddEventFormComponent extends Component {
               ],
             })(<RangePicker showTime={{ format: 'HH:mm A', use12Hours: true }} format="LLL" />)}
           </Form.Item>
+          <Form.Item label="Event Location">
+            {getFieldDecorator("location", {
+              rules: [
+                {
+                  type: "string",
+                  //pattern: "^[a-zA-Z0-9 ]+$",
+                  message: "Please enter letters or numbers only"
+                },
+              ]
+            })(<Input />)}
+          </Form.Item>
           <Form.Item label="Reminders">
             <Button onClick={this.addReminders}>
               <Icon type="plus" /> Add Reminder

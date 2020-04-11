@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import AllEvents from "./AllEvents";
+import EventDetails from "../../Components/Events/EventDetails";
 
 class EventsHome extends Component {
   constructor(props) {
@@ -17,9 +18,7 @@ class EventsHome extends Component {
       return <AllEvents />
     } else {
       return (
-        <div>
-          <p>Render specific event</p>
-        </div>
+        <EventDetails />
       );
     }
   }

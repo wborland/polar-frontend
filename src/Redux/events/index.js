@@ -1,4 +1,4 @@
-import { GET_ALL_EVENTS } from "../action_types";
+import { GET_ALL_EVENTS, GET_EVENT } from "../action_types";
 import axios from "axios";
 import { message } from "antd";
 import moment from 'moment';
@@ -9,44 +9,49 @@ const getEvents = eventsList => ({
   eventsList
 });
 
+const getEvent = event => ({
+  type: GET_EVENT,
+  event
+});
+
 // Initial dialog state
 const initialState = {
-  eventsList: []
+  eventsList: [],
+  currEvent: null
 };
 
 // Action helpers
 export const getEventsList = auth => dispatch => {
-  // Simulate data call
-  let events = [
-    {id: "1", name: "Old Event 1", date: "2020-4-1 12:00"},
-    {id: "2", name: "Event 1", date: "2020-4-20 1:00"},
-    {id: "4", name: "Event 3", date: "2020-4-22 11:00"},
-    {id: "3", name: "Event 2", date: "2020-4-21 17:00"},
-    {id: "5", name: "Event 3", date: "2020-4-22 1:00"},
-  ]
-  events = events.sort((a,b) => moment(a.date).unix() - moment(b.date).unix())
-  dispatch(getEvents(events));
-
-  /* 
-  TODO: API Call
-  axios.post("/events/all", { auth: auth })
+  //TODO: API Call
+  axios.post("/event/all", { auth: auth })
     .then(response => {
-        let events = response.data;
-
-        
-        dispatch(getEvents(events));
+      let events = response.data;
+      events = events.sort((a,b) => moment(a.date).unix() - moment(b.date).unix());
+      dispatch(getEvents(events));
     })
     .catch(err => {
       message.error("Failed to load events");
     }); 
-  */
 };
 
+export const getEventById = (data) => dispatch => {
+  //TODO: API Call
+  axios.post("/event/details", data)
+    .then(response => {
+      console.log("response", response);
+      dispatch(getEvent(response.data));
+    })
+    .catch(err => {
+      message.error("Failed to load event");
+    }); 
+};
 
 const eventsReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_ALL_EVENTS:
       return Object.assign({}, state, { eventsList: action.eventsList });
+    case GET_EVENT:
+      return Object.assign({}, state, { currEvent: action.event });
     default:
       return state;
   }
