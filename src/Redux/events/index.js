@@ -1,7 +1,7 @@
-import { GET_ALL_EVENTS, GET_EVENT } from "../action_types";
+import { GET_ALL_EVENTS, GET_EVENT, GET_RSVP_LIST } from "../action_types";
 import axios from "axios";
 import { message } from "antd";
-import moment from 'moment';
+import moment from "moment";
 
 // Action creators
 const getEvents = eventsList => ({
@@ -14,36 +14,58 @@ const getEvent = event => ({
   event
 });
 
+const getRsvp = rsvpList => ({
+  type: GET_RSVP_LIST,
+  rsvpList
+});
+
 // Initial dialog state
 const initialState = {
   eventsList: [],
-  currEvent: null
+  currEvent: null,
+  rsvpList: []
 };
 
 // Action helpers
 export const getEventsList = auth => dispatch => {
   //TODO: API Call
-  axios.post("/event/all", { auth: auth })
+  axios
+    .post("/event/all", { auth: auth })
     .then(response => {
       let events = response.data;
-      events = events.sort((a,b) => moment(a.date).unix() - moment(b.date).unix());
+      events = events.sort(
+        (a, b) => moment(a.date).unix() - moment(b.date).unix()
+      );
       dispatch(getEvents(events));
     })
     .catch(err => {
       message.error("Failed to load events");
-    }); 
+    });
 };
 
-export const getEventById = (data) => dispatch => {
+export const getEventById = data => dispatch => {
   //TODO: API Call
-  axios.post("/event/details", data)
+  axios
+    .post("/event/details", data)
     .then(response => {
       console.log("response", response);
       dispatch(getEvent(response.data));
     })
     .catch(err => {
       message.error("Failed to load event");
-    }); 
+    });
+};
+
+export const getRsvpList = data => dispatch => {
+  axios
+    .post("/event/rsvpList", data)
+    .then(response => {
+      console.log("response", response);
+      dispatch(getRsvp(response.data));
+    })
+    .catch(err => {
+      message.error("Failed to load event");
+    });
 };
 
 const eventsReducer = (state = initialState, action) => {
@@ -52,6 +74,8 @@ const eventsReducer = (state = initialState, action) => {
       return Object.assign({}, state, { eventsList: action.eventsList });
     case GET_EVENT:
       return Object.assign({}, state, { currEvent: action.event });
+    case GET_RSVP_LIST:
+      return Object.assign({}, state, { rsvpList: action.rsvpList });
     default:
       return state;
   }
