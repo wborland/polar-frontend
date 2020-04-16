@@ -1,16 +1,18 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import { Table } from "antd";
-import { getRsvpList } from "../../Redux/events";
+import { Table, Skeleton } from "antd";
+import { getRsvpList, getEventById } from "../../Redux/events";
 
 class CheckinTable extends Component {
   componentDidMount = () => {
-    if (this.props.events.currEvent == null) return;
-    this.props._getRsvpList({
-      auth: this.props.user.auth,
-      id: this.props.events.currEvent.id
-    });
+    console.log("Hello");
+    if (this.props.events.currEvent == null) {
+      this.props._getEventById({
+        auth: this.props.user.auth,
+        id: parseInt(this.props.router.location.query.id)
+      });
+    }
   };
 
   columns = [
@@ -25,12 +27,16 @@ class CheckinTable extends Component {
   ];
 
   componentDidUpdate = prevProps => {
+    console.log("Bye");
     if (this.props.events.currEvent != prevProps.events.currEvent) {
       this.componentDidMount();
     }
   };
 
   render() {
+    if (this.props.events.currEvent == null) {
+      return <Skeleton active />;
+    }
     return (
       <div
         style={{
@@ -52,13 +58,15 @@ class CheckinTable extends Component {
 const mapStoreToProps = state => {
   return {
     user: state.user,
-    events: state.events
+    events: state.events,
+    router: state.router
   };
 };
 
 const mapDispatchToProps = {
   _push: push,
-  _getRsvpList: getRsvpList
+  _getRsvpList: getRsvpList,
+  _getEventById: getEventById
 };
 
 export default connect(mapStoreToProps, mapDispatchToProps)(CheckinTable);
