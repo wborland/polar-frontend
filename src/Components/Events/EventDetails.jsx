@@ -27,7 +27,7 @@ class EventDetails extends Component {
   componentDidMount = () => {
     this.props._getEventById({
       auth: this.props.user.auth,
-      id: this.props.router.location.query.id
+      id: parseInt(this.props.router.location.query.id)
     });
   };
 
