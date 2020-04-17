@@ -61,7 +61,16 @@ export const getRsvpList = data => dispatch => {
     .post("/event/rsvpList", data)
     .then(response => {
       console.log("response", response);
-      dispatch(getRsvp(response.data));
+      let returnArr = [];
+      for (let i in response.data) {
+        let curr = response.data[i];
+        returnArr.push({
+          userId: curr[0],
+          firstName: curr[1],
+          lastName: curr[2]
+        });
+      }
+      dispatch(getRsvp(returnArr));
     })
     .catch(err => {
       message.error("Failed to load event");
