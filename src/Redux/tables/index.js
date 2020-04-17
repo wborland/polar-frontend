@@ -1,4 +1,8 @@
-import { GET_TABLE_LIST, GET_INDIV_TABLE } from "../action_types";
+import {
+  GET_TABLE_LIST,
+  GET_INDIV_TABLE,
+  GET_TABLE_HISTORY
+} from "../action_types";
 import axios from "axios";
 import { message } from "antd";
 import { updateDialog } from "../dialog";
@@ -14,6 +18,11 @@ const saveIndivTable = table => ({
   table
 });
 
+const getHistory = info => ({
+  type: GET_TABLE_HISTORY,
+  info
+});
+
 // Initial dialog state
 const initialState = {
   tableList: [],
@@ -21,8 +30,11 @@ const initialState = {
     tableTitle: "",
     tableHeaders: [],
     tableCell: []
-  }
+  },
+  history: []
 };
+
+export const getHistoryInfo = (auth, id, isTable) => dispatch => {};
 
 // Action helpers
 export const getTableList = auth => dispatch => {
@@ -145,6 +157,8 @@ const tableListReducer = (state = initialState, action) => {
       });
     case GET_INDIV_TABLE:
       return Object.assign({}, state, { tableInfo: action.table });
+    case GET_TABLE_HISTORY:
+      return Object.assign({}, state, { history: action.info });
     default:
       return state;
   }

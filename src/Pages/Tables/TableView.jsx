@@ -11,7 +11,12 @@ import {
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import { getIndivTable, modifyRow, deleteRow } from "../../Redux/tables";
+import {
+  getIndivTable,
+  modifyRow,
+  deleteRow,
+  getHistoryInfo
+} from "../../Redux/tables";
 import { updateDialog } from "../../Redux/dialog";
 import AddEntry from "./AddEntry";
 
@@ -28,7 +33,8 @@ class TableView extends Component {
       columns: [],
       tableName: "",
       editingKey: "",
-      data: {}
+      data: {},
+      isExpandable: ""
     };
   }
 
@@ -194,6 +200,10 @@ class TableView extends Component {
     return record.id === this.state.editingKey;
   };
 
+  renderHistory = () => {
+    return <p>Hello</p>;
+  };
+
   render() {
     if (!this.props.tables.tableInfo) {
       return (
@@ -227,6 +237,19 @@ class TableView extends Component {
           components={{ body: { cell: this.EditableCell } }}
           dataSource={this.props.tables.tableInfo.data}
           columns={this.modifyColumns()}
+          expandedRowRender={record => this.renderHistory(record)}
+          onExpand={record => {
+            this.setState({ isExpandable: record.id });
+            this.props._getHistoryInfo(this.props.user.auth, record.id, false);
+          }}
+          // onExpandedRowsChange={}
+          // expandable={{
+          //   expandedRowRender: ,
+          //   rowExpandable: record =>
+          //     record.id == this.state.isExpandable ||
+          //     this.state.isExpandable == "",
+          //   onExpand:
+          // }}
         />
         {this.props.user.permissions.includes(10)
           ? <Button
@@ -259,7 +282,8 @@ const mapDispatchToProps = {
   _getIndivTable: getIndivTable,
   _modifyRow: modifyRow,
   _deleteRow: deleteRow,
-  _updateDialog: updateDialog
+  _updateDialog: updateDialog,
+  _getHistoryInfo: getHistoryInfo
 };
 
 export default connect(mapStoreToProps, mapDispatchToProps)(
