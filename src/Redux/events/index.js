@@ -137,7 +137,7 @@ export const modifyCheckinRow = (auth, eventId, contents) => dispatch => {
 
 export const addCheckinRow = (auth, eventId, contents) => dispatch => {
   axios
-    .post("/table/addEntry", {
+    .post("/event/addEntry", {
       auth,
       eventId,
       contents: Object.values(contents)
@@ -154,6 +154,21 @@ export const addCheckinRow = (auth, eventId, contents) => dispatch => {
     .catch(err => {
       console.log(err.response);
       message.error("Error adding person, please try again", 5);
+    });
+};
+
+export const closeEvent = (auth, eventId) => dispatch => {
+  axios
+    .post("/event/close", { auth, eventId })
+    .then(response => {
+      if (response.status === 200) {
+        message.success("Successfully closed event", 3);
+        dispatch(getEventById({ auth, eventId }));
+      }
+    })
+    .catch(err => {
+      console.log(err.response);
+      message.error("Something went wrong, please try again", 5);
     });
 };
 
