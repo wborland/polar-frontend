@@ -60,7 +60,6 @@ export const getRsvpList = data => dispatch => {
   axios
     .post("/event/rsvpList", data)
     .then(response => {
-      console.log("response", response);
       let returnArr = [];
       for (let i in response.data) {
         let curr = response.data[i];
