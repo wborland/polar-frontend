@@ -67,12 +67,14 @@ export const getRsvpList = data => dispatch => {
         returnArr.push({
           userId: curr[0],
           firstName: curr[1],
-          lastName: curr[2]
+          lastName: curr[2],
+          key: i
         });
       }
       dispatch(getRsvp(returnArr));
     })
     .catch(err => {
+      console.log(err.response);
       message.error("Failed to load event");
     });
 };

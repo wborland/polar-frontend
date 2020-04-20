@@ -9,7 +9,7 @@ class RsvpTable extends Component {
     if (this.props.events.currEvent == null) return;
     this.props._getRsvpList({
       auth: this.props.user.auth,
-      id: this.props.events.currEvent.id
+      eventId: this.props.events.currEvent.id
     });
   };
 
@@ -32,7 +32,7 @@ class RsvpTable extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{ marginTop: "100px" }}>
         <h4>Currently RSVPed</h4>
         <Table dataSource={this.props.events.rsvpList} columns={this.columns} />
       </div>
