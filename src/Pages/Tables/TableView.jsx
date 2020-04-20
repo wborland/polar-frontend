@@ -11,7 +11,12 @@ import {
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import { getIndivTable, modifyRow, deleteRow } from "../../Redux/tables";
+import {
+  getIndivTable,
+  modifyRow,
+  deleteRow,
+  downloadTable
+} from "../../Redux/tables";
 import { updateDialog } from "../../Redux/dialog";
 import AddEntry from "./AddEntry";
 
@@ -231,7 +236,7 @@ class TableView extends Component {
         {this.props.user.permissions.includes(10)
           ? <Button
               type="primary"
-              style={{ marginTop: "-50px" }}
+              style={{ marginRight: "10px" }}
               onClick={() =>
                 this.props._updateDialog(true, {
                   title: "Add new row",
@@ -241,6 +246,17 @@ class TableView extends Component {
               Add Row
             </Button>
           : null}
+        <Button
+          type="primary"
+          onClick={() =>
+            this.props._downloadTable(
+              this.props.user.auth,
+              parseInt(this.getUrlVars()["tableId"]),
+              this.state.tableName
+            )}
+        >
+          Download Table
+        </Button>
       </div>
     );
   }
@@ -259,7 +275,8 @@ const mapDispatchToProps = {
   _getIndivTable: getIndivTable,
   _modifyRow: modifyRow,
   _deleteRow: deleteRow,
-  _updateDialog: updateDialog
+  _updateDialog: updateDialog,
+  _downloadTable: downloadTable
 };
 
 export default connect(mapStoreToProps, mapDispatchToProps)(
