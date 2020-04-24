@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button, Typography, Row, Col, Radio, message, Divider } from 'antd';
 import { ClockCircleOutlined, StarOutlined } from '@ant-design/icons';
 import ModifyEventForm from './ModifyEventFormComponent';
+import RsvpForm from './RsvpFormComponent';
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
@@ -15,7 +16,6 @@ const { Title } = Typography;
 class EventDetails extends Component {
   constructor(props) {
     super(props);
-    console.log("props", props);
     if (!props.user.auth) {
       props._push('/login');
     }
@@ -44,7 +44,8 @@ class EventDetails extends Component {
         location: this.props.events.currEvent.location,
         description: this.props.events.currEvent.desc,
         rsvp: this.props.events.currEvent.rsvp
-      })
+      });
+
     }
   }
 
@@ -52,6 +53,13 @@ class EventDetails extends Component {
     this.props._updateDialog(true, {
       title: "Modify Event",
       content: (<ModifyEventForm />)
+    });
+  }
+
+  rsvpDialog = () => {
+    this.props._updateDialog(true, {
+      title: "RSVP Form",
+      content: (<RsvpForm />)
     });
   }
 
@@ -88,10 +96,8 @@ class EventDetails extends Component {
     })
   }
 
-
   handleRSVP = (e) => {
     if (e.target.value === false && this.state.rsvp.response === true) {
-      //TODO: UNRSVP
       axios.post("/event/unrsvp", { auth: this.props.user.auth, id: this.props.router.location.query.id })
         .then((response) => {
           let rsvpRes = this.state.rsvp;
@@ -115,7 +121,7 @@ class EventDetails extends Component {
             message.error("Failed to rsvp. Please try again later.");
           })
       } else {
-        // TODO: RSVP FORM
+        this.rsvpDialog();
       }
     }
   }
@@ -127,16 +133,22 @@ class EventDetails extends Component {
           <Divider>
             <Title>{decodeURI(this.props.router.location.query.name)}</Title>
           </Divider>
-
         </Row>
         <Row style={{ marginBottom: "2vw", textAlign: "left" }}>
           <Col sm={24} md={12} style={{ paddingLeft: "2vw", textAlign: "left" }}>
             {this.props.user.permissions.includes(3) ? <Button type="primary" style={{ marginRight: "1vw" }} onClick={this.modifyEvent}>Modify Event</Button> : ""}
             {this.props.user.permissions.includes(5) ? <Button type="danger" onClick={this.handleDelete}>Delete Event</Button> : ""}
           </Col>
-          <Col sm={24} md={12} style={{ paddingRight: "2vw", textAlign: "right" }}>
+          <Col sm={24} md={0} style={{ paddingTop: "1vh", paddingLeft: "2vw", textAlign: "left" }}>
             <b>RSVP: </b>
-            <Radio.Group defaultValue={this.state.rsvp.response} onChange={this.handleRSVP} buttonStyle="solid">
+            <Radio.Group value={this.state.rsvp.response} onChange={this.handleRSVP} buttonStyle="solid">
+              <Radio.Button value={false}>Not Going</Radio.Button>
+              <Radio.Button value={true}>Going</Radio.Button>
+            </Radio.Group>
+          </Col>
+          <Col xs={0} sm={0} md={12} style={{ paddingRight: "2vw", textAlign: "right" }}>
+            <b>RSVP: </b>
+            <Radio.Group value={this.state.rsvp.response} onChange={this.handleRSVP} buttonStyle="solid">
               <Radio.Button value={false}>Not Going</Radio.Button>
               <Radio.Button value={true}>Going</Radio.Button>
             </Radio.Group>
@@ -157,7 +169,6 @@ class EventDetails extends Component {
           {this.state.description ? <b>Description: </b> : ""}
           {this.state.description ? this.state.description : ""}
         </Row>
-
       </div>
 
     );
