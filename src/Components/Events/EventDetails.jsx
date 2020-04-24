@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button, Typography, Row, Col, Radio, message, Divider } from 'antd';
-import {ClockCircleOutlined, StarOutlined} from '@ant-design/icons';
+import { ClockCircleOutlined, StarOutlined } from '@ant-design/icons';
 import ModifyEventForm from './ModifyEventFormComponent';
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -55,32 +55,65 @@ class EventDetails extends Component {
     });
   }
 
+  handleDelete = () => {
+    this.props._updateDialog(true, {
+      title: "Delete Event",
+      content: (
+        <div>
+          <p>
+            Are you sure you want to delete <b>{this.props.events.currEvent.name}</b>?
+          </p>
+          <div style={{ textAlign: "right" }}>
+            <Button style={{ marginRight: "10px" }} onClick={() => this.props._updateDialog(false, null)}>
+              No
+            </Button>
+            <Button onClick={this.deleteEvent}>
+              Yes
+            </Button>
+          </div>
+
+        </div>
+      )
+    });
+  }
+
+  deleteEvent = () => {
+    axios.post("/event/delete", {auth: this.props.user.auth, id: this.props.events.currEvent.id})
+    .then((response) => {
+      message.success("Deleted " + this.props.events.currEvent.name + "!");
+      this.props._updateDialog(false, null)
+      this.props._push("/");
+    }).catch((err) => {
+      message.error("Failed to delete event. Please try again later!");
+    })
+  }
+
 
   handleRSVP = (e) => {
-    if(e.target.value === false && this.state.rsvp.response === true) {
+    if (e.target.value === false && this.state.rsvp.response === true) {
       //TODO: UNRSVP
-      axios.post("/event/unrsvp", {auth: this.props.user.auth, id: this.props.router.location.query.id})
-      .then((response) => {
-        let rsvpRes = this.state.rsvp;
-        rsvpRes.response = false;
-        rsvpRes.answers = [];
-        this.setState({rsvp: rsvpRes});
-        message.success("You have Unrsvp'd from " + decodeURI(this.props.router.location.query.name))
-      }).catch((err) => {
-        message.error("Failed to unrsvp. Please try again later.");
-      });
-    } else if(e.target.value === true && this.state.rsvp.response === false) {
-      if(this.state.rsvp.questions.length === 0) {
-        axios.post("/event/rsvp", {auth: this.props.user.auth, id: this.props.router.location.query.id, answers:[]})
+      axios.post("/event/unrsvp", { auth: this.props.user.auth, id: this.props.router.location.query.id })
         .then((response) => {
           let rsvpRes = this.state.rsvp;
-          rsvpRes.response = true;
+          rsvpRes.response = false;
           rsvpRes.answers = [];
-          this.setState({rsvp: rsvpRes});
-          message.success("You have Rsvp'd for " + decodeURI(this.props.router.location.query.name))
-        }).catch((error) => {
-          message.error("Failed to rsvp. Please try again later.");
-        })
+          this.setState({ rsvp: rsvpRes });
+          message.success("You have Unrsvp'd from " + decodeURI(this.props.router.location.query.name))
+        }).catch((err) => {
+          message.error("Failed to unrsvp. Please try again later.");
+        });
+    } else if (e.target.value === true && this.state.rsvp.response === false) {
+      if (this.state.rsvp.questions.length === 0) {
+        axios.post("/event/rsvp", { auth: this.props.user.auth, id: this.props.router.location.query.id, answers: [] })
+          .then((response) => {
+            let rsvpRes = this.state.rsvp;
+            rsvpRes.response = true;
+            rsvpRes.answers = [];
+            this.setState({ rsvp: rsvpRes });
+            message.success("You have Rsvp'd for " + decodeURI(this.props.router.location.query.name))
+          }).catch((error) => {
+            message.error("Failed to rsvp. Please try again later.");
+          })
       } else {
         // TODO: RSVP FORM
       }
@@ -92,16 +125,16 @@ class EventDetails extends Component {
       <div style={{ background: "#FFFFFF", minHeight: "calc(100vh - 64px)", textAlign: "center", paddingTop: "10px" }}>
         <Row>
           <Divider>
-          <Title>{decodeURI(this.props.router.location.query.name)}</Title>
+            <Title>{decodeURI(this.props.router.location.query.name)}</Title>
           </Divider>
-          
+
         </Row>
-        <Row style={{ marginBottom: "2vw", textAlign: "left" }}> 
-          <Col sm={24} md={12} style={{paddingLeft: "2vw", textAlign: "left"}}>
-            {this.props.user.permissions.includes(3) ? <Button type="primary" style={{marginRight: "1vw"}} onClick={this.modifyEvent}>Modify Event</Button> : ""}
-            {this.props.user.permissions.includes(5) ? <Button type="danger">Delete Event</Button> : ""}
+        <Row style={{ marginBottom: "2vw", textAlign: "left" }}>
+          <Col sm={24} md={12} style={{ paddingLeft: "2vw", textAlign: "left" }}>
+            {this.props.user.permissions.includes(3) ? <Button type="primary" style={{ marginRight: "1vw" }} onClick={this.modifyEvent}>Modify Event</Button> : ""}
+            {this.props.user.permissions.includes(5) ? <Button type="danger" onClick={this.handleDelete}>Delete Event</Button> : ""}
           </Col>
-          <Col sm={24} md={12} style={{paddingRight: "2vw", textAlign: "right"}}>
+          <Col sm={24} md={12} style={{ paddingRight: "2vw", textAlign: "right" }}>
             <b>RSVP: </b>
             <Radio.Group defaultValue={this.state.rsvp.response} onChange={this.handleRSVP} buttonStyle="solid">
               <Radio.Button value={false}>Not Going</Radio.Button>
@@ -111,12 +144,12 @@ class EventDetails extends Component {
         </Row>
         <Divider />
         <Row align="middle" style={{ marginLeft: "2vw", textAlign: "left" }}>
-          {this.state.startTime ? <ClockCircleOutlined style={{fontSize: 18, marginRight: "1vw"}} /> : ""}
+          {this.state.startTime ? <ClockCircleOutlined style={{ fontSize: 18, marginRight: "1vw" }} /> : ""}
           {this.state.startTime ? moment(this.state.startTime).local().format("LLLL") : ""}
           {this.state.endTime ? " - " + moment(this.state.endTime).local().format("LLLL") : ""}
         </Row>
         <Row align="middle" style={{ marginLeft: "2vw", textAlign: "left" }}>
-          {this.state.location ? <StarOutlined style={{fontSize: 18, marginRight: "1vw"}} /> : ""}
+          {this.state.location ? <StarOutlined style={{ fontSize: 18, marginRight: "1vw" }} /> : ""}
           {this.state.location ? <a href={encodeURI("https://www.google.com/maps/search/?api=1&query=" + this.state.location)}>{this.state.location}</a> : ""}
         </Row>
         <Divider />
@@ -124,7 +157,7 @@ class EventDetails extends Component {
           {this.state.description ? <b>Description: </b> : ""}
           {this.state.description ? this.state.description : ""}
         </Row>
-       
+
       </div>
 
     );
