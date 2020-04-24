@@ -22,11 +22,10 @@ const initialState = {
 
 // Action helpers
 export const getEventsList = auth => dispatch => {
-  //TODO: API Call
   axios.post("/event/all", { auth: auth })
     .then(response => {
       let events = response.data;
-      events = events.sort((a,b) => moment(a.date).unix() - moment(b.date).unix());
+      events = events.sort((a,b) => moment(a.startTime).unix() - moment(b.startTime).unix());
       dispatch(getEvents(events));
     })
     .catch(err => {
@@ -35,10 +34,8 @@ export const getEventsList = auth => dispatch => {
 };
 
 export const getEventById = (data) => dispatch => {
-  //TODO: API Call
   axios.post("/event/details", data)
     .then(response => {
-      console.log("response", response);
       dispatch(getEvent(response.data));
     })
     .catch(err => {

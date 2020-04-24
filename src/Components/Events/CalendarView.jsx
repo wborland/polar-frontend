@@ -27,19 +27,19 @@ class CalendarView extends Component {
     if(this.props.events != prevProps.events) {
       for(let i in this.props.events.eventsList) {
         let data = this.props.events.eventsList[i];
-        data.date = moment(data.date).format("LLL")
+        data.startTime = moment(data.startTime).local().format("LLL")
       }
     }
   }
 
   dateCellRender = (val) =>  {
     if(this.props.events.eventsList.length !==  0) {
-      let dateEvents = this.props.events.eventsList.filter((data) => moment(moment(data.date).format("LL")).isSame(val.format("LL")));
+      let dateEvents = this.props.events.eventsList.filter((data) => moment(moment(data.startTime).local().format("LL")).isSame(val.local().format("LL")));
       let view = dateEvents.map((data) => {
         return (
-          <li>
+          <li key={data.id}>
             <a href={"/events?id=" + data.id + "&name=" + data.name}>
-              {moment(data.date).format("LT")}: <b>{data.name}</b>
+              <b>{data.name}</b>
             </a>
           </li>
         )
@@ -50,12 +50,12 @@ class CalendarView extends Component {
 
   monthCellRender = (val) =>  {
     if(this.props.events.eventsList.length !==  0) {
-      let dateEvents = this.props.events.eventsList.filter((data) => moment(moment(data.date).format("LL")).isSame(val.format("LL"), 'month'));
+      let dateEvents = this.props.events.eventsList.filter((data) => moment(moment(data.startTime).local().format("LL")).isSame(val.local().format("LL"), 'month'));
       let view = dateEvents.map((data) => {
         return (
-          <li>
+          <li key={data.id}>
             <a href={"/events?id=" + data.id + "&name=" + data.name}>
-              {moment(data.date).format("lll")}: <b>{data.name}</b>
+              {moment(data.startTime).local().format("lll")}: <b>{data.name}</b>
             </a>
           </li>
         )
@@ -71,36 +71,36 @@ class CalendarView extends Component {
   onSelect = (val) => {
     if(this.props.events.eventsList.length !==  0) {
       if(this.state.mode ===  "month") {
-        let dateEvents = this.props.events.eventsList.filter((data) => moment(moment(data.date).format("LL")).isSame(val.format("LL")));
+        let dateEvents = this.props.events.eventsList.filter((data) => moment(moment(data.startTime).local().format("LL")).isSame(val.local().format("LL")));
         let view = dateEvents.map((data) => {
           return (
-            <li>
+            <li key={data.id}>
               <a href={"/events?id=" + data.id + "&name=" + data.name}>
-                {moment(data.date).format("LT")}: <b>{data.name}</b>
+                {moment(data.startTime).local().format("LT")}: <b>{data.name}</b>
               </a>
             </li>
           )
         });
         if(view.length !== 0)  {
           this.props._updateDialog(true, {
-            title: "Events on " + moment(val).format("LL"),
+            title: "Events on " + moment(val).local().format("LL"),
             content: (<ul>{view}</ul>)
           });
         }
       } else if(this.state.mode === "year") {
-        let dateEvents = this.props.events.eventsList.filter((data) => moment(moment(data.date).format("LL")).isSame(val.format("LL"), 'month'));
+        let dateEvents = this.props.events.eventsList.filter((data) => moment(moment(data.startTime).local().format("LL")).isSame(val.local().format("LL"), 'month'));
         let view = dateEvents.map((data) => {
           return (
-            <li>
+            <li key={data.id}>
               <a href={"/events?id=" + data.id + "&name=" + data.name}>
-                {moment(data.date).format("LT")}: <b>{data.name}</b>
+                {moment(data.startTime).local().format("LLL")} : <b>{data.name}</b>
               </a>
             </li>
           )
         });
         if(view.length !== 0)  {
           this.props._updateDialog(true, {
-            title: "Events on " + moment(val).format("LL"),
+            title: "Events in " + moment(val).local().format("MMMM"),
             content: (<ul>{view}</ul>)
           });
         }

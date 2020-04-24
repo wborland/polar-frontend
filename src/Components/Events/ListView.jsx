@@ -17,22 +17,6 @@ class ListView extends Component {
       eventsList: props.events.eventsList,
       columns:  [
         {
-          title: "Date",
-          dataIndex: "date",
-          key: "date",
-          render: (text, record) => (
-            <p>{moment(record.date).format("LL")}</p>
-          )
-        },
-        {
-          title: "Time",
-          dataIndex: "date",
-          key: "time",
-          render: (text, record) => (
-            <p>{moment(record.date).format("LT")}</p>
-          )
-        },
-        {
           title: "Event",
           dataIndex: "name",
           key: "name",
@@ -41,7 +25,23 @@ class ListView extends Component {
               <b>{record.name}</b>
             </a>
           )
-        }
+        },
+        {
+          title: "Starting Date",
+          dataIndex: "startTime",
+          key: "startTime",
+          render: (text, record) => (
+            <p>{moment(record.startTime).local().format("LLL")}</p>
+          )
+        },
+        {
+          title: "Ending Date",
+          dataIndex: "endTime",
+          key: "endTime",
+          render: (text, record) => (
+            <p>{moment(record.endTime).local().format("LLL")}</p>
+          )
+        },
       ]
     }
   }
@@ -55,12 +55,12 @@ class ListView extends Component {
     if (this.props.events != prevProps.events) {
       for (let i in this.props.events.eventsList) {
         let data = this.props.events.eventsList[i];
-        data.date = moment(data.date).format("LLL")
+        data.startTime = moment(data.startTime).local().format("LLL")
+        data.endTime = moment(data.endTime).local().format("LLL")
       }
       let today = moment();
       let list = this.props.events.eventsList.filter((data) => {
-        console.log("Data.date", data.date,  "today", today.toString(), moment(data.date).isAfter(today) )
-        return moment(data.date).isAfter(today)
+        return moment(data.startTime).isAfter(today)
       });
       this.setState({eventsList: list});
     }
