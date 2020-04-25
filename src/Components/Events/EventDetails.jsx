@@ -89,7 +89,24 @@ class EventDetails extends Component {
                   Delete Event
                 </Button>
               : ""}
-            {this.props.user.permissions.includes(4) &&
+            {this.props.events.currEvent != null &&
+            this.props.user.permissions.includes(4) &&
+            this.props.events.currEvent.closed == true
+              ? <Button
+                  type="primary"
+                  style={{ marginRight: "1vw", marginBottom: "1vh" }}
+                  onClick={() =>
+                    this.props._push(
+                      window.location.pathname +
+                        window.location.search +
+                        "&checkin=true"
+                    )}
+                >
+                  View Check in
+                </Button>
+              : null}
+            {this.props.events.currEvent != null &&
+            this.props.user.permissions.includes(4) &&
             this.props.events.currEvent.closed != true
               ? <Button
                   type="primary"
@@ -104,7 +121,8 @@ class EventDetails extends Component {
                   Check in
                 </Button>
               : null}
-            {this.props.user.permissions.includes(3) &&
+            {this.props.events.currEvent != null &&
+            this.props.user.permissions.includes(3) &&
             this.props.events.currEvent.closed != true
               ? <Popover
                   content={

@@ -7,9 +7,10 @@ import { getRsvpList } from "../../Redux/events";
 class RsvpTable extends Component {
   componentDidMount = () => {
     if (this.props.events.currEvent == null) return;
+    console.log(this.props.events.currEvent);
     this.props._getRsvpList({
       auth: this.props.user.auth,
-      id: this.props.events.currEvent.id
+      eventId: this.props.events.currEvent.id
     });
   };
 
@@ -26,6 +27,7 @@ class RsvpTable extends Component {
 
   componentDidUpdate = prevProps => {
     if (this.props.events.currEvent != prevProps.events.currEvent) {
+      console.log(this.props.events.currEvent);
       this.componentDidMount();
     }
   };

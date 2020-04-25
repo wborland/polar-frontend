@@ -73,11 +73,11 @@ export const getRsvpList = data => dispatch => {
   axios
     .post("/event/rsvpList", data)
     .then(response => {
-      console.log("response", response);
       dispatch(getRsvp(response.data));
     })
     .catch(err => {
       message.error("Failed to load event");
+      console.log(err.response.data);
     });
 };
 
@@ -159,11 +159,11 @@ export const addCheckinRow = (auth, eventId, contents) => dispatch => {
 
 export const closeEvent = (auth, eventId) => dispatch => {
   axios
-    .post("/event/close", { auth, eventId })
+    .post("/event/close", { auth, id: eventId })
     .then(response => {
       if (response.status === 200) {
         message.success("Successfully closed event", 3);
-        dispatch(getEventById({ auth, eventId }));
+        dispatch(getEventById({ auth, id: eventId }));
       }
     })
     .catch(err => {

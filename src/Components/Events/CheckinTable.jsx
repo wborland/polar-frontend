@@ -104,7 +104,11 @@ class CheckinTable extends Component {
                 </Popconfirm>
               </div>
             );
-          } else if (this.props.user.permissions.includes(4)) {
+          } else if (
+            this.props.user.permissions.includes(4) &&
+            this.props.events.currEvent != null &&
+            this.props.events.currEvent.closed != true
+          ) {
             return (
               <div>
                 <Button
