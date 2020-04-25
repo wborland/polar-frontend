@@ -83,7 +83,7 @@ export const getRsvpList = data => dispatch => {
 
 export const getCheckinTable = (auth, eventId) => dispatch => {
   axios
-    .post("/events/getCheckin", { auth, eventId })
+    .post("/events/checkInTable", { auth, eventId })
     .then(response => {
       let tempCols = [];
       for (let i in response.data[0]) {
