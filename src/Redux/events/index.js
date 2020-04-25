@@ -36,6 +36,7 @@ export const getEventsList = auth => dispatch => {
 export const getEventById = (data) => dispatch => {
   axios.post("/event/details", data)
     .then(response => {
+      console.log("Response", response.data);
       dispatch(getEvent(response.data));
     })
     .catch(err => {

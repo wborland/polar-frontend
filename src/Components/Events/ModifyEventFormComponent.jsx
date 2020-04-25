@@ -136,7 +136,7 @@ class ModifyEventFormComponent extends Component {
 
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form;
-    getFieldDecorator('reminders', { initialValue: [] });
+    getFieldDecorator('reminders', { initialValue: this.props.currEvent.reminder ===  1 ? [0] : [] });
     const reminders = getFieldValue('reminders');
     const disabledOpt = reminders.length == 0;
     const formItems = reminders.map((k, index) => (
@@ -145,6 +145,7 @@ class ModifyEventFormComponent extends Component {
         key={k}
       >
         {getFieldDecorator('remindersArr[' + k + ']', {
+          initialValue: this.props.currEvent.reminder === 1 ?  moment(this.props.currEvent.startTime).subtract(this.props.currEvent.reminderTime, "minutes") : "",
           rules: [
             {
               required: true,
@@ -267,7 +268,7 @@ class ModifyEventFormComponent extends Component {
               ]
             })(<Input />)}
           </Form.Item>
-          <Form.Item label="Reminders">
+          <Form.Item label="Reminder">
             <Button onClick={this.addReminders}>
               <Icon type="plus" /> Add Reminder
             </Button>

@@ -257,7 +257,7 @@ class AddEventFormComponent extends Component {
               ]
             })(<Input />)}
           </Form.Item>
-          <Form.Item label="Reminders">
+          <Form.Item label="Reminder">
             <Button onClick={this.addReminders}>
               <Icon type="plus" /> Add Reminder
             </Button>
