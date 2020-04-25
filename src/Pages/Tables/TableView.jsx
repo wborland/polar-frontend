@@ -78,7 +78,9 @@ class TableView extends Component {
 
   componentDidMount = () => {
     // TODO: Make API request to get file data
-    this.setState({ tableName: this.getUrlVars()["tableName"] });
+    let url = new URL(window.location.href);
+    let params = new URLSearchParams(url.search);
+    this.setState({ tableName: params.get("tableName") });
     this.props._getIndivTable(
       this.props.user.auth,
       parseInt(this.getUrlVars()["tableId"])
@@ -255,7 +257,7 @@ class TableView extends Component {
               this.state.tableName
             )}
         >
-          Download Table
+          Export Table
         </Button>
       </div>
     );
