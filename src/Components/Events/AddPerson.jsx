@@ -2,9 +2,11 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import { Input, Button } from "antd";
+import { Input, Button, Select } from "antd";
 import { updateDialog } from "../../Redux/dialog";
-import { addCheckinRow } from "../../Redux/events";
+import { addCheckinRow, getUsers } from "../../Redux/events";
+
+const { Option } = Select;
 
 class AddPerson extends Component {
   constructor(props) {
@@ -22,10 +24,21 @@ class AddPerson extends Component {
   };
 
   componentDidMount = () => {
+    this.props._getUsers(
+      this.props.user.auth,
+      parseInt(this.getUrlVars()["tableId"])
+    );
+
     let columnInfo = this.props.events.checkinHeader;
     let inputs = [];
     for (let i in columnInfo) {
-      if (i == "id" || i == "key") {
+      if (
+        columnInfo[i].dataIndex == "id" ||
+        columnInfo[i].dataIndex == "key" ||
+        columnInfo[i].dataIndex == "firstName" ||
+        columnInfo[i].dataIndex == "lastName" ||
+        columnInfo[i].dataIndex == "checkedIn"
+      ) {
         continue;
       }
       let temp = this.state.submission;
@@ -57,16 +70,39 @@ class AddPerson extends Component {
   };
 
   submit = () => {
-    this.props._addCheckinRow(
-      this.props.user.auth,
-      parseInt(this.getUrlVars()["tableId"]),
-      this.state.submission
-    );
+    console.log(this.state.submission);
+    // this.props._addCheckinRow(
+    //   this.props.user.auth,
+    //   parseInt(this.getUrlVars()["tableId"]),
+    //   this.state.submission
+    // );
+  };
+
+  getUserOptions = () => {
+    let tempUsers = [];
+    for (let i in this.props.events.notEventUsers) {
+      let curr = this.props.events.notEventUsers[i];
+      tempUsers.push(
+        <Option value={curr[0]} key={curr[0]} label={curr[1]}>
+          {curr[1]}
+        </Option>
+      );
+    }
+    return tempUsers;
   };
 
   render() {
     return (
       <div>
+        User:
+        <Select
+          showSearch
+          placeholder="Select User"
+          style={{ width: "100%", marginBottom: "10px" }}
+          optionFilterProp="label"
+        >
+          {this.getUserOptions()}
+        </Select>
         {this.state.inputs}
         <div>
           <Button style={{ marginRight: "10px" }} onClick={this.submit}>
@@ -91,7 +127,8 @@ const mapStoreToProps = state => {
 const mapDispatchToProps = {
   _push: push,
   _updateDialog: updateDialog,
-  _addCheckinRow: addCheckinRow
+  _addCheckinRow: addCheckinRow,
+  _getUsers: getUsers
 };
 
 export default connect(mapStoreToProps, mapDispatchToProps)(

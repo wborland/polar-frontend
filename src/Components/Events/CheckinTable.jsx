@@ -6,11 +6,38 @@ import {
   getRsvpList,
   getEventById,
   getCheckinTable,
-  modifyCheckinRow
+  modifyCheckinRow,
+  checkUserIn
 } from "../../Redux/events";
 import AddPerson from "./AddPerson";
+import { updateDialog } from "../../Redux/dialog";
 
 class CheckinTable extends Component {
+  constructor(props) {
+    super(props);
+    if (!props.user.auth) {
+      props._push("/login");
+    }
+
+    this.state = {
+      columns: [],
+      tableName: "",
+      editingKey: "",
+      data: {}
+    };
+  }
+
+  getUrlVars = () => {
+    var vars = {};
+    var parts = window.location.href.replace(
+      /[?&]+([^=&]+)=([^&]*)/gi,
+      function(m, key, value) {
+        vars[key] = value;
+      }
+    );
+    return vars;
+  };
+
   componentDidMount = () => {
     this.props._getCheckinTable(
       this.props.user.auth,
@@ -33,14 +60,14 @@ class CheckinTable extends Component {
   saveRecord = () => {
     this.props._modifyCheckinRow(
       this.props.user.auth,
-      parseInt(this.getUrlVars()["id"]),
+      this.getUrlVars()["id"],
       this.state.data
     );
     this.setState({ editingKey: "" });
   };
 
   edit = record => {
-    this.setState({ editingKey: record.id, data: { ...record } });
+    this.setState({ editingKey: record.userId, data: { ...record } });
   };
 
   EditableCell = ({
@@ -55,7 +82,7 @@ class CheckinTable extends Component {
   }) => {
     return (
       <td {...restProps}>
-        {editing
+        {editing == true
           ? <Input
               value={this.state.data[dataIndex]}
               onChange={e => this.setValue(dataIndex, e)}
@@ -67,7 +94,7 @@ class CheckinTable extends Component {
 
   cancelEdit = () => {
     for (let i in this.props.events.checkinCell) {
-      if (this.props.events.checkinCell[i].id === this.state.editingKey) {
+      if (this.props.events.checkinCell[i].userId === this.state.editingKey) {
         this.setState({ data: this.props.events.checkinCell[i] }, () =>
           this.setState({
             editingKey: ""
@@ -82,6 +109,31 @@ class CheckinTable extends Component {
       return [];
     }
     let columnArr = [...this.props.events.checkinHeader];
+    for (let i in columnArr) {
+      if (i == 2) {
+        columnArr[i].render = (text, record) => {
+          if (record.checkedIn == 1) {
+            return <Button disabled>Checked In</Button>;
+          } else {
+            return (
+              <Button
+                onClick={() =>
+                  this.props._checkUserIn(
+                    this.props.user.auth,
+                    record.userId,
+                    this.props.events.currEvent.id
+                  )}
+              >
+                Check In
+              </Button>
+            );
+          }
+        };
+      }
+      if (i < 3) {
+        columnArr[i].editable = false;
+      }
+    }
     if (this.props.user.permissions.includes(4)) {
       columnArr.push({
         title: "Operations",
@@ -144,7 +196,7 @@ class CheckinTable extends Component {
   };
 
   isEditing = record => {
-    return record.id === this.state.editingKey;
+    return record.userId === this.state.editingKey;
   };
 
   componentDidUpdate = prevProps => {
@@ -183,7 +235,7 @@ class CheckinTable extends Component {
                   content: <AddPerson />
                 })}
             >
-              Add Row
+              Add Person
             </Button>
           : null}
       </div>
@@ -204,7 +256,9 @@ const mapDispatchToProps = {
   _getRsvpList: getRsvpList,
   _getEventById: getEventById,
   _getCheckinTable: getCheckinTable,
-  _modifyCheckinRow: modifyCheckinRow
+  _modifyCheckinRow: modifyCheckinRow,
+  _updateDialog: updateDialog,
+  _checkUserIn: checkUserIn
 };
 
 export default connect(mapStoreToProps, mapDispatchToProps)(CheckinTable);

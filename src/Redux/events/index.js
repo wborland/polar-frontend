@@ -2,7 +2,8 @@ import {
   GET_ALL_EVENTS,
   GET_EVENT,
   GET_RSVP_LIST,
-  GET_CHECKIN_TABLE
+  GET_CHECKIN_TABLE,
+  GET_EVENT_USERS
 } from "../action_types";
 import axios from "axios";
 import { message } from "antd";
@@ -28,6 +29,11 @@ const getRsvp = rsvpList => ({
 const getCheckin = checkin => ({
   type: GET_CHECKIN_TABLE,
   checkin
+});
+
+const getEventUsers = users => ({
+  type: GET_EVENT_USERS,
+  users
 });
 
 // Initial dialog state
@@ -83,7 +89,7 @@ export const getRsvpList = data => dispatch => {
 
 export const getCheckinTable = (auth, eventId) => dispatch => {
   axios
-    .post("/events/checkInTable", { auth, eventId })
+    .post("/event/checkInTable", { auth, eventId })
     .then(response => {
       let tempCols = [];
       for (let i in response.data[0]) {
@@ -119,9 +125,8 @@ export const getCheckinTable = (auth, eventId) => dispatch => {
 export const modifyCheckinRow = (auth, eventId, contents) => dispatch => {
   let sendArr = Object.values(contents);
   sendArr.pop();
-
   axios
-    .post("/events/modifyRow", { auth, eventId, contents: sendArr })
+    .post("/event/modifyRow", { auth, eventId, contents: sendArr })
     .then(response => {
       if (response.status === 200) {
         message.success("Row saved successfully", 3);
@@ -131,6 +136,7 @@ export const modifyCheckinRow = (auth, eventId, contents) => dispatch => {
       }
     })
     .catch(err => {
+      console.log(err.response);
       message.error("Saving failed, please try again", 5);
     });
 };
@@ -172,6 +178,36 @@ export const closeEvent = (auth, eventId) => dispatch => {
     });
 };
 
+export const getUsers = (auth, eventId) => dispatch => {
+  axios
+    .post("/message/getUsers", { auth, eventId })
+    .then(response => {
+      console.log(response.data);
+      dispatch(getEventUsers(response.data));
+    })
+    .catch(err => {
+      console.log(err.response);
+      message.error("Something went wrong, please try again", 5);
+    });
+};
+
+export const checkUserIn = (auth, userId, eventId) => dispatch => {
+  axios
+    .post("/event/checkIn", { auth, userId, eventId })
+    .then(response => {
+      console.log(response.data);
+      message.success("User successfully checked-in");
+      dispatch(getCheckinTable(auth, eventId));
+    })
+    .catch(err => {
+      console.log(err.response);
+      message.error(
+        "Something went wrong while checking the user in, please try again",
+        5
+      );
+    });
+};
+
 const eventsReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_ALL_EVENTS:
@@ -185,6 +221,8 @@ const eventsReducer = (state = initialState, action) => {
         checkinHeader: action.checkin.header,
         checkinCell: action.checkin.data
       });
+    case GET_EVENT_USERS:
+      return Object.assign({}, state, { notEventUsers: action.users });
     default:
       return state;
   }
