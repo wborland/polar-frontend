@@ -133,7 +133,11 @@ class CheckinTable extends Component {
         columnArr[i].editable = false;
       }
     }
-    if (this.props.user.permissions.includes(4)) {
+    if (
+      this.props.user.permissions.includes(4) &&
+      this.props.events.currEvent != null &&
+      this.props.events.currEvent.closed != true
+    ) {
       columnArr.push({
         title: "Operations",
         render: (text, record) => {
