@@ -15,10 +15,13 @@ import {
   getIndivTable,
   modifyRow,
   deleteRow,
-  getHistoryInfo
+  getHistoryInfo,
+  getTableList,
+  getItemHistory
 } from "../../Redux/tables";
 import { updateDialog } from "../../Redux/dialog";
 import AddEntry from "./AddEntry";
+import ItemHistory from "./ItemHistory";
 
 const { Title } = Typography;
 
@@ -80,6 +83,7 @@ class TableView extends Component {
   componentDidMount = () => {
     // TODO: Make API request to get file data
     this.setState({ tableName: this.getUrlVars()["tableName"] });
+    this.props._getTableList(this.props.user.auth);
     this.props._getIndivTable(
       this.props.user.auth,
       parseInt(this.getUrlVars()["tableId"])
@@ -200,8 +204,35 @@ class TableView extends Component {
     return record.id === this.state.editingKey;
   };
 
-  renderHistory = () => {
-    return <p>Hello</p>;
+  shouldBeExpandable = () => {
+    let returnItem = {
+      expandedRowRender: record =>
+        record.id == null || record.id == this.state.isExpandable
+          ? <ItemHistory record={record} />
+          : null,
+      onExpand: (expanded, record) => {
+        if (expanded == false) {
+          this.setState({ isExpandable: null });
+          return;
+        }
+        this.setState({ isExpandable: record.id });
+        this.props._getItemHistory(
+          this.props.user.auth,
+          parseInt(this.getUrlVars()["tableId"]),
+          record.id
+        );
+      }
+    };
+
+    let list = this.props.tables.tableList;
+    for (let i in list) {
+      let curr = list[i];
+      if (curr.key == this.getUrlVars()["tableId"]) {
+        if (curr.tracking == 1) {
+          return returnItem;
+        }
+      }
+    }
   };
 
   render() {
@@ -237,19 +268,7 @@ class TableView extends Component {
           components={{ body: { cell: this.EditableCell } }}
           dataSource={this.props.tables.tableInfo.data}
           columns={this.modifyColumns()}
-          expandedRowRender={record => this.renderHistory(record)}
-          onExpand={record => {
-            this.setState({ isExpandable: record.id });
-            this.props._getHistoryInfo(this.props.user.auth, record.id, false);
-          }}
-          // onExpandedRowsChange={}
-          // expandable={{
-          //   expandedRowRender: ,
-          //   rowExpandable: record =>
-          //     record.id == this.state.isExpandable ||
-          //     this.state.isExpandable == "",
-          //   onExpand:
-          // }}
+          {...this.shouldBeExpandable()}
         />
         {this.props.user.permissions.includes(10)
           ? <Button
@@ -283,7 +302,8 @@ const mapDispatchToProps = {
   _modifyRow: modifyRow,
   _deleteRow: deleteRow,
   _updateDialog: updateDialog,
-  _getHistoryInfo: getHistoryInfo
+  _getItemHistory: getItemHistory,
+  _getTableList: getTableList
 };
 
 export default connect(mapStoreToProps, mapDispatchToProps)(
