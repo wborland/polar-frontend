@@ -2,8 +2,7 @@ import {
   GET_ALL_EVENTS,
   GET_EVENT,
   GET_RSVP_LIST,
-  GET_CHECKIN_TABLE,
-  GET_EVENT_USERS
+  GET_CHECKIN_TABLE
 } from "../action_types";
 import axios from "axios";
 import { message } from "antd";
@@ -29,11 +28,6 @@ const getRsvp = rsvpList => ({
 const getCheckin = checkin => ({
   type: GET_CHECKIN_TABLE,
   checkin
-});
-
-const getEventUsers = users => ({
-  type: GET_EVENT_USERS,
-  users
 });
 
 // Initial dialog state
@@ -178,19 +172,6 @@ export const closeEvent = (auth, eventId) => dispatch => {
     });
 };
 
-export const getUsers = (auth, eventId) => dispatch => {
-  axios
-    .post("/message/getUsers", { auth, eventId })
-    .then(response => {
-      console.log(response.data);
-      dispatch(getEventUsers(response.data));
-    })
-    .catch(err => {
-      console.log(err.response);
-      message.error("Something went wrong, please try again", 5);
-    });
-};
-
 export const checkUserIn = (auth, userId, eventId) => dispatch => {
   axios
     .post("/event/checkIn", { auth, userId, eventId })
@@ -221,8 +202,6 @@ const eventsReducer = (state = initialState, action) => {
         checkinHeader: action.checkin.header,
         checkinCell: action.checkin.data
       });
-    case GET_EVENT_USERS:
-      return Object.assign({}, state, { notEventUsers: action.users });
     default:
       return state;
   }

@@ -9,7 +9,6 @@ import {
   modifyCheckinRow,
   checkUserIn
 } from "../../Redux/events";
-import AddPerson from "./AddPerson";
 import { updateDialog } from "../../Redux/dialog";
 
 class CheckinTable extends Component {
@@ -226,18 +225,6 @@ class CheckinTable extends Component {
           dataSource={this.props.events.checkinCell}
           columns={this.modifyColumns()}
         />
-        {this.props.user.permissions.includes(4)
-          ? <Button
-              type="primary"
-              onClick={() =>
-                this.props._updateDialog(true, {
-                  title: "Add new person",
-                  content: <AddPerson />
-                })}
-            >
-              Add Person
-            </Button>
-          : null}
       </div>
     );
   }
