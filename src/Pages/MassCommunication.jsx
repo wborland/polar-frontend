@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import TextForm from "../Components/Communication/TextComponent";
-import EmailForm from "../Components/Communication/EmailComponent";
+import EmailSelector from "../Components/Communication/EmailSelector";
 import { Radio, Typography } from 'antd';
 
 const {Title} = Typography;
@@ -32,7 +32,7 @@ class MassCommunication extends Component {
           <Radio.Button value="email">Email</Radio.Button>
           <Radio.Button value="text">Text</Radio.Button>
         </Radio.Group>
-        {this.state.messageType === "email" ? <EmailForm /> : <TextForm />}
+        {this.state.messageType === "email" ? <EmailSelector /> : <TextForm />}
       </div>
     );
   }
