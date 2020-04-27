@@ -38,7 +38,7 @@ const initialState = {
     tableCell: []
   },
   itemHistory: null,
-  tableHistory: []
+  tableHistory: null
 };
 
 // Action helpers
@@ -205,6 +205,25 @@ export const getItemHistory = (auth, tableId, id) => dispatch => {
     });
 };
 
+export const getTableHistory = (auth, tableId) => dispatch => {
+  axios
+    .post("/table/tableHistory", { auth, tableId })
+    .then(response => {
+      if (response.status == 200) {
+        console.log("Hello");
+        dispatch(getHistoryTable(response.data));
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      message.error("Something went wrong, please try again", 5);
+    });
+};
+
+export const resetTableHistory = () => dispatch => {
+  dispatch(getHistoryTable(null));
+};
+
 const modifyItemHistory = (state, info) => {
   let existCols = state.tableInfo.columns;
   let allItems = [];
@@ -250,6 +269,7 @@ const modifyItemHistory = (state, info) => {
 };
 
 const tableListReducer = (state = initialState, action) => {
+  console.log(action.type);
   switch (action.type) {
     case GET_TABLE_LIST:
       return Object.assign({}, state, {
@@ -261,6 +281,9 @@ const tableListReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         itemHistory: modifyItemHistory(state, action.info)
       });
+    case GET_TABLE_HISTORY:
+      console.log("Bye");
+      return Object.assign({}, state, { tableHistory: action.info });
     default:
       return state;
   }
