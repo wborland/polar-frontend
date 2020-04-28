@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Input, Switch } from "antd";
+import { Button, Input, Switch, Popover, Popconfirm } from "antd";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
@@ -7,7 +7,8 @@ import {
   getEventsList,
   getCheckinTable,
   getTableCols,
-  sendColUpdates
+  sendColUpdates,
+  deleteCol
 } from "../../Redux/events";
 import { updateDialog } from "../../Redux/dialog";
 
@@ -60,8 +61,8 @@ class ChangeCheckinCols extends Component {
 
   componentDidUpdate = prevProps => {
     if (
-      this.props.events.checkinCols.length !=
-      prevProps.events.checkinCols.length
+      Object.keys(this.props.events.checkinCols).length !=
+      Object.keys(prevProps.events.checkinCols).length
     ) {
       this.componentDidMount();
     }
@@ -91,6 +92,19 @@ class ChangeCheckinCols extends Component {
             className={`Polar_${i}`}
             onChange={this.changeRadio}
           />
+          <Popconfirm
+            title="This will delete the column and all of it's data right now"
+            onConfirm={() =>
+              this.props._deleteCol(
+                this.props.user.auth,
+                this.getUrlVars()["id"],
+                vals[i].prev
+              )}
+          >
+            <Button type="danger" style={{ marginLeft: "10px" }}>
+              Delete Column
+            </Button>
+          </Popconfirm>
         </div>
       );
     }
@@ -153,7 +167,8 @@ const mapDispatchToProps = {
   _updateDialog: updateDialog,
   _getCheckinTable: getCheckinTable,
   _getTableCols: getTableCols,
-  _sendColUpdates: sendColUpdates
+  _sendColUpdates: sendColUpdates,
+  _deleteCol: deleteCol
 };
 
 export default connect(mapStoreToProps, mapDispatchToProps)(
