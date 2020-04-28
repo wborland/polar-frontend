@@ -80,9 +80,20 @@ export const getRsvpList = data => dispatch => {
   axios
     .post("/event/rsvpList", data)
     .then(response => {
-      dispatch(getRsvp(response.data));
+      let returnArr = [];
+      for (let i in response.data) {
+        let curr = response.data[i];
+        returnArr.push({
+          userId: curr[0],
+          firstName: curr[1],
+          lastName: curr[2],
+          key: i
+        });
+      }
+      dispatch(getRsvp(returnArr));
     })
     .catch(err => {
+      console.log(err.response);
       message.error("Failed to load event");
       console.log(err.response.data);
     });

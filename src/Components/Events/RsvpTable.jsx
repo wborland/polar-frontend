@@ -34,7 +34,7 @@ class RsvpTable extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{ marginTop: "100px" }}>
         <h4>Currently RSVPed</h4>
         <Table dataSource={this.props.events.rsvpList} columns={this.columns} />
       </div>
