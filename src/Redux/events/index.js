@@ -2,7 +2,8 @@ import {
   GET_ALL_EVENTS,
   GET_EVENT,
   GET_RSVP_LIST,
-  GET_CHECKIN_TABLE
+  GET_CHECKIN_TABLE,
+  GET_COL_TYPES
 } from "../action_types";
 import axios from "axios";
 import { message } from "antd";
@@ -30,13 +31,19 @@ const getCheckin = checkin => ({
   checkin
 });
 
+const getCols = cols => ({
+  type: GET_COL_TYPES,
+  cols
+});
+
 // Initial dialog state
 const initialState = {
   eventsList: [],
   currEvent: null,
   rsvpList: [],
   checkinCell: [],
-  checkinHeader: []
+  checkinHeader: [],
+  checkinCols: []
 };
 
 // Action helpers
@@ -88,6 +95,25 @@ export const getCheckinTable = (auth, eventId) => dispatch => {
       let tempCols = [];
       for (let i in response.data[0]) {
         if (i == 0) continue;
+        if (i == 1) {
+          tempCols.push({
+            title: "First Name",
+            dataIndex: response.data[0][i]
+          });
+          continue;
+        } else if (i == 2) {
+          tempCols.push({
+            title: "Last Name",
+            dataIndex: response.data[0][i]
+          });
+          continue;
+        } else if (i == 3) {
+          tempCols.push({
+            title: "Check In",
+            dataIndex: response.data[0][i]
+          });
+          continue;
+        }
         tempCols.push({
           title: response.data[0][i],
           dataIndex: response.data[0][i],
@@ -189,6 +215,89 @@ export const checkUserIn = (auth, userId, eventId) => dispatch => {
     });
 };
 
+export const getTableCols = (auth, eventId) => dispatch => {
+  axios
+    .post("/event/colTypes", { auth, eventId })
+    .then(response => {
+      dispatch(getCols(response.data));
+    })
+    .catch(err => {
+      console.log(err.response);
+      message.error("Something went wrong, please try again", 5);
+    });
+};
+
+export const sendColUpdates = (auth, eventId, cols) => dispatch => {
+  let editList = [];
+  let addList = [];
+  for (let i in cols) {
+    let curr = cols[i];
+    if (curr.prev === null && curr.next !== "") {
+      let obj = {};
+      obj["Question"] = curr.next;
+      obj["IsRsvp"] = curr.rsvp;
+      addList.push(obj);
+    }
+    if (
+      (curr.prev != curr.next || curr.prevRsvp != curr.rsvp) &&
+      curr.next !== "" &&
+      curr.prev !== null
+    ) {
+      let obj = {};
+      obj["before"] = curr.prev;
+      obj["Question"] = curr.next;
+      obj["IsRsvp"] = curr.rsvp;
+      editList.push(obj);
+    }
+  }
+
+  if (editList.length > 0) {
+    axios
+      .post("/event/modifyCol", { auth, eventId, data: editList })
+      .then(response => {
+        if (response.status == 200) {
+          if (addList.length > 0) {
+            axios
+              .post("/event/insertCol", { auth, eventId, data: addList })
+              .then(tresponse => {
+                message.success(
+                  "Successfully inserted and modified check in columns"
+                );
+                dispatch(getTableCols(auth, eventId));
+                dispatch(updateDialog(false, null));
+              });
+          } else {
+            message.success("Successfully modified the columns requested");
+            dispatch(getTableCols(auth, eventId));
+            dispatch(updateDialog(false, null));
+          }
+        }
+      })
+      .catch(err => {
+        console.log(err.response);
+        message.error("Something went wrong, please try again", 5);
+      });
+  } else if (addList.length > 0) {
+    axios
+      .post("/event/insertCol", { auth, eventId, data: addList })
+      .then(tresponse => {
+        if (tresponse.status == 200) {
+          message.success(
+            "Successfully inserted and modified check in columns"
+          );
+          dispatch(getTableCols(auth, eventId));
+          dispatch(updateDialog(false, null));
+        }
+      })
+      .catch(err => {
+        console.log(err.response);
+        message.error("Something went wrong, please try again", 5);
+      });
+  } else {
+    message.info("No changes needed");
+  }
+};
+
 const eventsReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_ALL_EVENTS:
@@ -202,6 +311,8 @@ const eventsReducer = (state = initialState, action) => {
         checkinHeader: action.checkin.header,
         checkinCell: action.checkin.data
       });
+    case GET_COL_TYPES:
+      return Object.assign({}, state, { checkinCols: action.cols });
     default:
       return state;
   }

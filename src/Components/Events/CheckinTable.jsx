@@ -225,9 +225,13 @@ class CheckinTable extends Component {
           {this.props.events.currEvent.name}
         </h4>
         <Table
+          tableLayout="auto"
           components={{ body: { cell: this.EditableCell } }}
           dataSource={this.props.events.checkinCell}
           columns={this.modifyColumns()}
+          scroll={{
+            x: true
+          }}
         />
       </div>
     );

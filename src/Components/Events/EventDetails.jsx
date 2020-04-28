@@ -16,6 +16,7 @@ import { getEventById, closeEvent } from "../../Redux/events";
 import { updateDialog } from "../../Redux/dialog";
 import moment from "moment";
 import RsvpTable from "./RsvpTable";
+import ChangeCheckinCols from "./ChangeCheckinCols";
 
 const { Title } = Typography;
 
@@ -134,6 +135,7 @@ class EventDetails extends Component {
                 >
                   <Button
                     type="danger"
+                    style={{ marginRight: "1vw", marginBottom: "1vh" }}
                     onClick={() =>
                       this.props._closeEvent(
                         this.props.user.auth,
@@ -143,6 +145,20 @@ class EventDetails extends Component {
                     End Event
                   </Button>
                 </Popover>
+              : null}
+            {this.props.user.permissions.includes(3) &&
+            this.props.events.currEvent != null &&
+            this.props.events.currEvent.closed != true
+              ? <Button
+                  type="primary"
+                  onClick={() =>
+                    this.props._updateDialog(true, {
+                      title: "Modify Check In Columns",
+                      content: <ChangeCheckinCols />
+                    })}
+                >
+                  Modify Check in Columns
+                </Button>
               : null}
           </Col>
           <Col
