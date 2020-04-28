@@ -1,12 +1,22 @@
 import React, { Component } from "react";
-import { Button, Typography, Row, Col, Radio, message, Divider } from "antd";
+import {
+  Button,
+  Typography,
+  Row,
+  Col,
+  Radio,
+  message,
+  Divider,
+  Popover
+} from "antd";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import { getEventById } from "../../Redux/events";
+import { getEventById, closeEvent } from "../../Redux/events";
 import { updateDialog } from "../../Redux/dialog";
 import moment from "moment";
 import RsvpTable from "./RsvpTable";
+import ChangeCheckinCols from "./ChangeCheckinCols";
 
 const { Title } = Typography;
 
@@ -65,18 +75,43 @@ class EventDetails extends Component {
             style={{ paddingLeft: "2vw", textAlign: "left" }}
           >
             {this.props.user.permissions.includes(3)
-              ? <Button type="primary" style={{ marginRight: "1vw" }}>
+              ? <Button
+                  type="primary"
+                  style={{ marginRight: "1vw", marginBottom: "1vh" }}
+                >
                   Modify Event
                 </Button>
               : ""}
             {this.props.user.permissions.includes(5)
-              ? <Button type="danger" style={{ marginRight: "1vw" }}>
+              ? <Button
+                  type="danger"
+                  style={{ marginRight: "1vw", marginBottom: "1vh" }}
+                >
                   Delete Event
                 </Button>
               : ""}
-            {this.props.user.permissions.includes(4)
+            {this.props.events.currEvent != null &&
+            this.props.user.permissions.includes(4) &&
+            this.props.events.currEvent.closed == true
               ? <Button
                   type="primary"
+                  style={{ marginRight: "1vw", marginBottom: "1vh" }}
+                  onClick={() =>
+                    this.props._push(
+                      window.location.pathname +
+                        window.location.search +
+                        "&checkin=true"
+                    )}
+                >
+                  View Check in
+                </Button>
+              : null}
+            {this.props.events.currEvent != null &&
+            this.props.user.permissions.includes(4) &&
+            this.props.events.currEvent.closed != true
+              ? <Button
+                  type="primary"
+                  style={{ marginRight: "1vw", marginBottom: "1vh" }}
                   onClick={() =>
                     this.props._push(
                       window.location.pathname +
@@ -85,6 +120,44 @@ class EventDetails extends Component {
                     )}
                 >
                   Check in
+                </Button>
+              : null}
+            {this.props.events.currEvent != null &&
+            this.props.user.permissions.includes(3) &&
+            this.props.events.currEvent.closed != true
+              ? <Popover
+                  content={
+                    <p>
+                      Closes the event so the check in table is locked and not
+                      editable
+                    </p>
+                  }
+                >
+                  <Button
+                    type="danger"
+                    style={{ marginRight: "1vw", marginBottom: "1vh" }}
+                    onClick={() =>
+                      this.props._closeEvent(
+                        this.props.user.auth,
+                        parseInt(this.props.router.location.query.id)
+                      )}
+                  >
+                    End Event
+                  </Button>
+                </Popover>
+              : null}
+            {this.props.user.permissions.includes(3) &&
+            this.props.events.currEvent != null &&
+            this.props.events.currEvent.closed != true
+              ? <Button
+                  type="primary"
+                  onClick={() =>
+                    this.props._updateDialog(true, {
+                      title: "Modify Check In Columns",
+                      content: <ChangeCheckinCols />
+                    })}
+                >
+                  Modify Check in Columns
                 </Button>
               : null}
           </Col>
@@ -141,7 +214,8 @@ const mapStoreToProps = state => {
 const mapDispatchToProps = {
   _push: push,
   _getEventById: getEventById,
-  _updateDialog: updateDialog
+  _updateDialog: updateDialog,
+  _closeEvent: closeEvent
 };
 
 export default connect(mapStoreToProps, mapDispatchToProps)(
