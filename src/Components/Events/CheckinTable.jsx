@@ -107,6 +107,9 @@ class CheckinTable extends Component {
     if (this.props.events.checkinHeader == undefined) {
       return [];
     }
+    let shouldDisabled = {
+      disabled: this.props.events.currEvent.closed
+    };
     let columnArr = [...this.props.events.checkinHeader];
     for (let i in columnArr) {
       if (i == 2) {
@@ -122,6 +125,7 @@ class CheckinTable extends Component {
                     record.userId,
                     this.props.events.currEvent.id
                   )}
+                {...shouldDisabled}
               >
                 Check In
               </Button>
