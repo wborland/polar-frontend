@@ -36,6 +36,7 @@ class ChangeCheckinCols extends Component {
     );
     let i = 0;
     let temp = this.state.vals;
+    console.log(this.props.events.checkinCols);
     for (let tex in this.props.events.checkinCols) {
       temp[i] = {
         prev: tex,
