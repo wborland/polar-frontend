@@ -7,7 +7,8 @@ import {
   Radio,
   message,
   Divider,
-  Popover
+  Popover,
+  Skeleton
 } from "antd";
 import { ClockCircleOutlined, StarOutlined } from "@ant-design/icons";
 import ModifyEventForm from "./ModifyEventFormComponent";
@@ -163,6 +164,9 @@ class EventDetails extends Component {
   };
 
   render() {
+    if (this.props.events.currEvent == null) {
+      return <Skeleton active />;
+    }
     return (
       <div
         style={{
@@ -286,6 +290,7 @@ class EventDetails extends Component {
               value={this.state.rsvp.response}
               onChange={this.handleRSVP}
               buttonStyle="solid"
+              {...{ disabled: this.props.events.currEvent.closed }}
             >
               <Radio.Button value={false}>Not Going</Radio.Button>
               <Radio.Button value={true}>Going</Radio.Button>
