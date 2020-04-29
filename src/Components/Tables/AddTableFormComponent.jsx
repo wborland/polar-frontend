@@ -9,9 +9,6 @@ import { getTableList } from "../../Redux/tables";
 const { TextArea } = Input;
 
 class AddTableFormComponent extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   handleSubmit = e => {
     e.preventDefault();

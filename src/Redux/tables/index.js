@@ -63,6 +63,31 @@ export const getTableList = auth => dispatch => {
     });
 };
 
+export const downloadTable = (auth, tableId, tableName) => dispatch => {
+  axios
+    .post("/table/export", { auth, tableId }, { responseType: "arraybuffer" })
+    .then(response => {
+      if (response.status === 200) {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", tableName + ".csv");
+        link.click();
+      } else {
+        message.error(
+          "Something went wrong, please reload the page to try again",
+          10
+        );
+      }
+    })
+    .catch(err => {
+      message.error(
+        "Something went wrong, please reload the page to try again",
+        10
+      );
+    });
+};
+
 export const getIndivTable = (auth, tableId) => dispatch => {
   axios
     .post("/table/view", { auth, tableId })

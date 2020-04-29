@@ -17,7 +17,6 @@ import { updateDialog } from "../../Redux/dialog";
 import AddColsForm from "./AddColsFormComponent";
 import axios from "axios";
 
-const { Title, Text } = Typography;
 const { TabPane } = Tabs;
 
 class TableEdit extends Component {
