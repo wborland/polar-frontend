@@ -63,10 +63,10 @@ export const getEventsList = auth => dispatch => {
     });
 };
 
-export const getEventById = (data) => dispatch => {
-  axios.post("/event/details", data)
+export const getEventById = data => dispatch => {
+  axios
+    .post("/event/details", data)
     .then(response => {
-      console.log("Response", response.data);
       dispatch(getEvent(response.data));
     })
     .catch(err => {
@@ -211,7 +211,6 @@ export const checkUserIn = (auth, userId, eventId) => dispatch => {
   axios
     .post("/event/checkIn", { auth, userId, eventId })
     .then(response => {
-      console.log(response.data);
       message.success("User successfully checked-in");
       dispatch(getCheckinTable(auth, eventId));
     })
@@ -273,11 +272,13 @@ export const sendColUpdates = (auth, eventId, cols) => dispatch => {
                   "Successfully inserted and modified check in columns"
                 );
                 dispatch(getTableCols(auth, eventId));
+                dispatch(getEventById({ auth, id: eventId }));
                 dispatch(updateDialog(false, null));
               });
           } else {
             message.success("Successfully modified the columns requested");
             dispatch(getTableCols(auth, eventId));
+            dispatch(getEventById({ auth, id: eventId }));
             dispatch(updateDialog(false, null));
           }
         }
@@ -295,6 +296,7 @@ export const sendColUpdates = (auth, eventId, cols) => dispatch => {
             "Successfully inserted and modified check in columns"
           );
           dispatch(getTableCols(auth, eventId));
+          dispatch(getEventById({ auth, id: eventId }));
           dispatch(updateDialog(false, null));
         }
       })

@@ -7,7 +7,8 @@ import {
   Radio,
   message,
   Divider,
-  Popover
+  Popover,
+  Skeleton
 } from "antd";
 import { ClockCircleOutlined, StarOutlined } from "@ant-design/icons";
 import ModifyEventForm from "./ModifyEventFormComponent";
@@ -15,7 +16,7 @@ import RsvpForm from "./RsvpFormComponent";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import { getEventById, closeEvent } from "../../Redux/events";
+import { getEventById, closeEvent, getRsvpList } from "../../Redux/events";
 import { updateDialog } from "../../Redux/dialog";
 import moment from "moment";
 import RsvpTable from "./RsvpTable";
@@ -131,6 +132,10 @@ class EventDetails extends Component {
             "You have Unrsvp'd from " +
               decodeURI(this.props.router.location.query.name)
           );
+          this.props._getRsvpList({
+            auth: this.props.user.auth,
+            eventId: this.props.router.location.query.id
+          });
         })
         .catch(err => {
           message.error("Failed to unrsvp. Please try again later.");
@@ -152,6 +157,10 @@ class EventDetails extends Component {
               "You have Rsvp'd for " +
                 decodeURI(this.props.router.location.query.name)
             );
+            this.props._getRsvpList({
+              auth: this.props.user.auth,
+              eventId: this.props.router.location.query.id
+            });
           })
           .catch(error => {
             message.error("Failed to rsvp. Please try again later.");
@@ -163,11 +172,14 @@ class EventDetails extends Component {
   };
 
   render() {
+    if (this.props.events.currEvent == null) {
+      return <Skeleton active />;
+    }
     return (
       <div
         style={{
           background: "#FFFFFF",
-          minHeight: "calc(100vh - 64px)",
+          height: "calc(100vh - 64px)",
           textAlign: "center",
           paddingTop: "10px"
         }}
@@ -286,6 +298,7 @@ class EventDetails extends Component {
               value={this.state.rsvp.response}
               onChange={this.handleRSVP}
               buttonStyle="solid"
+              {...{ disabled: this.props.events.currEvent.closed }}
             >
               <Radio.Button value={false}>Not Going</Radio.Button>
               <Radio.Button value={true}>Going</Radio.Button>
@@ -346,7 +359,8 @@ const mapDispatchToProps = {
   _push: push,
   _getEventById: getEventById,
   _updateDialog: updateDialog,
-  _closeEvent: closeEvent
+  _closeEvent: closeEvent,
+  _getRsvpList: getRsvpList
 };
 
 export default connect(mapStoreToProps, mapDispatchToProps)(
