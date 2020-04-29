@@ -128,7 +128,7 @@ class BackgroundPage extends Component {
                 : ""}
             </Menu>
           </Sider>
-          <Layout>
+          <Layout style={{ backgroundColor: "white" }}>
             <Content>
               <Routing />
             </Content>
