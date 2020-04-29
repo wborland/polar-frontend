@@ -258,6 +258,7 @@ const modifyItemHistory = (state, info) => {
         obj["polarType"] = "Error";
         break;
     }
+    console.log(curr.value);
     let arr = JSON.parse(curr.value.replace(/'/g, '"'));
     for (let j in arr) {
       obj[existCols[j].dataIndex] = arr[j];
@@ -269,7 +270,6 @@ const modifyItemHistory = (state, info) => {
 };
 
 const tableListReducer = (state = initialState, action) => {
-  console.log(action.type);
   switch (action.type) {
     case GET_TABLE_LIST:
       return Object.assign({}, state, {
@@ -282,7 +282,6 @@ const tableListReducer = (state = initialState, action) => {
         itemHistory: modifyItemHistory(state, action.info)
       });
     case GET_TABLE_HISTORY:
-      console.log("Bye");
       return Object.assign({}, state, { tableHistory: action.info });
     default:
       return state;

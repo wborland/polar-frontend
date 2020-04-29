@@ -2,15 +2,12 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import TableList from "./TableList";
-import TableView from "./TableView";
 import { Button, Skeleton, Table } from "antd";
 import { updateDialog } from "../../Redux/dialog";
 import { getTableHistory, resetTableHistory } from "../../Redux/tables";
 
 class TableHistory extends Component {
   componentDidMount = () => {
-    console.log(this.props);
     this.props._getTableHistory(this.props.user.auth, this.props.table.key);
   };
 

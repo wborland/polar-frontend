@@ -4,11 +4,9 @@ import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import { Skeleton, Table } from "antd";
 import "antd/dist/antd.css";
-import { getItemHistory } from "../../Redux/tables";
 
 class ItemHistory extends Component {
   componentDidMount = () => {
-    console.log(this.props.tables.tableInfo.columns);
     this.columns.push(...this.props.tables.tableInfo.columns);
     this.columns.push({
       title: "Event Time",
@@ -45,8 +43,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  _push: push,
-  _getItemHistory: getItemHistory
+  _push: push
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
