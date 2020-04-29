@@ -75,7 +75,8 @@ class EmailSelector extends Component {
           <Radio.Button value={2}>Template 2</Radio.Button>
           <Radio.Button value={3}>Template 3</Radio.Button>
         </Radio.Group>
-        <a onClick={this.handlePreview}>Preview Templates</a>
+        <br/>
+        <a href="#" onClick={this.handlePreview}>Preview Templates</a>
         {this.state.template}
       </div>
     );
