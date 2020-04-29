@@ -324,6 +324,34 @@ export const deleteCol = (auth, eventId, col) => dispatch => {
     });
 };
 
+export const sendMessages = (auth, eventId, data) => dispatch => {
+  let sendData = {
+    auth,
+    eventId,
+    message: data.message,
+    type: data.type,
+    subject: data.subject
+  };
+  let route = "";
+  if (data.to == "RSVP") {
+    route = "/message/eventRSVP";
+  } else {
+    route = "/message/eventCheckIn";
+  }
+  axios
+    .post(route, sendData)
+    .then(response => {
+      if (response.status == 200) {
+        message.success("Message sent successfully");
+        dispatch(updateDialog(false, null));
+      }
+    })
+    .catch(err => {
+      console.log(err.response);
+      message.error("Something went wrong, please try again", 5);
+    });
+};
+
 const eventsReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_ALL_EVENTS:

@@ -33,10 +33,12 @@ class RsvpFormComponent extends Component {
               auth: this.props.user.auth,
               id: parseInt(this.props.currEvent.id)
             });
-            this.props._getRsvpList({
-              auth: this.props.user.auth,
-              eventId: this.props.currEvent.id
-            });
+            if (this.props.user.permissions.includes(4)) {
+              this.props._getRsvpList({
+                auth: this.props.user.auth,
+                eventId: this.props.currEvent.id
+              });
+            }
           })
           .catch(error => {
             message.error("Failed to rsvp. Please try again later.");
