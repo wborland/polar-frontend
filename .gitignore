@@ -41,6 +41,11 @@ build/Release
 node_modules/
 jspm_packages/
 
+.firebaserc
+firebase.json
+.firebase/
+.firebase/hosting.YnVpbGQ.cache
+
 # TypeScript v1 declaration files
 typings/
 
@@ -49,10 +54,6 @@ typings/
 
 # Optional npm cache directory
 .npm
-
-.firebaserc
-firebase.json
-.firebase
 
 # Optional eslint cache
 .eslintcache
