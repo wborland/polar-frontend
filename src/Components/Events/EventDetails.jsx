@@ -179,7 +179,7 @@ class EventDetails extends Component {
       <div
         style={{
           background: "#FFFFFF",
-          minHeight: "calc(100vh - 64px)",
+          height: "calc(100vh - 64px)",
           textAlign: "center",
           paddingTop: "10px"
         }}
