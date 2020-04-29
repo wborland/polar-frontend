@@ -22,6 +22,7 @@ import moment from "moment";
 import RsvpTable from "./RsvpTable";
 import ChangeCheckinCols from "./ChangeCheckinCols";
 import axios from "axios";
+import EventCommunication from "./EventCommunication";
 
 const { Title } = Typography;
 
@@ -132,10 +133,12 @@ class EventDetails extends Component {
             "You have Unrsvp'd from " +
               decodeURI(this.props.router.location.query.name)
           );
-          this.props._getRsvpList({
-            auth: this.props.user.auth,
-            eventId: this.props.router.location.query.id
-          });
+          if (this.props.user.permissions.includes(4)) {
+            this.props._getRsvpList({
+              auth: this.props.user.auth,
+              eventId: this.props.router.location.query.id
+            });
+          }
         })
         .catch(err => {
           message.error("Failed to unrsvp. Please try again later.");
@@ -157,10 +160,12 @@ class EventDetails extends Component {
               "You have Rsvp'd for " +
                 decodeURI(this.props.router.location.query.name)
             );
-            this.props._getRsvpList({
-              auth: this.props.user.auth,
-              eventId: this.props.router.location.query.id
-            });
+            if (this.props.user.permissions.includes(4)) {
+              this.props._getRsvpList({
+                auth: this.props.user.auth,
+                eventId: this.props.router.location.query.id
+              });
+            }
           })
           .catch(error => {
             message.error("Failed to rsvp. Please try again later.");
@@ -276,6 +281,7 @@ class EventDetails extends Component {
             this.props.events.currEvent.closed != true
               ? <Button
                   type="primary"
+                  style={{ marginRight: "1vw", marginBottom: "1vh" }}
                   onClick={() =>
                     this.props._updateDialog(true, {
                       title: "Modify Check In Columns",
@@ -283,6 +289,18 @@ class EventDetails extends Component {
                     })}
                 >
                   Modify Check in Columns
+                </Button>
+              : null}
+            {this.props.user.permissions.includes(6)
+              ? <Button
+                  type="primary"
+                  onClick={() =>
+                    this.props._updateDialog(true, {
+                      title: "Send Communication",
+                      content: <EventCommunication />
+                    })}
+                >
+                  Send Communication
                 </Button>
               : null}
           </Col>

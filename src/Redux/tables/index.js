@@ -59,6 +59,7 @@ export const getTableList = auth => dispatch => {
       dispatch(saveTableList(tableList));
     })
     .catch(err => {
+      console.log(err);
       message.error("Something went wrong, please try again", 5);
     });
 };
