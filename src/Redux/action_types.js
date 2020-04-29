@@ -15,3 +15,9 @@ export const GET_INDIV_TABLE = "[Inventory] - get individual table";
 export const GET_ALL_FILES = "[Files] - get all files";
 export const OPEN_FILE = "[Files] - open specific file";
 export const GET_TABLE_LIST = "[Inventory] - get list of tables";
+export const GET_ALL_EVENTS = "[Events] - get list of events";
+export const GET_EVENT = "[Events] - get specific events";
+export const GET_RSVP_LIST = "[Events] - get list of people rsvp-ed";
+export const GET_CHECKIN_TABLE =
+  "[Events] - get the check in table data and headers";
+export const GET_COL_TYPES = "[Events] - get the check in columns";
