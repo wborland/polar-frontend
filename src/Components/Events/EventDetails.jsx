@@ -339,6 +339,7 @@ class EventDetails extends Component {
           {this.state.description ? <b>Description: </b> : ""}
           {this.state.description ? this.state.description : ""}
         </Row>
+        <br />
         <Row style={{ marginLeft: "2vw", textAlign: "left" }}>
           {this.props.user.permissions.includes(4) ? <RsvpTable /> : null}
         </Row>
