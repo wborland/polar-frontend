@@ -178,7 +178,6 @@ export const unTrackHistory = (auth, tableId) => dispatch => {
     .post("/table/untrack", { auth, tableId })
     .then(response => {
       if (response.status == 200) {
-        console.log(response.data);
         message.success("Successfully started tracking");
         dispatch(getTableList(auth));
       } else {
@@ -195,7 +194,7 @@ export const getItemHistory = (auth, tableId, id) => dispatch => {
   axios
     .post("/table/itemHistory", { auth, tableId, id })
     .then(response => {
-      if (response.status == 200) {
+      if (response.status === 200) {
         dispatch(getHistoryItem(response.data));
       }
     })
@@ -209,8 +208,7 @@ export const getTableHistory = (auth, tableId) => dispatch => {
   axios
     .post("/table/tableHistory", { auth, tableId })
     .then(response => {
-      if (response.status == 200) {
-        console.log("Hello");
+      if (response.status === 200) {
         dispatch(getHistoryTable(response.data));
       }
     })
@@ -258,7 +256,6 @@ const modifyItemHistory = (state, info) => {
         obj["polarType"] = "Error";
         break;
     }
-    console.log(curr.value);
     let arr = JSON.parse(curr.value.replace(/'/g, '"'));
     for (let j in arr) {
       obj[existCols[j].dataIndex] = arr[j];
