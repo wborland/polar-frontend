@@ -1,17 +1,17 @@
 import React, { Component } from "react";
 import TextForm from "../Components/Communication/TextComponent";
 import EmailSelector from "../Components/Communication/EmailSelector";
-import { Radio, Typography } from 'antd';
+import { Radio, Typography } from "antd";
 
-const {Title} = Typography;
+const { Title } = Typography;
 
 class MassCommunication extends Component {
   constructor(props) {
     super(props);
-    this.state = { messageType: "email" }
+    this.state = { messageType: "email" };
   }
 
-  handleMessageType = (e) => {
+  handleMessageType = e => {
     if (e.target.value === "email") {
       this.setState({
         messageType: "email"
@@ -21,14 +21,24 @@ class MassCommunication extends Component {
         messageType: "text"
       });
     }
-  }
+  };
 
   render() {
     return (
-      <div style={{ background: "#FFFFFF", minHeight: "calc(100vh - 64px)", textAlign: "center", paddingTop: "10px" }}>
+      <div
+        style={{
+          background: "#FFFFFF",
+          height: "calc(100vh - 64px)",
+          textAlign: "center",
+          paddingTop: "10px"
+        }}
+      >
         <Title>Communication</Title>
 
-        <Radio.Group defaultValue={this.state.messageType} onChange={this.handleMessageType}>
+        <Radio.Group
+          defaultValue={this.state.messageType}
+          onChange={this.handleMessageType}
+        >
           <Radio.Button value="email">Email</Radio.Button>
           <Radio.Button value="text">Text</Radio.Button>
         </Radio.Group>
