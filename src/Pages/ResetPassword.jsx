@@ -5,7 +5,7 @@ import { push } from "connected-react-router";
 import { Row, Col, Typography, Layout, Menu, Divider } from 'antd';
 import Polar from "../Assets/polar.png";
 import styled from "styled-components";
-import {organizationName} from "../Assets/Constants";
+import { organizationName } from "../Assets/Constants";
 import ResetPasswordForm from "../Components/ResetPasswordComponent";
 
 const { Title, Paragraph, Text } = Typography;
@@ -23,7 +23,7 @@ class Register extends Component {
         return (
             <Layout>
                 <Header>
-                <Menu
+                    <Menu
                         theme="dark"
                         mode="horizontal"
                         selectable={false}
@@ -33,20 +33,20 @@ class Register extends Component {
                     </Menu>
                 </Header>
                 <Content>
-                        <Row type="flex" justify="center" style={{ minHeight: "88vh" }}>
-                            <Col span={20} style={{margin: "5vh"}}>
-                                <Row type="flex" justify="center" alight="middle" style={{ textAlign: "center" }}>
-                                        <h3 style={{ textAlign: "center"}}>Welcome to Polar for {organizationName}!</h3>
-                                        <Divider />
-                                </Row>
-                                <Row type="flex" justify="center" alight="middle" >
-                                    <Col span={16}>
-                                        <ResetPasswordForm />
-                                    </Col>
-                                    
-                                </Row>
-                            </Col>
-                        </Row>
+                    <Row type="flex" justify="center" style={{ minHeight: "88vh" }}>
+                        <Col span={20} style={{ margin: "5vh" }}>
+                            <Row type="flex" justify="center" alight="middle" style={{ textAlign: "center" }}>
+                                <h3 style={{ textAlign: "center" }}>Welcome to Polar for {organizationName}!</h3>
+                                <Divider />
+                            </Row>
+                            <Row type="flex" justify="center" alight="middle" >
+                                <Col span={16}>
+                                    <ResetPasswordForm />
+                                </Col>
+
+                            </Row>
+                        </Col>
+                    </Row>
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>Created by Polar ©2020</Footer>
             </Layout>

@@ -1,4 +1,9 @@
-import { GET_TABLE_LIST, GET_INDIV_TABLE } from "../action_types";
+import {
+  GET_TABLE_LIST,
+  GET_INDIV_TABLE,
+  GET_TABLE_HISTORY,
+  GET_ITEM_HISTORY
+} from "../action_types";
 import axios from "axios";
 import { message } from "antd";
 import { updateDialog } from "../dialog";
@@ -14,6 +19,16 @@ const saveIndivTable = table => ({
   table
 });
 
+const getHistoryTable = info => ({
+  type: GET_TABLE_HISTORY,
+  info
+});
+
+const getHistoryItem = info => ({
+  type: GET_ITEM_HISTORY,
+  info
+});
+
 // Initial dialog state
 const initialState = {
   tableList: [],
@@ -21,7 +36,9 @@ const initialState = {
     tableTitle: "",
     tableHeaders: [],
     tableCell: []
-  }
+  },
+  itemHistory: null,
+  tableHistory: null
 };
 
 // Action helpers
@@ -34,7 +51,8 @@ export const getTableList = auth => dispatch => {
         for (let key in response.data) {
           tableList.push({
             key: response.data[key][0],
-            tableName: response.data[key][1]
+            tableName: response.data[key][1],
+            tracking: response.data[key][2]
           });
         }
       }
@@ -43,6 +61,31 @@ export const getTableList = auth => dispatch => {
     .catch(err => {
       console.log(err);
       message.error("Something went wrong, please try again", 5);
+    });
+};
+
+export const downloadTable = (auth, tableId, tableName) => dispatch => {
+  axios
+    .post("/table/export", { auth, tableId }, { responseType: "arraybuffer" })
+    .then(response => {
+      if (response.status === 200) {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", tableName + ".csv");
+        link.click();
+      } else {
+        message.error(
+          "Something went wrong, please reload the page to try again",
+          10
+        );
+      }
+    })
+    .catch(err => {
+      message.error(
+        "Something went wrong, please reload the page to try again",
+        10
+      );
     });
 };
 
@@ -138,6 +181,117 @@ export const addRow = (auth, tableId, contents) => dispatch => {
     });
 };
 
+export const trackHistory = (auth, tableId) => dispatch => {
+  axios
+    .post("/table/track", { auth, tableId })
+    .then(response => {
+      if (response.status == 200) {
+        console.log(response.data);
+        message.success("Successfully started tracking");
+        dispatch(getTableList(auth));
+      } else {
+        message.error("Something went wrong, please try again", 5);
+      }
+    })
+    .catch(err => {
+      console.log(err.response);
+      message.error("Something went wrong, please try again", 5);
+    });
+};
+
+export const unTrackHistory = (auth, tableId) => dispatch => {
+  axios
+    .post("/table/untrack", { auth, tableId })
+    .then(response => {
+      if (response.status == 200) {
+        message.success("Successfully started tracking");
+        dispatch(getTableList(auth));
+      } else {
+        message.error("Something went wrong, please try again", 5);
+      }
+    })
+    .catch(err => {
+      console.log(err.response);
+      message.error("Something went wrong, please try again", 5);
+    });
+};
+
+export const getItemHistory = (auth, tableId, id) => dispatch => {
+  axios
+    .post("/table/itemHistory", { auth, tableId, id })
+    .then(response => {
+      if (response.status === 200) {
+        dispatch(getHistoryItem(response.data));
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      message.error("Something went wrong, please try again", 5);
+    });
+};
+
+export const getTableHistory = (auth, tableId) => dispatch => {
+  axios
+    .post("/table/tableHistory", { auth, tableId })
+    .then(response => {
+      if (response.status === 200) {
+        dispatch(getHistoryTable(response.data));
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      message.error("Something went wrong, please try again", 5);
+    });
+};
+
+export const resetTableHistory = () => dispatch => {
+  dispatch(getHistoryTable(null));
+};
+
+const modifyItemHistory = (state, info) => {
+  let existCols = state.tableInfo.columns;
+  let allItems = [];
+  for (let i in info) {
+    let curr = info[i];
+    let obj = {
+      polarTime: curr.time
+    };
+    switch (curr.type) {
+      case 0:
+        obj["polarType"] = "Table Name Changed";
+        break;
+      case 1:
+        obj["polarType"] = "Entry Added";
+        break;
+      case 2:
+        obj["polarType"] = "Entry Removed";
+        break;
+      case 3:
+        obj["polarType"] = "Entry Modified";
+        break;
+      case 4:
+        obj["polarType"] = "Column Added";
+        break;
+      case 5:
+        obj["polarType"] = "Column Removed";
+        break;
+      case 6:
+        obj["polarType"] = "Column Renamed";
+        break;
+      default:
+        obj["polarType"] = "Error";
+        break;
+    }
+    let arr = JSON.parse(curr.value.replace(/'/g, '"'));
+    for (let j in arr) {
+      obj[existCols[j].dataIndex] = arr[j];
+    }
+    if (obj["key"] == null) obj["key"] = i;
+    allItems.push(obj);
+  }
+  return allItems;
+};
+
 const tableListReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_TABLE_LIST:
@@ -146,6 +300,12 @@ const tableListReducer = (state = initialState, action) => {
       });
     case GET_INDIV_TABLE:
       return Object.assign({}, state, { tableInfo: action.table });
+    case GET_ITEM_HISTORY:
+      return Object.assign({}, state, {
+        itemHistory: modifyItemHistory(state, action.info)
+      });
+    case GET_TABLE_HISTORY:
+      return Object.assign({}, state, { tableHistory: action.info });
     default:
       return state;
   }

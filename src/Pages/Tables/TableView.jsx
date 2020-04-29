@@ -11,9 +11,18 @@ import {
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import { getIndivTable, modifyRow, deleteRow } from "../../Redux/tables";
+import {
+  getIndivTable,
+  modifyRow,
+  deleteRow,
+  getHistoryInfo,
+  getTableList,
+  getItemHistory,
+  downloadTable
+} from "../../Redux/tables";
 import { updateDialog } from "../../Redux/dialog";
 import AddEntry from "./AddEntry";
+import ItemHistory from "./ItemHistory";
 
 const { Title } = Typography;
 
@@ -28,7 +37,8 @@ class TableView extends Component {
       columns: [],
       tableName: "",
       editingKey: "",
-      data: {}
+      data: {},
+      isExpandable: ""
     };
   }
 
@@ -73,9 +83,11 @@ class TableView extends Component {
 
   componentDidMount = () => {
     // TODO: Make API request to get file data
-    this.setState({
-      tableName: this.getUrlVars()["tableName"].replace(/%20/g, " ")
-    });
+    this.setState({ tableName: this.getUrlVars()["tableName"] });
+    this.props._getTableList(this.props.user.auth);
+    let url = new URL(window.location.href);
+    let params = new URLSearchParams(url.search);
+    this.setState({ tableName: params.get("tableName") });
     this.props._getIndivTable(
       this.props.user.auth,
       parseInt(this.getUrlVars()["tableId"])
@@ -196,6 +208,37 @@ class TableView extends Component {
     return record.id === this.state.editingKey;
   };
 
+  shouldBeExpandable = () => {
+    let returnItem = {
+      expandedRowRender: record =>
+        record.id == null || record.id == this.state.isExpandable
+          ? <ItemHistory record={record} />
+          : null,
+      onExpand: (expanded, record) => {
+        if (expanded == false) {
+          this.setState({ isExpandable: null });
+          return;
+        }
+        this.setState({ isExpandable: record.id });
+        this.props._getItemHistory(
+          this.props.user.auth,
+          parseInt(this.getUrlVars()["tableId"]),
+          record.id
+        );
+      }
+    };
+
+    let list = this.props.tables.tableList;
+    for (let i in list) {
+      let curr = list[i];
+      if (curr.key == this.getUrlVars()["tableId"]) {
+        if (curr.tracking == 1) {
+          return returnItem;
+        }
+      }
+    }
+  };
+
   render() {
     if (!this.props.tables.tableInfo) {
       return (
@@ -229,11 +272,12 @@ class TableView extends Component {
           components={{ body: { cell: this.EditableCell } }}
           dataSource={this.props.tables.tableInfo.data}
           columns={this.modifyColumns()}
+          {...this.shouldBeExpandable()}
         />
         {this.props.user.permissions.includes(10)
           ? <Button
               type="primary"
-              style={{ marginTop: "-50px" }}
+              style={{ marginRight: "10px" }}
               onClick={() =>
                 this.props._updateDialog(true, {
                   title: "Add new row",
@@ -243,6 +287,17 @@ class TableView extends Component {
               Add Row
             </Button>
           : null}
+        <Button
+          type="primary"
+          onClick={() =>
+            this.props._downloadTable(
+              this.props.user.auth,
+              parseInt(this.getUrlVars()["tableId"]),
+              this.state.tableName
+            )}
+        >
+          Export Table
+        </Button>
       </div>
     );
   }
@@ -261,7 +316,10 @@ const mapDispatchToProps = {
   _getIndivTable: getIndivTable,
   _modifyRow: modifyRow,
   _deleteRow: deleteRow,
-  _updateDialog: updateDialog
+  _updateDialog: updateDialog,
+  _getItemHistory: getItemHistory,
+  _getTableList: getTableList,
+  _downloadTable: downloadTable
 };
 
 export default connect(mapStoreToProps, mapDispatchToProps)(
