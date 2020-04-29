@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Button, Skeleton, Typography, Radio, message, Row, Col } from 'antd';
+import { Button, Typography, Radio, Row, Col } from 'antd';
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";

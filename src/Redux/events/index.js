@@ -54,7 +54,7 @@ export const getEventsList = auth => dispatch => {
     .then(response => {
       let events = response.data;
       events = events.sort(
-        (a, b) => moment(a.date).unix() - moment(b.date).unix()
+        (a, b) => moment(a.startTime).unix() - moment(b.startTime).unix()
       );
       dispatch(getEvents(events));
     })
@@ -63,12 +63,10 @@ export const getEventsList = auth => dispatch => {
     });
 };
 
-export const getEventById = data => dispatch => {
-  //TODO: API Call
-  axios
-    .post("/event/details", data)
+export const getEventById = (data) => dispatch => {
+  axios.post("/event/details", data)
     .then(response => {
-      console.log("response", response);
+      console.log("Response", response.data);
       dispatch(getEvent(response.data));
     })
     .catch(err => {

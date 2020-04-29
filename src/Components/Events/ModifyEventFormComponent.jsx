@@ -5,18 +5,19 @@ import { Form, Input, Button, DatePicker, Icon, Divider, Radio, Switch, message 
 import { updateDialog } from "../../Redux/dialog";
 import moment from "moment";
 import axios from "axios";
-import { getEventsList } from "../../Redux/events";
+import { getEventById } from "../../Redux/events";
 
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 let id = 0;
 
-class AddEventFormComponent extends Component {
+class ModifyEventFormComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showRSVP: false
+      showRSVP: this.props.currEvent.rsvp.questions.length !== 0,
     }
+    id = this.props.currEvent.rsvp.questions.length;
   }
 
   removeReminders = (e) => {
@@ -81,6 +82,7 @@ class AddEventFormComponent extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        console.log("Test", values);
         let startTime = values.eventTime[0];
         let endTime = values.eventTime[1];
         // Validate start and end
@@ -108,10 +110,9 @@ class AddEventFormComponent extends Component {
             return val != false;
           });
         }
-        
-
         let json = {
           "auth": this.props.user.auth,
+          "id": this.props.currEvent.id,
           "name": values.name,
           "desc": values.desc,
           "startTime": moment(startTime).utc(),
@@ -121,13 +122,13 @@ class AddEventFormComponent extends Component {
           "reminderTime": reminderTime,
           "questions": questions
         }
-        axios.post('/event/create', json)
+        axios.post('/event/modify', json)
         .then((response) => {
-          message.success("Event created!");
+          message.success("Event modified!");
           this.props._updateDialog(false, null);
-          this.props._getEventsList(this.props.user.auth);
+          this.props._getEventById({ auth: this.props.user.auth, id: this.props.currEvent.id });
         }).catch((error) => {
-          message.error("Failed to create event");
+          message.error("Failed to modify event");
         });
       }
     });
@@ -135,8 +136,7 @@ class AddEventFormComponent extends Component {
 
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form;
-
-    getFieldDecorator('reminders', { initialValue: [] });
+    getFieldDecorator('reminders', { initialValue: this.props.currEvent.reminder ===  1 ? [0] : [] });
     const reminders = getFieldValue('reminders');
     const disabledOpt = reminders.length == 0;
     const formItems = reminders.map((k, index) => (
@@ -145,6 +145,7 @@ class AddEventFormComponent extends Component {
         key={k}
       >
         {getFieldDecorator('remindersArr[' + k + ']', {
+          initialValue: this.props.currEvent.reminder === 1 ?  moment(this.props.currEvent.startTime).subtract(this.props.currEvent.reminderTime, "minutes") : "",
           rules: [
             {
               required: true,
@@ -165,7 +166,7 @@ class AddEventFormComponent extends Component {
       </Form.Item>
     ));
     
-    getFieldDecorator('rsvpQuestions', { initialValue: [] });
+    getFieldDecorator('rsvpQuestions', { initialValue: this.props.currEvent.rsvp.questions.length === 0 ? [] : [...Array(this.props.currEvent.rsvp.questions.length).keys()] });
     const rsvp = getFieldValue('rsvpQuestions');
     const rsvpItems = rsvp.map((k, index) => (
       <Form.Item
@@ -173,6 +174,7 @@ class AddEventFormComponent extends Component {
         key={k}
       >
         {getFieldDecorator('rsvpQuestionsArr[' + k + ']', {
+          initialValue: this.props.currEvent.rsvp.questions.length === 0 ? "" : this.props.currEvent.rsvp.questions[index],
           rules: [
             {
               type: "string",
@@ -207,6 +209,7 @@ class AddEventFormComponent extends Component {
         >
           <Form.Item label="Name of Event">
             {getFieldDecorator("name", {
+              initialValue: this.props.currEvent.name,
               rules: [
                 {
                   type: "string",
@@ -222,6 +225,7 @@ class AddEventFormComponent extends Component {
           </Form.Item>
           <Form.Item label="Description">
             {getFieldDecorator('desc', {
+              initialValue: this.props.currEvent.desc,
               rules: [
                 {
                   type: "string",
@@ -238,16 +242,23 @@ class AddEventFormComponent extends Component {
           </Form.Item>
           <Form.Item label="Time of Event">
             {getFieldDecorator('eventTime', {
+              initialValue: [moment(this.props.currEvent.startTime), moment(this.props.currEvent.endTime)],
               rules: [
                 {
                   required: true,
                   message: "Please enter a time for the event",
                 },
               ],
-            })(<RangePicker showTime={{ format: 'HH:mm A', use12Hours: true }} format="LLL" />)}
+            })(
+              <RangePicker 
+              showTime={{ format: 'HH:mm A', use12Hours: true }} 
+              format="LLL" 
+              />
+            )}
           </Form.Item>
           <Form.Item label="Event Location">
             {getFieldDecorator("location", {
+              initialValue: this.props.currEvent.location,
               rules: [
                 {
                   type: "string",
@@ -265,7 +276,7 @@ class AddEventFormComponent extends Component {
           {formItems}
           <Divider />
           <Form.Item label="Use RSVP Form?">
-            <Switch onChange={this.showRSVPForm} checkedChildren={"Yes"} unCheckedChildren={"No"} />
+            <Switch defaultChecked={this.props.currEvent.rsvp.questions.length === 0 ? false : true} onChange={this.showRSVPForm} checkedChildren={"Yes"} unCheckedChildren={"No"} />
           </Form.Item>
           {this.state.showRSVP ? 
             <Form.Item label="RSVP Questions:" extra="Questions will shown in the same order as you create them">
@@ -296,19 +307,20 @@ class AddEventFormComponent extends Component {
   }
 }
 
-const AddEventForm = Form.create({ name: "AddEventForm" })(AddEventFormComponent);
+const ModifyEventForm = Form.create({ name: "ModifyEventForm" })(ModifyEventFormComponent);
 
 const mapStoreToProps = state => {
   return {
-    user: state.user
+    user: state.user,
+    currEvent: state.events.currEvent
   };
 };
 
 const mapDispatchToProps = {
   _push: push,
   _updateDialog: updateDialog,
-  _getEventsList: getEventsList
+  _getEventById: getEventById,
 };
 
-export default connect(mapStoreToProps, mapDispatchToProps)(AddEventForm);
+export default connect(mapStoreToProps, mapDispatchToProps)(ModifyEventForm);
 //replace null with mapStateToProps to connect to the state variables
