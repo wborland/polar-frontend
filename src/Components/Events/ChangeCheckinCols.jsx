@@ -36,7 +36,6 @@ class ChangeCheckinCols extends Component {
     );
     let i = 0;
     let temp = this.state.vals;
-    console.log(this.props.events.checkinCols);
     for (let tex in this.props.events.checkinCols) {
       temp[i] = {
         prev: tex,
@@ -75,6 +74,17 @@ class ChangeCheckinCols extends Component {
       checked.toString()[0].toUpperCase() + checked.toString().slice(1);
   };
 
+  deleteColumn = i => {
+    this.props._deleteCol(
+      this.props.user.auth,
+      parseInt(this.getUrlVars()["id"]),
+      this.state.vals[i].prev
+    );
+    let tempVals = this.state.vals;
+    delete tempVals[i];
+    this.setState({ vals: tempVals });
+  };
+
   renderInputs = () => {
     let vals = this.state.vals;
     let tempReturn = [];
@@ -95,12 +105,7 @@ class ChangeCheckinCols extends Component {
           />
           <Popconfirm
             title="This will delete the column and all of it's data right now"
-            onConfirm={() =>
-              this.props._deleteCol(
-                this.props.user.auth,
-                this.getUrlVars()["id"],
-                vals[i].prev
-              )}
+            onConfirm={() => this.deleteColumn(i)}
           >
             <Button type="danger" style={{ marginLeft: "10px" }}>
               Delete Column
@@ -146,7 +151,15 @@ class ChangeCheckinCols extends Component {
         >
           Save Updates
         </Button>
-        <Button onClick={() => this.props._updateDialog(false, null)}>
+        <Button
+          onClick={() => {
+            this.props._updateDialog(false, null);
+            this.props._getTableCols(
+              this.props.user.auth,
+              parseInt(this.props.router.location.query.id)
+            );
+          }}
+        >
           Close
         </Button>
       </div>

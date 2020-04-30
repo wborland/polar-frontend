@@ -315,7 +315,6 @@ export const deleteCol = (auth, eventId, col) => dispatch => {
     .then(response => {
       if (response.status == 200) {
         message.success("Successfully deleted column");
-        dispatch(getTableCols(auth, eventId));
       }
     })
     .catch(err => {
